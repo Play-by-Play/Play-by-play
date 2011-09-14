@@ -5,8 +5,10 @@
 #gameBoardBackgroundLayer 
 {
     
-    height: 800px;
-    width: 500px;
+/*    height: 800px;
+    width: 500px;*/
+    height: 100%;
+    width: 100%;
     background-image: url('../Public/images/board.png');
     background-size: 100%;
     position: relative;
@@ -50,6 +52,10 @@
 .gameSquare:hover, .gameSquareGoalkeeper:hover
 {
     background-color: rgba(255, 165, 0, 0.4);
+/*    width:40%;
+    height:16%;
+    border-style: solid;
+    border-width: 5px; */
 }
 
 .puck 
