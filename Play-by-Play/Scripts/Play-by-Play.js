@@ -5,8 +5,9 @@ window.PlayByPlay = (function($) {
     init: function() {
       connection = $.connection.chat;
 
-      connection.addMessage = function(message) {
-        $('<li>' + message + '</li>').appendTo('#chatMessages');
+      connection.addMessage = function(name, message) {
+        var data = {name: name, message: message};
+        $('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
       }
 
       $('#chatSubmit').live('click', function() {
@@ -14,7 +15,9 @@ window.PlayByPlay = (function($) {
             .fail(function(e) {
               alert(e);
             });
-      });
+      }).keypress;
+
+      $.delegate()
 
       $.connection.hub.start();
     }

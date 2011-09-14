@@ -5,12 +5,16 @@
     <link rel="stylesheet" href="/Content/reset.css"/>
     <link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css">
     <link rel="stylesheet" href="/Content/style.css"/>
+
+    <script type="text/template" id="chatMessageTemplate">
+      <li><span class="name">${name}</span><span class="message">${message}</span></li>
+    </script>
   </head>
   <body>
     <div id="left" class="column">
-      <div id="opponent" class="players"></div>
-      <div id="tacticCards"></div>
-      <div id="player" class="players"></div>
+      <div id="opponent" class="players panel"></div>
+      <div id="tacticCards" class="panel"></div>
+      <div id="player" class="players panel"></div>
     </div>
     <div id="center" class="column"></div>
     <div id="right" class="column">
