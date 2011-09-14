@@ -11,17 +11,17 @@
       <li><span class="name">${name}</span><span class="message">${message}</span></li>
     </script>
     <script type="text/template" id="playerCardTemplate">
-	    <div class="card" id="cardback" style="background-color: #${color}">
-		    <div id="teamLogo">
+	    <div class="card" style="background-color: #${color}">
+		    <div class="teamLogo">
 			    <img src="./images/logobacks/${team}.png" />
-			    <div id="playerBio">
+			    <div class="playerBio">
 				    <img src="./images/bios/${name}.png" />
 			    </div>
 		    </div>
-		    <div id="playerName">${name}</div>
-		    <div id="attr1">${attr1}</div>
-		    <div id="attr2">${attr2}</div>
-		    <div id="playerPos">${pos}</div>
+		    <div class="playerName">${name}</div>
+		    <div class="attr1">${attr1}</div>
+		    <div class="attr2">${attr2}</div>
+		    <div class="playerPos">${pos}</div>
 	    </div>
     </script>
   </head>
@@ -37,7 +37,9 @@
         <div id="oppLine2"></div>
         <div id="oppGoalies"></div>
       </div>
-      <div id="tacticCards" class="panel"></div>
+      <div id="tacticCards" class="panel">
+	    <div class="card" style="background-color: #ccc; height: 70px"></div>
+      </div>
       <div id="player" class="players panel">
         <ul>
           <li><a href="#line1">Line 1</a></li>

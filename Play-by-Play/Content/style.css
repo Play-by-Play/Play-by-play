@@ -42,7 +42,7 @@ html, body{
   text-align: center;
 }
 
-#console{
+#console, #player, #opponent{
   font-size: 10pt;
   width: 90%;
 }

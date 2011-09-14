@@ -1,47 +1,47 @@
 ﻿
-div#cardback {
-	width: 100px;
+div.card {
+	width: 25%;
 	position: relative;
 	padding: 10px 10px 6px 6px;
 	display: inline-block;
-	margin: 0 4px 4px 0;
+	margin: 0 8px 8px 0;
 }
 
-div#teamLogo {
+div.teamLogo {
 	width: 100%;
 	position: relative;
 }
 
-div#teamLogo img {
+div.teamLogo img {
 	width: 100%;
 	z-index: 0;
 }
 
-div#playerBio {
+div.playerBio {
 	width: 100%;
 }
 
-div#playerBio img {
+div.playerBio img {
 	width: 100%;
 	position: absolute;
 	bottom: 2px;
 	z-index: 1;
 }
 
-div#playerName {
+div.playerName {
 	position: absolute;
 	left: 4px;
-	top: 0;
+	top: 2px;
 	z-index: 2;
 	float: left;
-	font-size: 12pt;
+	font-size: 10pt;
 	font-weight: bold;
 	color: #fff;
 	text-transform: uppercase;
 	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
-div#attr1 {
+div.attr1 {
 	position: absolute;
 	right: 2px;
 	bottom: 42px;
@@ -53,7 +53,7 @@ div#attr1 {
 	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
-div#attr2 {
+div.attr2 {
 	position: absolute;
 	right: 2px;
 	bottom: 22px;
@@ -65,7 +65,7 @@ div#attr2 {
 	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
-div#playerPos {
+div.playerPos {
 	position: absolute;
 	right: 2px;
 	bottom: 2px;
