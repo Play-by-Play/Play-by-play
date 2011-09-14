@@ -3,8 +3,8 @@
 build/
 [Bb]in/
 [Oo]bj/
-*.cache
+*/**.cache
 *.suo
-*.sln.cache
-*.user
+*/**.sln.cache
+*/**.user
 .idea/
