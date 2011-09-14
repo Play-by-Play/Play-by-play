@@ -10,7 +10,7 @@ namespace Play_by_Play.Hubs
     {
         public void Send(string message)
         {
-            Clients.addMessage(Caller.Name, message);
+            Clients.addMessage("Test", message);
         }
     }
 }
