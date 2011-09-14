@@ -4,7 +4,7 @@ html, body{
   background-color: #333;
   margin: 0;
   color: #fff;
-  font-family: "Century Gothic",Arial,sans-serif;
+  font-family: Verdana,Arial,sans-serif;
 }
 
 .column{
@@ -40,6 +40,7 @@ html, body{
   width: 90%;
   font-size: 50pt;
   text-align: center;
+  font-family: "Century Gothic", Verdana;
 }
 
 #console, #player, #opponent{
@@ -60,6 +61,14 @@ html, body{
   max-height: 200px;
   margin-bottom: 20px;
   overflow-y: auto;
+  font-size: 9pt;
+}
+
+#chatMessages .name{
+  font-weight: bold;
+}
+#chatMessages .name:after{
+  content: ": ";
 }
 
 #chatMessage{
