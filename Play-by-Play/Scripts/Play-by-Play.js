@@ -3,9 +3,9 @@ window.PlayByPlay = (function($) {
 
   var chat = {
     init: function() {
-      var connection = $.connection.chat;
+      connection = $.connection.chat;
 
-      chat.addMessage = function(message) {
+      connection.addMessage = function(message) {
         $('<li>' + message + '</li>').appendTo('#chatMessages');
       }
 
@@ -20,15 +20,10 @@ window.PlayByPlay = (function($) {
     }
   };
 
-  $('#chatSubmit').live('click', function() {
-    $('<li>' + $('#chatInput').val() + '</li>').appendTo('#chatMessages');
-  });
-
   $(function() {
     $('#console').tabs();
     chat.init();
   });
 
   return play;
-})
-    (jQuery);
+})(jQuery);

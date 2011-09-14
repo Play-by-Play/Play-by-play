@@ -5,13 +5,6 @@ html, body{
   margin: 0;
   color: #fff;
   font-family: "Century Gothic",Arial,sans-serif;
-  scrollbar-3dlight-color: #111;
-  scrollbar-arrow-color: #111;
-  scrollbar-base-color: #111;
-  scrollbar-darkshadow-color: #111;
-  scrollbar-face-color: #333;
-  scrollbar-highlight-color: #111;
-  
 }
 
 .column{
