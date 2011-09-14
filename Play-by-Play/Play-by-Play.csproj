@@ -113,6 +113,7 @@
   <ItemGroup>
     <Content Include="App_Readme\glimpse.mvc3.readme.txt" />
     <Content Include="App_Readme\glimpse.readme.txt" />
+    <Content Include="Content\board.css" />
     <Content Include="Content\reset.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -186,6 +187,7 @@
     <Content Include="Content\themes\playbyplay\images\ui-icons_cccccc_256x240.png" />
     <Content Include="Content\themes\playbyplay\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\themes\playbyplay\jquery-ui-1.8.16.custom.css" />
+    <Content Include="Public\images\board.png" />
     <Content Include="Public\index.html" />
     <Content Include="Global.asax" />
     <Content Include="README.jQuery.vsdoc.txt" />
@@ -235,7 +237,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Public\images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -265,17 +266,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>52284</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
