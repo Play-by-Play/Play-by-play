@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Play-by-Play</title>
+    <link rel="stylesheet" href="/Content/reset.css"/>
+    <link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css">
+    <link rel="stylesheet" href="/Content/style.css"/>
+  </head>
+  <body>
+    <div id="left" class="column">
+      <div id="opponent" class="players"></div>
+      <div id="tacticCards"></div>
+      <div id="player" class="players"></div>
+    </div>
+    <div id="center" class="column"></div>
+    <div id="right" class="column">
+      <div id="score" class="panel">
+        <span id="playerGoals" class="goals">1</span>
+        -
+        <span id="opponentGoals" class="goals">1</span>
+      </div>
+      <div id="console" class="panel">
+        <ul>
+          <li><a href="#action">Action</a></li>
+          <li><a href="#stats">Stats</a></li>
+        </ul>
+        <div id="action">Action</div>
+        <div id="stats">Stats</div>
+      </div>
+      <div id="chat" class="panel">
+        <ul id="chatMessages"></ul>
+        <div id="chatMessage">
+          <input id="chatInput" type="text"/>
+          <input id="chatSubmit" type="button" value="Post"/>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/Scripts/modernizr-1.7.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery-1.6.3.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jQuery.tmpl.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.signalR.min.js"></script>
+    <script type="text/javascript" src="/Scripts/Play-by-Play.js"></script>
+  </body>
+</html>

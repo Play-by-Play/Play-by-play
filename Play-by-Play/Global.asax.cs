@@ -21,8 +21,10 @@ namespace Play_by_Play
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapPageRoute(null, "", "~/Public/index.html");
+
             routes.MapRoute(
-                "Default", // Route name
+                null,
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );

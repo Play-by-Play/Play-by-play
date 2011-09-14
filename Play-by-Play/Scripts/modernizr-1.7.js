@@ -897,7 +897,7 @@ window.Modernizr = (function(window,document,undefined){
               cssTextArr = [];
             while (++a < len) {
               styleSheet = styleSheetList[a];
-              // Get css from all non-screen stylesheets and their imports
+              // Get css from all non-screen Content and their imports
               if ((mediaType = styleSheet.media || mediaType) != 'screen') cssTextArr.push(getCSS(styleSheet.imports, mediaType), styleSheet.cssText);
             }
             return cssTextArr.join('');
