@@ -186,6 +186,59 @@
     <Content Include="Content\themes\playbyplay\images\ui-icons_cccccc_256x240.png" />
     <Content Include="Content\themes\playbyplay\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\themes\playbyplay\jquery-ui-1.8.16.custom.css" />
+    <Content Include="Public\images\bios\Anisimov.png" />
+    <Content Include="Public\images\bios\Bertuzzi.png" />
+    <Content Include="Public\images\bios\Biron.png" />
+    <Content Include="Public\images\bios\Callahan.png" />
+    <Content Include="Public\images\bios\Cleary.png" />
+    <Content Include="Public\images\bios\Datsyuk.png" />
+    <Content Include="Public\images\bios\DelZotto.png" />
+    <Content Include="Public\images\bios\Drury.png" />
+    <Content Include="Public\images\bios\Dubinsky.png" />
+    <Content Include="Public\images\bios\Gaborik.png" />
+    <Content Include="Public\images\bios\Girardi.png" />
+    <Content Include="Public\images\bios\Holmstrom.png" />
+    <Content Include="Public\images\bios\Howard.png" />
+    <Content Include="Public\images\bios\Kronwall.png" />
+    <Content Include="Public\images\bios\Lidstrom.png" />
+    <Content Include="Public\images\bios\Lundqvist.png" />
+    <Content Include="Public\images\bios\McCabe.png" />
+    <Content Include="Public\images\bios\Osgood.png" />
+    <Content Include="Public\images\bios\Rafalski.png" />
+    <Content Include="Public\images\bios\StaalM.png" />
+    <Content Include="Public\images\bios\Stuart.png" />
+    <Content Include="Public\images\bios\Zetterberg.png" />
+    <Content Include="Public\images\bios\Zuccarello.png" />
+    <Content Include="Public\images\logobacks\ANA.png" />
+    <Content Include="Public\images\logobacks\BOS.png" />
+    <Content Include="Public\images\logobacks\BUF.png" />
+    <Content Include="Public\images\logobacks\CAR.png" />
+    <Content Include="Public\images\logobacks\CBJ.png" />
+    <Content Include="Public\images\logobacks\CGY.png" />
+    <Content Include="Public\images\logobacks\CHI.png" />
+    <Content Include="Public\images\logobacks\COL.png" />
+    <Content Include="Public\images\logobacks\DAL.png" />
+    <Content Include="Public\images\logobacks\DET.png" />
+    <Content Include="Public\images\logobacks\EDM.png" />
+    <Content Include="Public\images\logobacks\FLA.png" />
+    <Content Include="Public\images\logobacks\LAK.png" />
+    <Content Include="Public\images\logobacks\MIN.png" />
+    <Content Include="Public\images\logobacks\MTL.png" />
+    <Content Include="Public\images\logobacks\NJD.png" />
+    <Content Include="Public\images\logobacks\NSH.png" />
+    <Content Include="Public\images\logobacks\NYI.png" />
+    <Content Include="Public\images\logobacks\NYR.png" />
+    <Content Include="Public\images\logobacks\OTT.png" />
+    <Content Include="Public\images\logobacks\PHI.png" />
+    <Content Include="Public\images\logobacks\PHX.png" />
+    <Content Include="Public\images\logobacks\PIT.png" />
+    <Content Include="Public\images\logobacks\SJS.png" />
+    <Content Include="Public\images\logobacks\STL.png" />
+    <Content Include="Public\images\logobacks\TBL.png" />
+    <Content Include="Public\images\logobacks\TOR.png" />
+    <Content Include="Public\images\logobacks\VAN.png" />
+    <Content Include="Public\images\logobacks\WPG.png" />
+    <Content Include="Public\images\logobacks\WSH.png" />
     <Content Include="Public\index.html" />
     <Content Include="Global.asax" />
     <Content Include="README.jQuery.vsdoc.txt" />
@@ -235,7 +288,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Public\images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

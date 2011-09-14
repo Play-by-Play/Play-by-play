@@ -10,23 +10,14 @@ window.PlayByPlay = (function($) {
         $('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
       }
 
-      $('#chatSubmit').live({
-        click: function() {
-          connection.send($('#chatInput').val())
-              .fail(function(e) {
-                alert(e);
-              });
-          $('#chatInput').val("");
-        }
-      });
-      $('#chatMessage').live({
-        keypress: function(evt) {
-          var key = (evt.keyCode || evt.which);
-          if (key == 13) {
-            $('#chatSubmit').click();
-          }
-        }
-      });
+      $('#chatSubmit').live('click', function() {
+        connection.send($('#chatInput').val())
+            .fail(function(e) {
+              alert(e);
+            });
+      }).keypress;
+
+      $.delegate()
 
       $.connection.hub.start();
     }

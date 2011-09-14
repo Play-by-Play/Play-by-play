@@ -1,8 +1,8 @@
-[Dd]ebug/
-[Rr]elease/
-build/
-[Bb]in/
-[Oo]bj/
+*/[Dd]ebug/
+*/[Rr]elease/
+*/build/
+*/[Bb]in/
+*/[Oo]bj/
 */**.cache
 *.suo
 */**.sln.cache
