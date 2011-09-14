@@ -5,16 +5,49 @@
     <link rel="stylesheet" href="/Content/reset.css"/>
     <link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css">
     <link rel="stylesheet" href="/Content/style.css"/>
+    <link rel="stylesheet" href="/Content/card.css"/>
 
     <script type="text/template" id="chatMessageTemplate">
       <li><span class="name">${name}</span><span class="message">${message}</span></li>
     </script>
+    <script type="text/template" id="playerCardTemplate">
+	    <div class="card" id="cardback" style="background-color: #${color}">
+		    <div id="teamLogo">
+			    <img src="./images/logobacks/${team}.png" />
+			    <div id="playerBio">
+				    <img src="./images/bios/${name}.png" />
+			    </div>
+		    </div>
+		    <div id="playerName">${name}</div>
+		    <div id="attr1">${attr1}</div>
+		    <div id="attr2">${attr2}</div>
+		    <div id="playerPos">${pos}</div>
+	    </div>
+    </script>
   </head>
   <body>
     <div id="left" class="column">
-      <div id="opponent" class="players panel"></div>
+      <div id="opponent" class="players panel">
+        <ul>
+          <li><a href="#oppLine1">Line 1</a></li>
+          <li><a href="#oppLine2">Line 2</a></li>
+          <li><a href="#oppGoalies">Goalies</a></li>
+        </ul>
+        <div id="oppLine1"></div>
+        <div id="oppLine2"></div>
+        <div id="oppGoalies"></div>
+      </div>
       <div id="tacticCards" class="panel"></div>
-      <div id="player" class="players panel"></div>
+      <div id="player" class="players panel">
+        <ul>
+          <li><a href="#line1">Line 1</a></li>
+          <li><a href="#line2">Line 2</a></li>
+          <li><a href="#goalies">Goalies</a></li>
+        </ul>
+        <div id="line1"></div>
+        <div id="line2"></div>
+        <div id="goalies"></div>
+      </div>
     </div>
     <div id="center" class="column"></div>
     <div id="right" class="column">
