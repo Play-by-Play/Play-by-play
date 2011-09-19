@@ -1,10 +1,20 @@
 ﻿
 div.card {
 	width: 25%;
+	display: inline-block;
 	position: relative;
 	padding: 10px 10px 6px 6px;
-	display: inline-block;
 	margin: 0 8px 8px 0;
+}
+
+div.draggable {}
+
+div.tacticCard {
+    width: 17%;
+	display: inline-block;
+	position: relative;
+    padding: 2px;
+	margin: 0 2px 2px 0;
 }
 
 div.teamLogo {
@@ -14,7 +24,6 @@ div.teamLogo {
 
 div.teamLogo img {
 	width: 100%;
-	z-index: 0;
 }
 
 div.playerBio {
@@ -25,14 +34,33 @@ div.playerBio img {
 	width: 100%;
 	position: absolute;
 	bottom: 2px;
-	z-index: 1;
+}
+
+div.tactic {
+	width: 100%;
+	position: relative;
+}
+
+div.tactic img {
+	width: 100%;
 }
 
 div.playerName {
 	position: absolute;
 	left: 4px;
 	top: 2px;
-	z-index: 2;
+	float: left;
+	font-size: 10pt;
+	font-weight: bold;
+	color: #fff;
+	text-transform: uppercase;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+div.tacticName {
+	position: absolute;
+	left: 4px;
+	bottom: 2px;
 	float: left;
 	font-size: 10pt;
 	font-weight: bold;
@@ -45,7 +73,6 @@ div.attr1 {
 	position: absolute;
 	right: 2px;
 	bottom: 42px;
-	z-index: 2;
 	float: right;
 	font-size: 14pt;
 	font-weight: bold;
@@ -57,7 +84,6 @@ div.attr2 {
 	position: absolute;
 	right: 2px;
 	bottom: 22px;
-	z-index: 2;
 	float: right;
 	font-size: 14pt;
 	font-weight: bold;
@@ -69,7 +95,17 @@ div.playerPos {
 	position: absolute;
 	right: 2px;
 	bottom: 2px;
-	z-index: 2;
+	float: right;
+	font-size: 13pt;
+	font-weight: bold;
+	color: #fff;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+div.diff {
+	position: absolute;
+	right: 2px;
+	top: 2px;
 	float: right;
 	font-size: 13pt;
 	font-weight: bold;

@@ -3,19 +3,21 @@
   <head>
     <title>Play-by-Play</title>
     <link rel="stylesheet" href="/Content/reset.css"/>
-    <link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css">
+    <link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css"/>
     <link rel="stylesheet" href="/Content/style.css"/>
     <link rel="stylesheet" href="/Content/card.css"/>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico"/>
 
     <script type="text/template" id="chatMessageTemplate">
       <li><span class="name">${name}</span><span class="message">${message}</span></li>
     </script>
     <script type="text/template" id="playerCardTemplate">
-	    <div class="card" style="background-color: #${color}">
+	    <div class="card${draggable}" style="background-color: #${color}">
 		    <div class="teamLogo">
-			    <img src="/Public/images/logobacks/${team}.png" />
+			    <img src="/Public/images/logobacks/${team}.png"/>
 			    <div class="playerBio">
-				    <img src="/Public/images/bios/${name}.png" />
+				    <img src="/Public/images/bios/${name}.png"/>
 			    </div>
 		    </div>
 		    <div class="playerName">${name}</div>
@@ -24,9 +26,18 @@
 		    <div class="playerPos">${pos}</div>
 	    </div>
     </script>
+    <script type="text/template" id="tacticCardTemplate">
+	    <div class="tacticCard" style="background-color: #39f">
+		    <div class="tactic">
+			    <img src="/Public/images/tactics/${name}.png"/>
+		    </div>
+		    <div class="tacticName">${name}</div>
+		    <div class="diff">${diff}</div>
+	    </div>
+    </script>
   </head>
   <body>
-    <div id="left" class="column">
+    <div id="left" class="column high">
       <div id="opponent" class="players panel">
         <ul>
           <li><a href="#oppLine1">Line 1</a></li>
@@ -38,7 +49,6 @@
         <div id="oppGoalies"></div>
       </div>
       <div id="tacticCards" class="panel">
-	    <div class="card" style="background-color: #ccc; height: 70px"></div>
       </div>
       <div id="player" class="players panel">
         <ul>
@@ -51,12 +61,14 @@
         <div id="goalies"></div>
       </div>
     </div>
-    <div id="center" class="column"></div>
+    <div id="center" class="column">
+	    <img class="board" src="/Public/images/board2.png" alt="Game Board"/>
+    </div>
     <div id="right" class="column">
       <div id="score" class="panel">
-        <span id="playerGoals" class="goals">1</span>
+        <span id="playerGoals" class="goals">0</span>
         -
-        <span id="opponentGoals" class="goals">1</span>
+        <span id="opponentGoals" class="goals">0</span>
       </div>
       <div id="console" class="panel">
         <ul>

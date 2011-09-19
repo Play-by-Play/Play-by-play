@@ -113,6 +113,7 @@
   <ItemGroup>
     <Content Include="App_Readme\glimpse.mvc3.readme.txt" />
     <Content Include="App_Readme\glimpse.readme.txt" />
+    <Content Include="Content\card.css" />
     <Content Include="Content\reset.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -192,9 +193,10 @@
     <Content Include="Public\images\bios\Callahan.png" />
     <Content Include="Public\images\bios\Cleary.png" />
     <Content Include="Public\images\bios\Datsyuk.png" />
-    <Content Include="Public\images\bios\DelZotto.png" />
+    <Content Include="Public\images\bios\Del Zotto.png" />
     <Content Include="Public\images\bios\Drury.png" />
     <Content Include="Public\images\bios\Dubinsky.png" />
+    <Content Include="Public\images\bios\Filppula.png" />
     <Content Include="Public\images\bios\Gaborik.png" />
     <Content Include="Public\images\bios\Girardi.png" />
     <Content Include="Public\images\bios\Holmstrom.png" />
@@ -205,10 +207,12 @@
     <Content Include="Public\images\bios\McCabe.png" />
     <Content Include="Public\images\bios\Osgood.png" />
     <Content Include="Public\images\bios\Rafalski.png" />
-    <Content Include="Public\images\bios\StaalM.png" />
+    <Content Include="Public\images\bios\Staal.png" />
     <Content Include="Public\images\bios\Stuart.png" />
     <Content Include="Public\images\bios\Zetterberg.png" />
     <Content Include="Public\images\bios\Zuccarello.png" />
+    <Content Include="Public\images\board2.png" />
+    <Content Include="Public\images\favicon.ico" />
     <Content Include="Public\images\logobacks\ANA.png" />
     <Content Include="Public\images\logobacks\BOS.png" />
     <Content Include="Public\images\logobacks\BUF.png" />
@@ -239,6 +243,7 @@
     <Content Include="Public\images\logobacks\VAN.png" />
     <Content Include="Public\images\logobacks\WPG.png" />
     <Content Include="Public\images\logobacks\WSH.png" />
+    <Content Include="Public\images\tactics\Give-%27n-Take.png" />
     <Content Include="Public\index.html" />
     <Content Include="Global.asax" />
     <Content Include="README.jQuery.vsdoc.txt" />

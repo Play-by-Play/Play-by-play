@@ -4,7 +4,7 @@ html, body{
   background-color: #333;
   margin: 0;
   color: #fff;
-  font-family: Verdana,Arial,sans-serif;
+  font-family: "Century Gothic",Verdana,Arial,sans-serif;
 }
 
 .column{
@@ -107,3 +107,12 @@ html, body{
   border-radius: 10px;
   padding: 10px;
 }
+
+img.board 
+{
+    width: 100%;
+}
+
+.high 
+{
+    z-index: 1;
