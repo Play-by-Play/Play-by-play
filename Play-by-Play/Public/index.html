@@ -14,18 +14,19 @@
       </li>
     </script>
     <script type="text/template" id="playerCardTemplate">
-	    <div class="card" id="cardback" style="background-color: #${color}">
-		    <div id="teamLogo">
-			    <img src="/Public/images/logobacks/${team}.png" />
-			    <div id="playerBio">
-				    <img src="/Public/images/bios/${name}.png" />
-			    </div>
-		    </div>
-		    <div id="playerName">${name}</div>
-		    <div id="attr1">${attr1}</div>
-		    <div id="attr2">${attr2}</div>
-		    <div id="playerPos">${pos}</div>
-	    </div>
+      <div class="card" id="cardback">
+        <div id="teamLogo">
+          <img src="/Public/images/logobacks/${team}.png"/>
+
+          <div id="playerBio">
+            <img src="/Public/images/bios/${name}.png"/>
+          </div>
+        </div>
+        <div id="playerName">${name}</div>
+        <div id="attr1">${attr1}</div>
+        <div id="attr2">${attr2}</div>
+        <div id="playerPos">${pos}</div>
+      </div>
     </script>
   </head>
   <body>
@@ -36,9 +37,9 @@
           <li><a href="#oppLine2">Line 2</a></li>
           <li><a href="#oppGoalies">Goalies</a></li>
         </ul>
-        <div id="oppLine1"></div>
-        <div id="oppLine2"></div>
-        <div id="oppGoalies"></div>
+        <div id="oppLine1" class="tab line"></div>
+        <div id="oppLine2" class="tab line"></div>
+        <div id="oppGoalies" class="tab line"></div>
       </div>
       <div id="tacticCards" class="panel"></div>
       <div id="player" class="players panel">
@@ -47,9 +48,9 @@
           <li><a href="#line2">Line 2</a></li>
           <li><a href="#goalies">Goalies</a></li>
         </ul>
-        <div id="line1"></div>
-        <div id="line2"></div>
-        <div id="goalies"></div>
+        <div id="line1" class="tab line"></div>
+        <div id="line2" class="tab line"></div>
+        <div id="goalies" class="tab line"></div>
       </div>
     </div>
     <div id="center" class="column"></div>
@@ -64,8 +65,8 @@
           <li><a href="#action">Action</a></li>
           <li><a href="#stats">Stats</a></li>
         </ul>
-        <div id="action">Action</div>
-        <div id="stats">Stats</div>
+        <div id="action" class="tab">Action</div>
+        <div id="stats" class="tab">Stats</div>
       </div>
       <div id="chat" class="panel">
         <ul id="chatMessages"></ul>

@@ -1,8 +1,52 @@
 window.PlayByPlay = (function ($) {
+  // jQuery extensions
+  $.scrollbarWidth = function() {
+    var inner = document.createElement('p');
+    inner.style.width = "100%";
+    inner.style.height = "200px";
+
+    var outer = document.createElement('div');
+    outer.style.position = "absolute";
+    outer.style.top = "0px";
+    outer.style.left = "0px";
+    outer.style.visibility = "hidden";
+    outer.style.width = "200px";
+    outer.style.height = "150px";
+    outer.style.overflow = "hidden";
+    outer.appendChild(inner);
+
+    document.body.appendChild(outer);
+    var w1 = inner.offsetWidth;
+    outer.style.overflow = 'scroll';
+    var w2 = inner.offsetWidth;
+    if (w1 == w2) w2 = outer.clientWidth;
+
+    document.body.removeChild(outer);
+
+    return (w1 - w2);
+  };
+  $.fn.setFullWidth = function() {
+    return this.each(function() {
+      var $this = $(this);
+
+      var margin = $this.marginLeft + $this.marginRight,
+          border = $this.borderLeftWidth + $this.borderRightWidth,
+          padding = $this.paddingLeft + $this.paddingRight;
+
+      var parentWidth = $this.parent().width(),
+          decoration = $this.outerWidth(true) - $this.width();
+
+      $this.width(parentWidth - decoration);
+    });
+  };
+
+  // Game
   var play = {
     addPlayerCard: function (color, team, name, attr1, attr2, pos, formation) {
       var data = { color: color, team: team, name: name, attr1: attr1, attr2: attr2, pos: pos };
-      $('#playerCardTemplate').tmpl(data).appendTo('#' + formation);
+      var elem = $('#playerCardTemplate').tmpl(data);
+      elem.css('background-color', '#' + data.color);
+      elem.appendTo('#' + formation);
     },
     addDetroitPlayers: function () {
       play.addPlayerCard("c00", "DET", "Zetterberg", 5, 3, "LW", "line1");
@@ -36,7 +80,7 @@ window.PlayByPlay = (function ($) {
     }
   };
 
-
+  // Server connectivity
   var chat = {
     init: function () {
       connection = $.connection.chat;
@@ -55,7 +99,7 @@ window.PlayByPlay = (function ($) {
       });
       $('#chatInput').live('keypress', function(e) {
         var key = (e.keyCode || e.which);
-        if(key == 13){
+        if (key == 13) {
           $('#chatSubmit').click();
         }
       })
@@ -64,7 +108,17 @@ window.PlayByPlay = (function ($) {
     }
   };
 
+  // Layout
+  var layout = {
+    init: function() {
+      $('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
+      $('.panel').setFullWidth();
+    }
+  };
+
+  // On ready
   $(function () {
+    layout.init();
     $('#console').tabs();
     $('#opponent').tabs();
     $('#player').tabs();

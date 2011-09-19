@@ -8,36 +8,35 @@ html, body{
 }
 
 .column{
-  width: 33%;
   height: 100%;
   overflow: hidden;
   position: relative;
+  display: inline-block;
 }
 
 #left{
   float: left;
-  position: absolute;
-  top: 0;
-  left: 0;
+}
+
+#left > .panel{
+  margin-left: 0;
 }
 
 #center{
-  margin: 0 auto;
+  width: 500px;
+  margin: 0;
+  float: left;
 }
 
 #right{
   float: right;
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 
-#right > div{
-  margin-top: 20px;
+#right > .panel{
+  margin-right: 0;
 }
 
 #score{
-  width: 90%;
   font-size: 50pt;
   text-align: center;
   font-family: "Century Gothic", Verdana;
@@ -49,11 +48,10 @@ html, body{
 }
 
 #chat{
-  width: 90%;
   max-height: 30%;
   position:absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 5px;
+  right: 5px;
   padding-bottom: 40px;
 }
 
@@ -105,5 +103,14 @@ html, body{
   background-color: #111;
   border: 10px solid #222;
   border-radius: 10px;
-  padding: 10px;
+  padding: 5px;
+  margin: 10px;
+}
+
+.panel .tab{
+  padding: 5px 0;
+}
+
+.panel .line{
+  width: 360px;
 }
