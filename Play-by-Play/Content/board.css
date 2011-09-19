@@ -1,0 +1,85 @@
+﻿body {
+}
+
+
+#gameBoardBackgroundLayer 
+{
+    
+/*    height: 800px;
+    width: 500px;*/
+    height: 100%;
+    width: 100%;
+    background-image: url('../Public/images/board.png');
+    background-size: 100%;
+    position: relative;
+}
+
+#gameBoardBackgroundLayer.source-image {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+}
+
+.gameSquareGoalkeeper
+{
+    height: 10.82%;
+    width: 22.69%;
+    margin-left: 38.655%;
+    background-color: rgba(233, 233, 233, 0.0);
+    clear: both;
+    margin-top: 0.016%;
+    padding-top: 0.016%;
+}
+
+#gameBoardGoalkeeperOpponent
+{
+    padding-top: 0.016%;
+}
+
+.gameSquare
+{
+    height: 18%;
+}
+
+.gameSquareLeft
+{
+    background-color: rgba(255, 200, 200, 0.0);
+    width: 50%;
+    float: left;
+}
+ 
+.gameSquareRight
+{
+    background-color: rgba(0, 255, 0, 0.0); 
+    float: right;
+    width: 50%;
+}
+
+.gameSquare:hover, .gameSquareGoalkeeper:hover
+{
+    background-color: rgba(255, 165, 0, 0.4);
+/*    width:40%;
+    height:16%;
+    border-style: solid;
+    border-width: 5px; */
+}
+
+.puck 
+{
+    background-color: Black;
+    height: 3%;
+    width: 4.8%;
+    position: absolute;
+    left: 47.5%;
+    top: 48.5%;
+    z-index: 1000;
+    border-radius: 10000px;
+}
+
+
+#mycooldiv { width:60%;margin:0 auto;border:3px solid #800; }
+.clearfix { clear:both; }
+div.keep-aspect-ratio > div { border:0;padding:0;margin:0;position:relative; }
+div.keep-aspect-ratio > div > img { border:0;padding:0;margin:0;z-index:-1000;position:relative;top:0;bottom:0;left:0;width:100%;display:block; }
+div.keep-aspect-ratio > div > div { border:0;padding:0;margin:0;position:absolute;top:0;bottom:0;left:0;width:100%;overflow:auto}

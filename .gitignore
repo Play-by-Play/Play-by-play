@@ -7,4 +7,5 @@
 *.suo
 */**.sln.cache
 */**.user
+*/**.orig
 .idea/

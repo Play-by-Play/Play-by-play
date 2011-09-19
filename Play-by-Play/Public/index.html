@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css">
     <link rel="stylesheet" href="/Content/style.css"/>
     <link rel="stylesheet" href="/Content/card.css"/>
+    <link rel="Stylesheet" href="/Content/board.css" />
 
     <script type="text/template" id="chatMessageTemplate">
       <li>
@@ -53,7 +54,29 @@
         <div id="goalies" class="tab line"></div>
       </div>
     </div>
-    <div id="center" class="column"></div>
+    <div id="center" class="column">
+    
+        <div class="keep-aspect-ratio" id="mycooldiv"><div><img src="../Public/images/board.png" /><div>
+            <div id="gameBoardBackgroundLayer">
+                <div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper"></div>
+                <div id="gameBoardLW" class="gameSquare gameSquareLeft"></div>
+                <div id="gameBoardRW" class="gameSquare gameSquareRight"></div>
+                <div id="gameBoardLCW" class="gameSquare gameSquareLeft"></div>
+                <div id="gameBoardRCW" class="gameSquare gameSquareRight"></div>
+                <div id="gameBoardLCD" class="gameSquare gameSquareLeft"></div>
+                <div id="gameBoardRCD" class="gameSquare gameSquareRight"></div>
+                <div id="gameBoardLD" class="gameSquare gameSquareLeft"></div>
+                <div id="gameBoardRD" class="gameSquare gameSquareRight"></div>
+                <div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper"></div>
+                <div id="puck" class="puck"></div>
+            </div>
+        </div></div><div class="clearfix"></div></div>
+
+        <!--<div class="keep-aspect-ratio" id="mycooldiv"><div><img src="~/Content/board.png" /><div>
+            ...content goes here...
+        </div></div><div class="clearfix"></div></div>-->
+    
+    </div>
     <div id="right" class="column">
       <div id="score" class="panel">
         <span id="playerGoals" class="goals">1</span>
