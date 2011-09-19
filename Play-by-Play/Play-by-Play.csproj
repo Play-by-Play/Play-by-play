@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -114,6 +114,7 @@
     <Content Include="App_Readme\glimpse.mvc3.readme.txt" />
     <Content Include="App_Readme\glimpse.readme.txt" />
     <Content Include="Content\card.css" />
+    <Content Include="Content\board.css" />
     <Content Include="Content\reset.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -187,6 +188,7 @@
     <Content Include="Content\themes\playbyplay\images\ui-icons_cccccc_256x240.png" />
     <Content Include="Content\themes\playbyplay\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\themes\playbyplay\jquery-ui-1.8.16.custom.css" />
+    <Content Include="Public\images\board.png" />
     <Content Include="Public\images\bios\Anisimov.png" />
     <Content Include="Public\images\bios\Bertuzzi.png" />
     <Content Include="Public\images\bios\Biron.png" />
