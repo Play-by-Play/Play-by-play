@@ -9,7 +9,7 @@
     <link rel="Stylesheet" href="/Content/board.css" />
 =======
     <link rel="stylesheet" href="/Content/card.css"/>
->>>>>>> origin/HEAD
+>>>>>>> ec39db6de7a948d69925c61aa46c7175d1ad6354
 
     <script type="text/template" id="chatMessageTemplate">
       <li><span class="name">${name}</span><span class="message">${message}</span></li>
@@ -17,9 +17,9 @@
     <script type="text/template" id="playerCardTemplate">
 	    <div class="card" id="cardback" style="background-color: #${color}">
 		    <div id="teamLogo">
-			    <img src="./images/logobacks/${team}.png" />
+			    <img src="/Public/images/logobacks/${team}.png" />
 			    <div id="playerBio">
-				    <img src="./images/bios/${name}.png" />
+				    <img src="/Public/images/bios/${name}.png" />
 			    </div>
 		    </div>
 		    <div id="playerName">${name}</div>
