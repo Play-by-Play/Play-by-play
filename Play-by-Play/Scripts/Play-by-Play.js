@@ -278,13 +278,16 @@ window.PlayByPlay = (function ($) {
         play.addRangersPlayers();
         play.addTacticCards();
         $(".draggable").draggable({
-            revert: "invalid"
+            revert: "invalid",
+            stack: ".draggable"
         });
         $(".gameSquare").droppable({
             accept: ".skater",
             activeClass: "gameSquareHoverableA",
             hoverClass: "gameSquareHoverable",
             drop: function (event, ui) {
+                ui.draggable.position({ of: $(this), my: 'center center', at: 'center center' });
+                ui.draggable.appendTo($(this));
             }
         });
         $("#gameBoardGoalkeeper").droppable({
@@ -293,6 +296,7 @@ window.PlayByPlay = (function ($) {
             hoverClass: "gameSquareHoverable",
             drop: function (event, ui) {
                 $(this).droppable("destroy");
+                ui.draggable.position({ of: $(this), my: 'center center', at: 'center center' });
             }
         });
 
