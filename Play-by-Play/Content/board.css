@@ -1,4 +1,9 @@
-﻿#gameBoardBackgroundLayer 
+﻿#gameboard{
+	height: 100%;
+	margin: 0 auto;
+}
+
+#gameBoardBackgroundLayer
 {
     height: 100%;
     width: 100%;

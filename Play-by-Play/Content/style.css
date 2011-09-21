@@ -1,125 +1,126 @@
-html, body{
-  width: 100%;
-  height: 100%;
-  background-color: #333;
-  margin: 0;
-  color: #fff;
+html, body {
+	width: 100%;
+	height: 100%;
+	background-color: #333;
+	margin: 0;
+	color: #fff;
   font-family: "Century Gothic",Verdana,Arial,sans-serif;
 }
 
-.column{
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  display: inline-block;
+.column {
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
 }
 
-#left{
-  float: left;
+#left {
+	float: left;
+	z-index: 1;
 }
 
-#left > .panel{
-  margin-left: 0;
+#left > .panel {
+	margin-left: 0;
 }
 
-#center{
-  width: 600px;
-  margin: 0;
-  float: left;
+#center {
+	width: 600px;
+	margin: 0;
+	float: left;
 }
 
-#right{
-  float: right;
+#right {
+	float: right;
 }
 
-#right > .panel{
-  margin-right: 0;
+#right > .panel {
+	margin-right: 0;
 }
 
-#score{
-  font-size: 50pt;
-  text-align: center;
-  font-family: "Century Gothic", Verdana;
+#score {
+	font-size: 50pt;
+	text-align: center;
+	font-family: "Century Gothic", Verdana;
 }
 
-#console, #player, #opponent{
-  font-size: 10pt;
-  width: 90%;
+#console, #player, #opponent {
+	font-size: 10pt;
+	width: 90%;
 }
 
-#chat{
-  max-height: 30%;
-  position:absolute;
-  bottom: 0;
-  left: 0;
-  padding-bottom: 40px;
+#chat {
+	max-height: 30%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	padding-bottom: 40px;
 }
 
-#chatMessages{
-  max-height: 200px;
-  margin-bottom: 20px;
-  overflow-y: auto;
-  font-size: 9pt;
+#chatMessages {
+	max-height: 200px;
+	margin-bottom: 20px;
+	overflow-y: auto;
+	font-size: 9pt;
 }
 
-#chatMessages .name{
-  font-weight: bold;
-}
-#chatMessages .name:after{
-  content: ": ";
+#chatMessages .name {
+	font-weight: bold;
 }
 
-#chatMessage{
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+#chatMessages .name:after {
+	content: ": ";
 }
 
-#chat input{
-  background-color: #111;
-  border: 1px solid #666;
-  display: inline-block;
-  line-height: 250%;
-  vertical-align: bottom;
-  color: #fff;
+#chatMessage {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
 }
 
-#chatInput{
-  width: 80%;
-  padding: 0 5px;
+#chat input {
+	background-color: #111;
+	border: 1px solid #666;
+	display: inline-block;
+	line-height: 250%;
+	vertical-align: bottom;
+	color: #fff;
 }
 
-#chatSubmit{
-  float: right;
-  width: 15%;
+#chatInput {
+	width: 80%;
+	padding: 0 5px;
 }
 
-#chatSubmit:hover{
-  background-color: #333;
+#chatSubmit {
+	float: right;
+	width: 15%;
 }
 
-.panel{
-  background-color: #111;
-  border: 10px solid #222;
-  border-radius: 10px;
-  padding: 5px;
-  margin: 10px;
+#chatSubmit:hover {
+	background-color: #333;
 }
 
-.panel .tab{
-  padding: 5px 0;
+.panel {
+	background-color: #111;
+	border: 10px solid #222;
+	border-radius: 10px;
+	padding: 5px;
+	margin: 10px;
 }
 
-.panel .line{
-  width: 360px;
+.panel .tab {
+	padding: 5px 0;
 }
 
-img.board 
-{
-    width: 100%;
+.panel .line {
+	width: 360px;
 }
 
-.high 
-{
-    z-index: 1;
+img.board {
+	width: 100%;
+}
+
+.tacticCard {
+	background-color: #39f;
+}
