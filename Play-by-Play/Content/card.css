@@ -5,6 +5,7 @@ div.card {
 	position: relative;
 	padding: 10px 10px 6px 6px;
 	margin: 0 8px 8px 0;
+	z-index: 1000000000000000000000000000;
 }
 
 div.draggable {}

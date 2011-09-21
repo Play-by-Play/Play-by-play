@@ -220,11 +220,21 @@ window.PlayByPlay = (function ($) {
         play.addRangersPlayers();
         play.addTacticCards();
         $(".draggable").draggable({
-            revert: "invalid"
+            revert: "invalid",
         });
-        $(".board").droppable({
-            activeClass: "ui-state-hover",
-            hoverClass: "ui-state-active",
+         $(".gameSquare").droppable({
+            accept: ".skater",
+            activeClass: "ui-state-hover2",
+            hoverClass: "ui-state-active2",
+            drop: function (event, ui) {
+                $(this)
+					.addClass("ui-state-highlight");
+            }
+        });
+        $("#gameBoardGoalkeeper").droppable({
+            accept: ".goalie",
+            activeClass: "ui-state-hover2",
+            hoverClass: "ui-state-active2",
             drop: function (event, ui) {
                 $(this)
 					.addClass("ui-state-highlight");
