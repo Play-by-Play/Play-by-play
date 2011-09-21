@@ -1,111 +1,116 @@
-﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
-    <title>Play-by-Play</title>
-    <link rel="stylesheet" href="/Content/reset.css"/>
-    <link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css"/>
-    <link rel="stylesheet" href="/Content/style.css"/>
-    <link rel="stylesheet" href="/Content/card.css"/>
-    <link rel="Stylesheet" href="/Content/board.css" />
-    
-    <link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico"/>
+	<head>
+		<title>Play-by-Play</title>
+		<link rel="stylesheet" href="/Content/reset.css"/>
+		<link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css"/>
+		<link rel="stylesheet" href="/Content/style.css"/>
+		<link rel="stylesheet" href="/Content/card.css"/>
+		<link rel="Stylesheet" href="/Content/board.css"/>
 
-    <script type="text/template" id="chatMessageTemplate">
-      <li><span class="name">${name}</span><span class="message">${message}</span></li>
-    </script>
-    <script type="text/template" id="playerCardTemplate">
-	    <div class="card{{if (pos == 'G') }} goalie{{else}} skater{{/if}}${draggable}" style="background-color: #${color}">
-		    <div class="teamLogo">
-			    <img src="/Public/images/logobacks/${team}.png"/>
-			    <div class="playerBio">
-				    <img src="/Public/images/bios/${name}.png"/>
-			    </div>
-		    </div>
-		    <div class="playerName">${name}</div>
-		    <div class="attr1">${attr1}</div>
-		    <div class="attr2">${attr2}</div>
-		    <div class="playerPos">${pos}</div>
-	    </div>
-    </script>
-    <script type="text/template" id="tacticCardTemplate">
-	    <div class="tacticCard" style="background-color: #39f">
-		    <div class="tactic">
-			    <img src="/Public/images/tactics/${name}.png"/>
-		    </div>
-		    <div class="tacticName">${name}</div>
-		    <div class="diff">${diff}</div>
-	    </div>
-    </script>
-  </head>
-  <body>
-    <div id="left" class="column high">
-      <div id="opponent" class="players panel">
-        <ul>
-          <li><a href="#oppLine1">Line 1</a></li>
-          <li><a href="#oppLine2">Line 2</a></li>
-          <li><a href="#oppGoalies">Goalies</a></li>
-        </ul>
-        <div id="oppLine1"></div>
-        <div id="oppLine2"></div>
-        <div id="oppGoalies"></div>
-      </div>
-      <div id="tacticCards" class="panel">
-      </div>
-      <div id="player" class="players panel">
-        <ul>
-          <li><a href="#line1">Line 1</a></li>
-          <li><a href="#line2">Line 2</a></li>
-          <li><a href="#goalies">Goalies</a></li>
-        </ul>
-        <div id="line1"></div>
-        <div id="line2"></div>
-        <div id="goalies"></div>
-      </div>
-    </div>
-    <div id="center" class="column">
-        <canvas id="gameBoardCanvas" width="100%" height="100%"></canvas>  
-        <div id="gameBoardBackgroundLayer">
-            <div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper"></div>
-            <div id="gameBoardLW" class="gameSquare gameSquareLeft"></div>
-            <div id="gameBoardRW" class="gameSquare gameSquareRight"></div>
-            <div id="gameBoardLCW" class="gameSquare gameSquareLeft"></div>
-            <div id="gameBoardRCW" class="gameSquare gameSquareRight"></div>
-            <div id="gameBoardLCD" class="gameSquare gameSquareLeft"></div>
-            <div id="gameBoardRCD" class="gameSquare gameSquareRight"></div>
-            <div id="gameBoardLD" class="gameSquare gameSquareLeft"></div>
-            <div id="gameBoardRD" class="gameSquare gameSquareRight"></div>
-            <div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper"></div>
-            <div id="puck" class="puck"></div>
-        </div>
-    </div>
-    <div id="right" class="column">
-      <div id="score" class="panel">
-        <span id="playerGoals" class="goals">0</span>
-        -
-        <span id="opponentGoals" class="goals">0</span>
-      </div>
-      <div id="console" class="panel">
-        <ul>
-          <li><a href="#action">Action</a></li>
-          <li><a href="#stats">Stats</a></li>
-        </ul>
-        <div id="action">Action</div>
-        <div id="stats">Stats</div>
-      </div>
-      <div id="chat" class="panel">
-        <ul id="chatMessages"></ul>
-        <div id="chatMessage">
-          <input id="chatInput" type="text"/>
-          <input id="chatSubmit" type="button" value="Post"/>
-        </div>
-      </div>
-    </div>
-    <script type="text/javascript" src="/Scripts/modernizr-1.7.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jquery-1.6.3.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jQuery.tmpl.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jquery.signalR.min.js"></script>
-    <script type="text/javascript" src="/signalr/hubs"></script>
-    <script type="text/javascript" src="/Scripts/Play-by-Play.js"></script>
-  </body>
+		<link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico"/>
+
+		<script type="text/template" id="chatMessageTemplate">
+			<li>
+				<span class="name">${name}</span>
+				<span class="message">${message}</span>
+			</li>
+		</script>
+		<script type="text/template" id="playerCardTemplate">
+	    <div class="card{{if (pos == 'G') }} goalie{{else}} skater{{/if}}${draggable}">
+				<div class="teamLogo">
+					<img src="/Public/images/logobacks/${team}.png"/>
+
+					<div class="playerBio">
+						<img src="/Public/images/bios/${name}.png"/>
+					</div>
+				</div>
+				<div class="playerName">${name}</div>
+				<div class="attr1">${attr1}</div>
+				<div class="attr2">${attr2}</div>
+				<div class="playerPos">${pos}</div>
+			</div>
+		</script>
+		<script type="text/template" id="tacticCardTemplate">
+			<div class="tacticCard">
+				<div class="tactic">
+					<img src="/Public/images/tactics/${name}.png"/>
+				</div>
+				<div class="tacticName">${name}</div>
+				<div class="diff">${diff}</div>
+			</div>
+		</script>
+	</head>
+	<body>
+		<div id="left" class="column">
+			<div id="opponent" class="players panel">
+				<ul>
+					<li><a href="#oppLine1">Line 1</a></li>
+					<li><a href="#oppLine2">Line 2</a></li>
+					<li><a href="#oppGoalies">Goalies</a></li>
+				</ul>
+				<div id="oppLine1" class="tab line"></div>
+				<div id="oppLine2" class="tab line"></div>
+				<div id="oppGoalies" class="tab line"></div>
+			</div>
+			<div id="tacticCards" class="panel"></div>
+			<div id="player" class="players panel">
+				<ul>
+					<li><a href="#line1">Line 1</a></li>
+					<li><a href="#line2">Line 2</a></li>
+					<li><a href="#goalies">Goalies</a></li>
+				</ul>
+				<div id="line1" class="tab line"></div>
+				<div id="line2" class="tab line"></div>
+				<div id="goalies" class="tab line"></div>
+			</div>
+		</div>
+		<div id="center" class="column">
+			<div id="gameboard">
+				<canvas id="gameBoardCanvas" width="100%" height="100%"></canvas>
+				<div id="gameBoardBackgroundLayer">
+					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper"></div>
+					<div id="gameBoardLW" class="gameSquare gameSquareLeft"></div>
+					<div id="gameBoardRW" class="gameSquare gameSquareRight"></div>
+					<div id="gameBoardLCW" class="gameSquare gameSquareLeft"></div>
+					<div id="gameBoardRCW" class="gameSquare gameSquareRight"></div>
+					<div id="gameBoardLCD" class="gameSquare gameSquareLeft"></div>
+					<div id="gameBoardRCD" class="gameSquare gameSquareRight"></div>
+					<div id="gameBoardLD" class="gameSquare gameSquareLeft"></div>
+					<div id="gameBoardRD" class="gameSquare gameSquareRight"></div>
+					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper"></div>
+					<div id="puck" class="puck"></div>
+				</div>
+			</div>
+		</div>
+		<div id="right" class="column">
+			<div id="score" class="panel">
+				<span id="playerGoals" class="goals">0</span>
+				-
+				<span id="opponentGoals" class="goals">0</span>
+			</div>
+			<div id="console" class="panel">
+				<ul>
+					<li><a href="#action">Action</a></li>
+					<li><a href="#stats">Stats</a></li>
+				</ul>
+				<div id="action" class="tab">Action</div>
+				<div id="stats" class="tab">Stats</div>
+			</div>
+			<div id="chat" class="panel">
+				<ul id="chatMessages"></ul>
+				<div id="chatMessage">
+					<input id="chatInput" type="text"/>
+					<input id="chatSubmit" type="button" value="Post"/>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="/Scripts/modernizr-1.7.min.js"></script>
+		<script type="text/javascript" src="/Scripts/jquery-1.6.3.min.js"></script>
+		<script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.min.js"></script>
+		<script type="text/javascript" src="/Scripts/jQuery.tmpl.min.js"></script>
+		<script type="text/javascript" src="/Scripts/jquery.signalR.min.js"></script>
+		<script type="text/javascript" src="/signalr/hubs"></script>
+		<script type="text/javascript" src="/Scripts/Play-by-Play.js"></script>
+	</body>
 </html>

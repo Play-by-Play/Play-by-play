@@ -7,5 +7,6 @@
 *.suo
 */**.sln.cache
 */**.user
+*/**.orig
 .idea/
 Play-by-Play/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache

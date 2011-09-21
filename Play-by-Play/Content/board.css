@@ -1,4 +1,9 @@
-﻿#gameBoardBackgroundLayer 
+﻿#gameboard{
+	height: 100%;
+	display: inline-block;
+}
+
+#gameBoardBackgroundLayer
 {
     height: 100%;
     width: 100%;
