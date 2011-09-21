@@ -286,8 +286,18 @@ window.PlayByPlay = (function ($) {
             activeClass: "gameSquareHoverableA",
             hoverClass: "gameSquareHoverable",
             drop: function (event, ui) {
-                ui.draggable.position({ of: $(this), my: 'center center', at: 'center center' });
+                // Find out offset depending on cards already put in the square
+                var i = 2 + 30 * $(this).children().length;
+                // Resize and move card
+                ui.draggable.css('width', '50%');
                 ui.draggable.appendTo($(this));
+                // Place the card correctly
+                ui.draggable.position({
+                    of: $(this),
+                    my: 'right bottom',
+                    at: 'right bottom',
+                    offset: '-' + i + 'px -2px'
+                });
             }
         });
         $("#gameBoardGoalkeeper").droppable({
@@ -296,7 +306,15 @@ window.PlayByPlay = (function ($) {
             hoverClass: "gameSquareHoverable",
             drop: function (event, ui) {
                 $(this).droppable("destroy");
-                ui.draggable.position({ of: $(this), my: 'center center', at: 'center center' });
+                // Resize and move card
+                ui.draggable.css('width', '100%');
+                ui.draggable.appendTo($(this));
+                // Place the card correctly
+                ui.draggable.position({
+                    of: $(this),
+                    my: 'center center',
+                    at: 'center center'
+                });
             }
         });
 
