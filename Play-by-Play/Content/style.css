@@ -16,7 +16,7 @@ html, body {
 
 #left {
 	float: left;
-	z-index: 1;
+	z-index: 1000;
 }
 
 #left > .panel {
@@ -123,4 +123,8 @@ img.board {
 
 .tacticCard {
 	background-color: #39f;
+}
+
+.centerBlock{
+	margin: 0 auto;
 }
