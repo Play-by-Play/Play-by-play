@@ -54,10 +54,16 @@
     width: 50%;
 }
 
-.gameSquare:hover, .gameSquareGoalkeeper:hover
+.gameSquareHoverableA
+{
+    background-color: rgba(0, 255, 165, 0.4);
+}
+
+.gameSquareHoverable
 {
     background-color: rgba(255, 165, 0, 0.4);
 }
+
 
 .puck 
 {
