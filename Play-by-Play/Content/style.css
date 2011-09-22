@@ -8,15 +8,14 @@ html, body {
 }
 
 .column {
+    width: 33%;
 	height: 100%;
-	overflow: visible;
 	position: relative;
 	display: inline-block;
 }
 
 #left {
 	float: left;
-	z-index: 1000;
 }
 
 #left > .panel {
@@ -114,7 +113,7 @@ html, body {
 }
 
 .panel .line {
-	width: 360px;
+	width: 100%;
 }
 
 img.board {
