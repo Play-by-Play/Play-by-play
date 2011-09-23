@@ -17,12 +17,18 @@
     z-index: 1;
 }
 
+#gameBoardTacticalCanvas
+{
+    position: absolute;
+    z-index: 100;
+}
+
 .gameSquareGoalkeeper
 {
     height: 10.82%;
     width: 22.69%;
     margin-left: 38.655%;
-    background-color: rgba(233, 233, 233, 0.2);
+    background-color: rgba(233, 233, 233, 0.0);
     clear: both;
     margin-top: 0.016%;
     padding-top: 0.016%;
@@ -54,18 +60,27 @@
     width: 50%;
 }
 
-.gameSquareHoverableA
+.gameSquareActive
 {
-    background-color: rgba(0, 255, 165, 0.4);
+    background-color: rgba(0, 255, 165, 0.3);
 }
 
-.gameSquareHoverable
+.gameSquareHover
 {
-    background-color: rgba(255, 165, 0, 0.4);
+    background-color: rgba(255, 165, 0, 0.3);
 }
 
+.gameSquareActiveStrong
+{
+    background-color: rgba(0, 255, 165, 0.5);
+}
 
-.puck 
+.gameSquareHoverStrong
+{
+    background-color: rgba(255, 165, 0, 0.5);
+}
+
+#puck 
 {
     background-color: Black;
     height: 3%;
@@ -73,7 +88,7 @@
     position: absolute;
     left: 47.5%;
     top: 48.5%;
-    z-index: 1000;
+    z-index: 100;
     border-radius: 10000px;
-    visibility: hidden;
+    visibility: visible;
 }

@@ -263,8 +263,48 @@ window.PlayByPlay = (function ($) {
             document.getElementById('gameBoardRD').style.height = boxHeight;
 
             $('#gameboard').css('margin', '0 ' + (containerWidth - boardWidth) / 2 + 'px');
+
+            layout.drawTactic();
+        },
+
+        drawTactic: function () {
+            // seting up canvas
+            var canvas = document.getElementById("gameBoardTacticalCanvas");
+            var context = canvas.getContext("2d");
+
+            // editable values
+            var pointSize = 0.15; // radius of gameSquare height
+            var relationWidth = 0.3;
+
+            // don't edit below
+
+            var gameSquareHeight = $("#gameBoardLD").height();
+            var gameSquareWidth = $("#gameBoardLD").width();
+
+            // draw start point
+
+            // draw pass point
+            //            context.beginPath();
+            //            context.arc(10, 10, gameSquareHeight * pointSize, 0, Math.PI * 2, true);
+            //            context.closePath();
+            //            context.fill();
+
+            // draw movment point
+
+            // draw shot line
+
+            // draw pass line
+
+            // draw movment line
+
         }
     };
+
+    $(window).bind('resize', function () {
+        layout.init();
+        layout.drawGameboard();
+    });
+
 
     // On ready
     $(function () {
@@ -279,12 +319,57 @@ window.PlayByPlay = (function ($) {
         play.addTacticCards();
         $(".draggable").draggable({
             revert: "invalid",
-            stack: ".draggable"
+            stack: ".draggable",
+            start: function (event, ui) {
+                if ($(this).hasClass("positionLW")) {
+                    $(".gameSquareLW").each(function () {
+                        $(this).addClass("gameSquareActiveStrong");
+                    });
+                }
+                else if ($(this).hasClass("positionRW")) {
+                    $(".gameSquareRW").each(function () {
+                        $(this).addClass("gameSquareActiveStrong");
+                    });
+                }
+                else if ($(this).hasClass("positionLD")) {
+                    $(".gameSquareLD").each(function () {
+                        $(this).addClass("gameSquareActiveStrong");
+                    });
+                }
+                else if ($(this).hasClass("positionRD")) {
+                    $(".gameSquareRD").each(function () {
+                        $(this).addClass("gameSquareActiveStrong");
+                    });
+                }
+            },
+            stop: function (event, ui) {
+                //
+                if ($(this).hasClass("positionLW")) {
+                    $(".gameSquareLW").each(function () {
+                        $(this).removeClass("gameSquareActiveStrong");
+                    });
+                }
+                else if ($(this).hasClass("positionRW")) {
+                    $(".gameSquareRW").each(function () {
+                        $(this).removeClass("gameSquareActiveStrong");
+                    });
+                }
+                else if ($(this).hasClass("positionLD")) {
+                    $(".gameSquareLD").each(function () {
+                        $(this).removeClass("gameSquareActiveStrong");
+                    });
+                }
+                else if ($(this).hasClass("positionRD")) {
+                    $(".gameSquareRD").each(function () {
+                        $(this).removeClass("gameSquareActiveStrong");
+                    });
+                }
+            }
         });
         $(".gameSquare").droppable({
             accept: ".skater",
-            activeClass: "gameSquareHoverableA",
-            hoverClass: "gameSquareHoverable",
+            activeClass: "gameSquareActive",
+            hoverClass: "gameSquareHover",
             drop: function (event, ui) {
                 // Find out offset depending on cards already put in the square
                 var i = 2 + 30 * $(this).children().length;
@@ -298,12 +383,44 @@ window.PlayByPlay = (function ($) {
                     at: 'right bottom',
                     offset: '-' + i + 'px -2px'
                 });
+                // Remove strong hover if in place
+                $(this).removeClass("gameSquareHoverStrong");
+            },
+            over: function (event, ui) {
+                // add strong hovering if hovering over special square
+                if ($(ui.draggable).hasClass("positionLW") && $(this).hasClass("gameSquareLW")) {
+                    $(this).addClass("gameSquareHoverStrong");
+                }
+                else if ($(ui.draggable).hasClass("positionRW") && $(this).hasClass("gameSquareRW")) {
+                    $(this).addClass("gameSquareHoverStrong");
+                }
+                else if ($(ui.draggable).hasClass("positionLD") && $(this).hasClass("gameSquareLD")) {
+                    $(this).addClass("gameSquareHoverStrong");
+                }
+                else if ($(ui.draggable).hasClass("positionRD") && $(this).hasClass("gameSquareRD")) {
+                    $(this).addClass("gameSquareHoverStrong");
+                }
+            },
+            out: function (event, ui) {
+                // remove strong hovering if leving a special square
+                if ($(ui.draggable).hasClass("positionLW") && $(this).hasClass("gameSquareLW")) {
+                    $(this).removeClass("gameSquareHoverStrong");
+                }
+                else if ($(ui.draggable).hasClass("positionRW") && $(this).hasClass("gameSquareRW")) {
+                    $(this).removeClass("gameSquareHoverStrong");
+                }
+                else if ($(ui.draggable).hasClass("positionLD") && $(this).hasClass("gameSquareLD")) {
+                    $(this).removeClass("gameSquareHoverStrong");
+                }
+                else if ($(ui.draggable).hasClass("positionRD") && $(this).hasClass("gameSquareRD")) {
+                    $(this).removeClass("gameSquareHoverStrong");
+                }
             }
         });
         $("#gameBoardGoalkeeper").droppable({
             accept: ".goalie",
-            activeClass: "gameSquareHoverableA",
-            hoverClass: "gameSquareHoverable",
+            activeClass: "gameSquareActive",
+            hoverClass: "gameSquareHover",
             drop: function (event, ui) {
                 $(this).droppable("destroy");
                 // Resize and move card
