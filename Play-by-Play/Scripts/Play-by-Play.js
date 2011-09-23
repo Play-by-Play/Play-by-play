@@ -298,6 +298,52 @@ window.PlayByPlay = (function ($) {
                     at: 'right bottom',
                     offset: '-' + i + 'px -2px'
                 });
+                // Potentially add bonus point
+                // Get hold of the card div
+                var card = $(this).children()[$(this).children().length - 1];
+                // Check player position
+                var pos = card.getElementsByClassName("playerPos")[0].firstChild.nodeValue;
+                if (pos == "RW") {
+                    // Check game square
+                    if ($(this).attr("id") == "gameBoardRW" || $(this).attr("id") == "gameBoardRCW") {
+                        // Get offense value
+                        var off = card.getElementsByClassName("attr1")[0];
+                        // Add bonus point
+                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
+                        off.setAttribute("style", "color: #0c0");
+                    }
+                }
+                if (pos == "LW") {
+                    // Check game square
+                    if ($(this).attr("id") == "gameBoardLW" || $(this).attr("id") == "gameBoardLCW") {
+                        // Get offense value
+                        var off = card.getElementsByClassName("attr1")[0];
+                        // Add bonus point
+                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
+                        off.setAttribute("style", "color: #0c0");
+                    }
+                }
+                if (pos == "RD") {
+                    // Check game square
+                    if ($(this).attr("id") == "gameBoardRD" || $(this).attr("id") == "gameBoardRCD") {
+                        // Get offense value
+                        var off = card.getElementsByClassName("attr2")[0];
+                        // Add bonus point
+                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
+                        off.setAttribute("style", "color: #0c0");
+                    }
+                }
+                if (pos == "LD") {
+                    // Check game square
+                    if ($(this).attr("id") == "gameBoardLD" || $(this).attr("id") == "gameBoardLCD") {
+                        // Get offense value
+                        var off = card.getElementsByClassName("attr2")[0];
+                        // Add bonus point
+                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
+                        off.setAttribute("style", "color: #0c0");
+                    }
+                }
+                ui.draggable.draggable("destroy");
             }
         });
         $("#gameBoardGoalkeeper").droppable({
