@@ -284,10 +284,10 @@ window.PlayByPlay = (function ($) {
             // draw start point
 
             // draw pass point
-            //            context.beginPath();
-            //            context.arc(10, 10, gameSquareHeight * pointSize, 0, Math.PI * 2, true);
-            //            context.closePath();
-            //            context.fill();
+            context.beginPath();
+            context.arc(10, 10, gameSquareHeight * pointSize, 0, Math.PI * 2, true);
+            context.closePath();
+            context.fill();
 
             // draw movment point
 
@@ -341,6 +341,11 @@ window.PlayByPlay = (function ($) {
                         $(this).addClass("gameSquareActiveStrong");
                     });
                 }
+                else if ($(this).hasClass("goalie")) {
+                    $("#gameBoardGoalkeeper").each(function () {
+                        $(this).addClass("gameSquareActiveStrong");
+                    });
+                }
             },
             stop: function (event, ui) {
                 //
@@ -361,6 +366,11 @@ window.PlayByPlay = (function ($) {
                 }
                 else if ($(this).hasClass("positionRD")) {
                     $(".gameSquareRD").each(function () {
+                        $(this).removeClass("gameSquareActiveStrong");
+                    });
+                }
+                else if ($(this).hasClass("goalie")) {
+                    $("#gameBoardGoalkeeper").each(function () {
                         $(this).removeClass("gameSquareActiveStrong");
                     });
                 }
@@ -432,6 +442,12 @@ window.PlayByPlay = (function ($) {
                     my: 'center center',
                     at: 'center center'
                 });
+            },
+            over: function (event, ui) {
+                $(this).addClass("gameSquareHoverStrong");
+            },
+            out: function (event, ui) {
+                $(this).removeClass("gameSquareHoverStrong");
             }
         });
 
