@@ -4,19 +4,17 @@ html, body {
 	background-color: #333;
 	margin: 0;
 	color: #fff;
-  font-family: "Century Gothic",Verdana,Arial,sans-serif;
+	font-family: "Century Gothic",Verdana,Arial,sans-serif;
 }
 
 .column {
 	height: 100%;
-	overflow: visible;
 	position: relative;
 	display: inline-block;
 }
 
 #left {
 	float: left;
-	z-index: 1000;
 }
 
 #left > .panel {
