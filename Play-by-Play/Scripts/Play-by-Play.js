@@ -68,9 +68,7 @@ window.PlayByPlay = (function ($) {
             },
             function () {
                 layout.clearTactic();
-                $('.tacticCard').each(function () {
-                    $(this).css({ opacity: 1.0 });
-                });
+                $(this).css({ opacity: 0.5 });
             });
         },
         addDetroitPlayers: function () {
@@ -327,7 +325,7 @@ window.PlayByPlay = (function ($) {
             document.getElementById('gameBoardRD').style.height = boxHeight;
 
             $('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
-            //layout.drawTactic();
+            //layout.drawTactic({ startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
         },
 
         drawTactic: function (tactic) {
@@ -456,6 +454,18 @@ window.PlayByPlay = (function ($) {
         play.addDetroitPlayers();
         play.addRangersPlayers();
         play.addTacticCards();
+        $("#tacticCards").hover(function () {
+            // mouse over
+            $('.tacticCard').each(function () {
+                $(this).css({ opacity: 0.5 });
+            });
+        },
+        function () {
+            // mouse out
+            $('.tacticCard').each(function () {
+                $(this).css({ opacity: 1.0 });
+            });
+        });
         $(".draggable").draggable({
             revert: "invalid",
             stack: ".draggable",
