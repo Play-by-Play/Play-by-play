@@ -17,7 +17,7 @@
 			</li>
 		</script>
 		<script type="text/template" id="playerCardTemplate">
-	    <div class="card{{if (pos == 'G') }} goalie{{else}} skater{{/if}}${draggable}">
+	    <div class="card{{if (pos == 'G') }} goalie{{else}} skater{{/if}}${draggable}{{if (pos == 'LW') }} positionLW{{else (pos == 'RW') }} positionRW{{else (pos == 'LD') }} positionLD{{else (pos == 'RD') }} positionRD{{/if}}">
 				<div class="teamLogo">
 					<img src="/Public/images/logobacks/${team}.png"/>
 
@@ -68,19 +68,21 @@
 		<div id="center" class="column">
 			<div id="gameboard">
 				<canvas id="gameBoardCanvas" width="100%" height="100%"></canvas>
+                <canvas id="gameBoardTacticalCanvas" width="100%" height="100%"></canvas>
 				<div id="gameBoardBackgroundLayer">
 					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper"></div>
-					<div id="gameBoardLW" class="gameSquare gameSquareLeft"></div>
-					<div id="gameBoardRW" class="gameSquare gameSquareRight"></div>
-					<div id="gameBoardLCW" class="gameSquare gameSquareLeft"></div>
-					<div id="gameBoardRCW" class="gameSquare gameSquareRight"></div>
-					<div id="gameBoardLCD" class="gameSquare gameSquareLeft"></div>
-					<div id="gameBoardRCD" class="gameSquare gameSquareRight"></div>
-					<div id="gameBoardLD" class="gameSquare gameSquareLeft"></div>
-					<div id="gameBoardRD" class="gameSquare gameSquareRight"></div>
+					<div id="gameBoardLW" class="gameSquare gameSquareLeft gameSquareLW"></div>
+					<div id="gameBoardRW" class="gameSquare gameSquareRight gameSquareRW"></div>
+					<div id="gameBoardLCW" class="gameSquare gameSquareLeft gameSquareLW"></div>
+					<div id="gameBoardRCW" class="gameSquare gameSquareRight gameSquareRW"></div>
+					<div id="gameBoardLCD" class="gameSquare gameSquareLeft gameSquareLD"></div>
+					<div id="gameBoardRCD" class="gameSquare gameSquareRight gameSquareRD"></div>
+					<div id="gameBoardLD" class="gameSquare gameSquareLeft gameSquareLD"></div>
+					<div id="gameBoardRD" class="gameSquare gameSquareRight gameSquareRD"></div>
 					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper"></div>
-					<div id="puck" class="puck"></div>
+					<div id="puck"></div>
 				</div>
+                
 			</div>
 		</div>
 		<div id="right" class="column">
