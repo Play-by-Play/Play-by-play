@@ -1,3 +1,13 @@
+// variables
+
+// drawing
+//var layout.margin, layout.borderWidth, left, top, height, width, lineWidth;
+var iceColor = "#FFF";
+var borderColor = "#000";
+var redLineColor = "#F00";
+var blueLineColor = "#00F";
+
+
 window.PlayByPlay = (function ($) {
     // jQuery extensions
     $.scrollbarWidth = function () {
@@ -46,9 +56,22 @@ window.PlayByPlay = (function ($) {
             var data = { color: color, team: team, name: name, attr1: attr1, attr2: attr2, pos: pos, draggable: draggable };
             var elem = $('#playerCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#' + formation);
         },
-        addTacticCard: function (name, diff) {
+        addTacticCard: function (name, diff, tactic) {
             var data = { name: name, diff: diff };
-            $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
+            var template = $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
+            template.hover(function () {
+                layout.drawTactic(tactic);
+                $('.tacticCard').each(function () {
+                    $(this).css({ opacity: 0.5 });
+                });
+                $(this).css({ opacity: 1.0 });
+            },
+            function () {
+                layout.clearTactic();
+                $('.tacticCard').each(function () {
+                    $(this).css({ opacity: 1.0 });
+                });
+            });
         },
         addDetroitPlayers: function () {
             play.addPlayerCard("c00", "DET", "Zetterberg", 5, 3, "LW", "line1", " draggable");
@@ -81,11 +104,11 @@ window.PlayByPlay = (function ($) {
             play.addPlayerCard("00c", "NYR", "Biron", 2, 3, "G", "oppGoalies");
         },
         addTacticCards: function () {
-            play.addTacticCard("Give 'n Take", 4);
-            play.addTacticCard("Left On", 4);
-            play.addTacticCard("Longshot", 4);
-            play.addTacticCard("Straight", 4);
-            play.addTacticCard("Nailed", 3);
+            play.addTacticCard("Give 'n Take", 4, { startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
+            play.addTacticCard("Left On", 4, { startNode: [0, 3], nodes: [[0, 3], [0, 0]], movementNode: [], passes: [[[0, 3], [0, 0]]], movingPass: [], shot: [0, 0] });
+            play.addTacticCard("Longshot", 4, { startNode: [0, 3], nodes: [[0, 3]], movementNode: [], passes: [], movingPass: [], shot: [0, 3] });
+            play.addTacticCard("Straight", 4, { startNode: [0, 3], nodes: [[0, 3], [0, 2], [0, 0]], movementNode: [], passes: [[[0, 3], [0, 2]], [[0, 2], [0, 0]]], movingPass: [], shot: [0, 0] });
+            play.addTacticCard("Nailed", 3, { startNode: [0, 2], nodes: [[0, 2]], movementNode: [], passes: [], movingPass: [], shot: [0, 2] });
         }
     };
 
@@ -129,46 +152,35 @@ window.PlayByPlay = (function ($) {
             var canvas = document.getElementById("gameBoardCanvas");
             var context = canvas.getContext("2d");
 
-            // editable values
-            var iceColor = "#FFF";
-            var borderColor = "#000";
-            var redLineColor = "#F00";
-            var blueLineColor = "#00F";
-
-            // don't edit below
-            var boardHeight = document.getElementById('center').offsetHeight;
-            var boardWidth = document.getElementById('center').offsetWidth;
-            var containerWidth = boardWidth;
+            layout.boardHeight = document.getElementById('center').offsetHeight;
+            layout.boardWidth = document.getElementById('center').offsetWidth;
+            var containerWidth = layout.boardWidth;
 
             // correct proportions if neccessary
-            var heightProportions = boardHeight / 8;
-            var widthProportions = boardWidth / 5;
+            var heightProportions = layout.boardHeight / 8;
+            var widthProportions = layout.boardWidth / 5;
 
             if (heightProportions > widthProportions) {
                 // set height depending on width
-                boardHeight = boardHeight * (widthProportions / heightProportions);
+                layout.boardHeight = layout.boardHeight * (widthProportions / heightProportions);
             }
             else if (heightProportions < widthProportions) {
                 // set width depending on height
-                boardWidth = boardWidth * (heightProportions / widthProportions);
+                layout.boardWidth = layout.boardWidth * (heightProportions / widthProportions);
             }
 
-            // set static size (used for testing)
-            //var boardHeight = 80;
-            //var boardWidth = 50;
+            document.getElementById('gameBoardBackgroundLayer').style.height = layout.boardHeight + 'px';
+            document.getElementById('gameBoardBackgroundLayer').style.width = layout.boardWidth + 'px';
 
-            document.getElementById('gameBoardBackgroundLayer').style.height = boardHeight + 'px';
-            document.getElementById('gameBoardBackgroundLayer').style.width = boardWidth + 'px';
+            canvas.height = layout.boardHeight;
+            canvas.width = layout.boardWidth;
 
-            canvas.height = boardHeight;
-            canvas.width = boardWidth;
-
-            var margin = boardHeight / 80;
-            var borderWidth = boardHeight / 80;
-            var left = margin + borderWidth;
-            var top = margin + borderWidth;
-            var height = boardHeight - top * 2;
-            var width = boardWidth - left * 2;
+            layout.margin = layout.boardHeight / 80;
+            layout.borderWidth = layout.boardHeight / 80;
+            var left = layout.margin + layout.borderWidth;
+            var top = layout.margin + layout.borderWidth;
+            var height = layout.boardHeight - top * 2;
+            var width = layout.boardWidth - left * 2;
             var lineWidth = height / 160;
 
 
@@ -181,14 +193,14 @@ window.PlayByPlay = (function ($) {
             context.closePath();
             context.fillStyle = iceColor;
             context.fill();
-            context.lineWidth = borderWidth;
+            context.lineWidth = layout.borderWidth;
             context.strokeStyle = borderColor;
             context.stroke();
 
 
             // draw lines
-            var lineLeft = left + borderWidth / 2;
-            var lineRight = lineLeft + width - borderWidth;
+            var lineLeft = left + layout.borderWidth / 2;
+            var lineRight = lineLeft + width - layout.borderWidth;
             context.beginPath();
             context.strokeStyle = redLineColor;
 
@@ -228,7 +240,7 @@ window.PlayByPlay = (function ($) {
             var boxRight = lineLeft + 'px';
             var boxHeight = height * 0.1875 + 'px';
             var boxWidth = (lineRight - lineLeft) / 2 + 'px';
-            document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + borderWidth + 'px';
+            document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
 
             document.getElementById('gameBoardLW').style.left = boxLeft;
             document.getElementById('gameBoardLW').style.width = boxWidth;
@@ -262,41 +274,116 @@ window.PlayByPlay = (function ($) {
             document.getElementById('gameBoardRD').style.width = boxWidth;
             document.getElementById('gameBoardRD').style.height = boxHeight;
 
-            $('#gameboard').css('margin', '0 ' + (containerWidth - boardWidth) / 2 + 'px');
-
-            layout.drawTactic();
+            $('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
+            //layout.drawTactic();
         },
 
-        drawTactic: function () {
+        drawTactic: function (tactic) {
             // seting up canvas
             var canvas = document.getElementById("gameBoardTacticalCanvas");
             var context = canvas.getContext("2d");
 
+            // clear the canvas before proceding
+            layout.clearTactic();
+
             // editable values
             var pointSize = 0.15; // radius of gameSquare height
             var relationWidth = 0.3;
+            var outerCircle = 1.2;
 
-            // don't edit below
+            // don't edig below
+            canvas.height = layout.boardHeight;
+            canvas.width = layout.boardWidth;
 
             var gameSquareHeight = $("#gameBoardLD").height();
             var gameSquareWidth = $("#gameBoardLD").width();
 
-            // draw start point
+            var left = layout.margin + layout.borderWidth + layout.borderWidth / 2 + gameSquareWidth / 2;
+            var top = layout.margin + layout.borderWidth;
+            var height = layout.boardHeight - top * 2;
+            var width = layout.boardWidth - left * 2;
+            top = top + height / 8 + gameSquareHeight / 2;
+            var lineWidth = height / 160;
 
-            // draw pass point
+            // set opacity for player cards
+            $("#gameBoardBackgroundLayer").css({ opacity: 0.3 });
+
+            // draw pass lines
+            context.lineWidth = layout.borderWidth / 2;
+            for (index in tactic.passes) {
+                context.moveTo(left + gameSquareWidth * tactic.passes[index][0][0], top + gameSquareHeight * tactic.passes[index][0][1]);
+                context.lineTo(left + gameSquareWidth * tactic.passes[index][1][0], top + gameSquareHeight * tactic.passes[index][1][1]);
+                context.stroke();
+            }
+
+            // draw movment lines
             context.beginPath();
-            context.arc(10, 10, gameSquareHeight * pointSize, 0, Math.PI * 2, true);
-            context.closePath();
-            context.fill();
-
-            // draw movment point
+            for (index in tactic.movingPass) {
+                context.dashedLine(left + gameSquareWidth * tactic.movingPass[index][0][0], top + gameSquareHeight * tactic.movingPass[index][0][1], left + gameSquareWidth * tactic.movingPass[index][1][0], top + gameSquareHeight * tactic.movingPass[index][1][1], gameSquareHeight / 10);
+                context.stroke();
+            }
 
             // draw shot line
+            context.beginPath();
+            context.strokeStyle = "#000";
+            context.fillStyle = "#000";
+            context.moveTo(left + gameSquareWidth * tactic.shot[0], top + gameSquareHeight * tactic.shot[1]);
+            context.lineTo(left + gameSquareWidth / 2, top - gameSquareHeight / 2);
+            context.stroke();
 
-            // draw pass line
+            // draw arrow on shot line
+            var fromX = left + gameSquareWidth * tactic.shot[0];
+            var fromY = top + gameSquareHeight * tactic.shot[1];
+            var toX = left + gameSquareWidth / 2;
+            var toY = top - gameSquareHeight / 2;
+            var headlenght = gameSquareHeight / 5;
+            var angle = Math.atan2(toY - fromY, toX - fromX);
+            context.beginPath();
+            context.moveTo(toX - headlenght * Math.cos(angle - Math.PI / 6), toY - headlenght * Math.sin(angle - Math.PI / 6));
+            context.lineTo(toX, toY);
+            context.lineTo(toX - headlenght * Math.cos(angle + Math.PI / 6), toY - headlenght * Math.sin(angle + Math.PI / 6));
+            context.closePath();
+            context.stroke();
+            context.fill();
 
-            // draw movment line
+            // draw startnode
+            context.lineWidth = layout.borderWidth / 4;
+            context.strokeStyle = "#000";
+            context.fillStyle = "#fff";
+            context.beginPath();
+            context.arc(left + gameSquareWidth * tactic.startNode[0], top + gameSquareHeight * tactic.startNode[1], gameSquareHeight * pointSize * outerCircle, 0, Math.PI * 2, true);
+            context.closePath();
+            context.fill();
+            context.stroke();
 
+            // draw pass point
+            context.fillStyle = "#000";
+            for (index in tactic.nodes) {
+                context.beginPath();
+                context.arc(left + gameSquareWidth * tactic.nodes[index][0], top + gameSquareHeight * tactic.nodes[index][1], gameSquareHeight * pointSize, 0, Math.PI * 2, true);
+                context.closePath();
+                context.fill();
+            }
+
+            // draw movment point
+            context.lineWidth = layout.borderWidth / 2;
+            context.fillStyle = "#fff";
+            for (index in tactic.movementNode) {
+                context.beginPath();
+                context.arc(left + gameSquareWidth * tactic.movementNode[index][0], top + gameSquareHeight * tactic.movementNode[index][1], gameSquareHeight * pointSize, 0, Math.PI * 2, true);
+                context.closePath();
+                context.fill();
+                context.stroke();
+            }
+
+        },
+
+        clearTactic: function () {
+            var canvas = document.getElementById("gameBoardTacticalCanvas");
+            // remove drawn tactic
+            canvas.width = canvas.width;
+            // reset opacity to the player cards
+            $("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
         }
     };
 
@@ -348,7 +435,6 @@ window.PlayByPlay = (function ($) {
                 }
             },
             stop: function (event, ui) {
-                //
                 if ($(this).hasClass("positionLW")) {
                     $(".gameSquareLW").each(function () {
                         $(this).removeClass("gameSquareActiveStrong");
@@ -439,7 +525,7 @@ window.PlayByPlay = (function ($) {
                     }
                 }
                 ui.draggable.draggable("destroy");
-                // Remove strong hover if in place
+                // Remove strong hover and active if in place
                 $(this).removeClass("gameSquareHoverStrong");
                 $(".gameSquare").each(function () {
                     $(this).removeClass("gameSquareActiveStrong");
@@ -490,8 +576,31 @@ window.PlayByPlay = (function ($) {
         });
 
         chat.init();
-
     });
 
     return play;
 })(jQuery);
+
+CanvasRenderingContext2D.prototype.dashedLine = function (x1, y1, x2, y2, dashLen) {
+    if (dashLen == undefined) dashLen = 2;
+
+    this.beginPath();
+    this.moveTo(x1, y1);
+
+    var dX = x2 - x1;
+    var dY = y2 - y1;
+    var dashes = Math.floor(Math.sqrt(dX * dX + dY * dY) / dashLen);
+    var dashX = dX / dashes;
+    var dashY = dY / dashes;
+
+    var q = 0;
+    while (q++ < dashes) {
+        x1 += dashX;
+        y1 += dashY;
+        this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x1, y1);
+    }
+    this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x2, y2);
+
+    this.stroke();
+    this.closePath();
+};
