@@ -257,7 +257,7 @@ window.PlayByPlay = (function ($) {
             context.beginPath();
             context.arc(left + width / 2, top + height / 2, width / 10, 0, Math.PI * 2, true);
             context.lineWidth = lineWidth / 2;
-            context.strokeStyle = "#000";
+            context.strokeStyle = "#33f";
             context.fillStyle = "#fff";
             context.fill();
             context.stroke();
@@ -278,10 +278,12 @@ window.PlayByPlay = (function ($) {
             // draw Play-by-Play text
             context.fillStyle = "#000";
             context.rotate(-30 * Math.PI / 180);
-            context.font = height / 45 + "pt Calibri bold";
             context.textAlign = "center";
+            context.font = height / 45 + "pt Calibri bold";
             context.fillText("Play", left - left / 5, top * 4 + height / 2);
+            context.font = height / 55 + "pt Calibri bold";
             context.fillText("-by-", left - left / 5, top * 4 + height / 2 + height / 45);
+            context.font = height / 45 + "pt Calibri bold";
             context.fillText("Play", left - left / 5, top * 4 + height / 2 + height / 22.5);
 
 
@@ -337,9 +339,9 @@ window.PlayByPlay = (function ($) {
             layout.clearTactic();
 
             // editable values
-            var pointSize = 0.15; // radius of gameSquare height
+            var pointSize = 0.14; // radius of gameSquare height
             var relationWidth = 0.3;
-            var outerCircle = 1.2;
+            var outerCircle = 1.4;
 
             // don't edig below
             canvas.height = layout.boardHeight;
@@ -470,54 +472,56 @@ window.PlayByPlay = (function ($) {
             revert: "invalid",
             stack: ".draggable",
             start: function (event, ui) {
-                if ($(this).hasClass("positionLW")) {
+                var pos = $(this).find(".playerPos").text();
+                if (pos == "LW") {
                     $(".gameSquareLW").each(function () {
                         $(this).addClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("positionRW")) {
+                else if (pos == "RW") {
                     $(".gameSquareRW").each(function () {
                         $(this).addClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("positionLD")) {
+                else if (pos == "LD") {
                     $(".gameSquareLD").each(function () {
                         $(this).addClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("positionRD")) {
+                else if (pos == "RD") {
                     $(".gameSquareRD").each(function () {
                         $(this).addClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("goalie")) {
+                else if (pos == "G") {
                     $("#gameBoardGoalkeeper").each(function () {
                         $(this).addClass("gameSquareActiveStrong");
                     });
                 }
             },
             stop: function (event, ui) {
-                if ($(this).hasClass("positionLW")) {
+                var pos = $(this).find(".playerPos").text();
+                if (pos == "LW") {
                     $(".gameSquareLW").each(function () {
                         $(this).removeClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("positionRW")) {
+                else if (pos == "RW") {
                     $(".gameSquareRW").each(function () {
                         $(this).removeClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("positionLD")) {
+                else if (pos == "LD") {
                     $(".gameSquareLD").each(function () {
                         $(this).removeClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("positionRD")) {
+                else if (pos == "RD") {
                     $(".gameSquareRD").each(function () {
                         $(this).removeClass("gameSquareActiveStrong");
                     });
                 }
-                else if ($(this).hasClass("goalie")) {
+                else if (pos == "G") {
                     $("#gameBoardGoalkeeper").each(function () {
                         $(this).removeClass("gameSquareActiveStrong");
                     });
@@ -541,51 +545,6 @@ window.PlayByPlay = (function ($) {
                     at: 'right bottom',
                     offset: '-' + i + 'px -2px'
                 });
-                // Potentially add bonus point
-                // Get hold of the card div
-                var card = $(this).children()[$(this).children().length - 1];
-                // Check player position
-                var pos = card.getElementsByClassName("playerPos")[0].firstChild.nodeValue;
-                if (pos == "RW") {
-                    // Check game square
-                    if ($(this).attr("id") == "gameBoardRW" || $(this).attr("id") == "gameBoardRCW") {
-                        // Get offense value
-                        var off = card.getElementsByClassName("attr1")[0];
-                        // Add bonus point
-                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
-                        off.setAttribute("style", "color: #0c0");
-                    }
-                }
-                if (pos == "LW") {
-                    // Check game square
-                    if ($(this).attr("id") == "gameBoardLW" || $(this).attr("id") == "gameBoardLCW") {
-                        // Get offense value
-                        var off = card.getElementsByClassName("attr1")[0];
-                        // Add bonus point
-                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
-                        off.setAttribute("style", "color: #0c0");
-                    }
-                }
-                if (pos == "RD") {
-                    // Check game square
-                    if ($(this).attr("id") == "gameBoardRD" || $(this).attr("id") == "gameBoardRCD") {
-                        // Get offense value
-                        var off = card.getElementsByClassName("attr2")[0];
-                        // Add bonus point
-                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
-                        off.setAttribute("style", "color: #0c0");
-                    }
-                }
-                if (pos == "LD") {
-                    // Check game square
-                    if ($(this).attr("id") == "gameBoardLD" || $(this).attr("id") == "gameBoardLCD") {
-                        // Get offense value
-                        var off = card.getElementsByClassName("attr2")[0];
-                        // Add bonus point
-                        off.innerHTML = parseInt(off.firstChild.nodeValue) + 1;
-                        off.setAttribute("style", "color: #0c0");
-                    }
-                }
                 ui.draggable.draggable("destroy");
                 // Remove strong hover and active if in place
                 $(this).removeClass("gameSquareHoverStrong");
@@ -594,21 +553,78 @@ window.PlayByPlay = (function ($) {
                 });
             },
             over: function (event, ui) {
+                // Get hold of the card div
+                var card = ui.draggable;
+                // Check player position
+                var pos = card.find(".playerPos").text();
                 // add strong hovering if hovering over special square
-                if ($(ui.draggable).hasClass("positionLW") && $(this).hasClass("gameSquareLW")) {
+                // and potentially add bonus point
+                if (pos == "LW" && $(this).hasClass("gameSquareLW")) {
                     $(this).addClass("gameSquareHoverStrong");
+                    // Get offense value
+                    var off = card.find(".attr1");
+                    // Add bonus point
+                    off.text(parseInt(off.text()) + 1);
+                    off.attr("style", "color: #0c0");
                 }
-                else if ($(ui.draggable).hasClass("positionRW") && $(this).hasClass("gameSquareRW")) {
+                else if (pos == "RW" && $(this).hasClass("gameSquareRW")) {
                     $(this).addClass("gameSquareHoverStrong");
+                    // Get offense value
+                    var off = card.find(".attr1");
+                    // Add bonus point
+                    off.text(parseInt(off.text()) + 1);
+                    off.attr("style", "color: #0c0");
                 }
-                else if ($(ui.draggable).hasClass("positionLD") && $(this).hasClass("gameSquareLD")) {
+                else if (pos == "LD" && $(this).hasClass("gameSquareLD")) {
                     $(this).addClass("gameSquareHoverStrong");
+                    // Get defense value
+                    var def = card.find(".attr2");
+                    // Add bonus point
+                    def.text(parseInt(def.text()) + 1);
+                    def.attr("style", "color: #0c0");
                 }
-                else if ($(ui.draggable).hasClass("positionRD") && $(this).hasClass("gameSquareRD")) {
+                else if (pos == "RD" && $(this).hasClass("gameSquareRD")) {
                     $(this).addClass("gameSquareHoverStrong");
+                    // Get defense value
+                    var def = card.find(".attr2");
+                    // Add bonus point
+                    def.text(parseInt(def.text()) + 1);
+                    def.attr("style", "color: #0c0");
                 }
             },
             out: function (event, ui) {
+                // Get hold of the card div
+                var card = ui.draggable;
+                // Check player position
+                var pos = card.find(".playerPos").text();
+                if (pos == "LW" && $(this).hasClass("gameSquareLW")) {
+                    // Get offense value
+                    var off = card.find(".attr1");
+                    // Add bonus point
+                    off.text(parseInt(off.text()) - 1);
+                    off.attr("style", "color: #fff");
+                }
+                else if (pos == "RW" && $(this).hasClass("gameSquareRW")) {
+                    // Get offense value
+                    var off = card.find(".attr1");
+                    // Add bonus point
+                    off.text(parseInt(off.text()) - 1);
+                    off.attr("style", "color: #fff");
+                }
+                else if (pos == "LD" && $(this).hasClass("gameSquareLD")) {
+                    // Get defense value
+                    var def = card.find(".attr2");
+                    // Add bonus point
+                    def.text(parseInt(def.text()) - 1);
+                    def.attr("style", "color: #fff");
+                }
+                else if (pos == "RD" && $(this).hasClass("gameSquareRD")) {
+                    // Get defense value
+                    var def = card.find(".attr2");
+                    // Add bonus point
+                    def.text(parseInt(def.text()) - 1);
+                    def.attr("style", "color: #fff");
+                }
                 // remove strong hovering if leving a special square
                 $(this).removeClass("gameSquareHoverStrong");
             }
