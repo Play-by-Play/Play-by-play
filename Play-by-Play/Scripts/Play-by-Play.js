@@ -210,18 +210,39 @@ window.PlayByPlay = (function ($) {
             context.lineWidth = lineWidth;
             context.stroke();
 
+            // red line between the goals
+            context.beginPath();
+            context.moveTo(left + width / 2, top + height / 8);
+            context.lineTo(left + width / 2, top + height / 8 * 7);
+            context.lineWidth = lineWidth / 4;
+            context.stroke();
+
+            // draw goal areas
+            context.beginPath();
+            context.moveTo(left + width / 2 + Math.cos(-Math.PI / 4) * height / 15, top + height / 8 * 7 - lineWidth / 4);
+            context.arc(left + width / 2, top + height / 8 * 7 - lineWidth / 4, height / 15, -Math.PI / 4, Math.PI + Math.PI / 4, true);
+            context.lineTo(left + width / 2 + Math.cos(Math.PI + Math.PI / 4) * height / 15, top + height / 8 * 7 - lineWidth / 4);
+            context.closePath();
+            context.fillStyle = "#6cf";
+            context.fill();
+            context.stroke();
+
+            context.beginPath();
+            context.moveTo(left + width / 2 + Math.cos(Math.PI + Math.PI / 4) * height / 15, top + height / 8);
+            context.arc(left + width / 2, top + height / 8 - lineWidth / 4, height / 15, Math.PI - Math.PI / 4, Math.PI / 4, true);
+            context.lineTo(left + width / 2 + Math.cos(-Math.PI / 4) * height / 15, top + height / 8);
+            context.closePath();
+            context.fillStyle = "#6cf";
+            context.fill();
+            context.stroke();
+
             // red goal lines
+            context.beginPath();
             context.moveTo(lineLeft, top + height / 8);
             context.lineTo(lineRight, top + height / 8);
             context.moveTo(lineLeft, top + height / 8 * 7 - lineWidth / 4);
             context.lineTo(lineRight, top + height / 8 * 7 - lineWidth / 4);
             context.lineWidth = lineWidth / 2;
-            context.stroke();
-
-            // red line between the goals
-            context.moveTo(left + width / 2, top + height / 8);
-            context.lineTo(left + width / 2, top + height / 8 * 7);
-            context.lineWidth = lineWidth / 4;
             context.stroke();
 
             // blue lines
@@ -233,6 +254,37 @@ window.PlayByPlay = (function ($) {
             context.lineTo(lineRight, top + height * 0.6875);
             context.lineWidth = lineWidth;
             context.stroke();
+
+            // draw middle circle
+            context.beginPath();
+            context.arc(left + width / 2, top + height / 2, width / 10, 0, Math.PI * 2, true);
+            context.lineWidth = lineWidth / 2;
+            context.strokeStyle = "#000";
+            context.fillStyle = "#fff";
+            context.fill();
+            context.stroke();
+
+            // draw inner arcs
+            context.beginPath();
+            context.arc(left + width / 2, top + height / 2, width / 12, 0, -Math.PI / 2, true);
+            context.lineWidth = lineWidth;
+            context.strokeStyle = "#f00";
+            context.stroke();
+
+            context.beginPath();
+            context.arc(left + width / 2, top + height / 2, width / 12, Math.PI, Math.PI / 2, true);
+            context.lineWidth = lineWidth;
+            context.strokeStyle = "#00f";
+            context.stroke();
+
+            // draw Play-by-Play text
+            context.fillStyle = "#000";
+            context.rotate(-30 * Math.PI / 180);
+            context.font = height / 45 + "pt Calibri bold";
+            context.textAlign = "center";
+            context.fillText("Play", left - left / 5, top * 4 + height / 2);
+            context.fillText("-by-", left - left / 5, top * 4 + height / 2 + height / 45);
+            context.fillText("Play", left - left / 5, top * 4 + height / 2 + height / 22.5);
 
 
             // set up boxes
