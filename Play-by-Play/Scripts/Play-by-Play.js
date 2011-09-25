@@ -357,9 +357,6 @@ window.PlayByPlay = (function ($) {
             top = top + height / 8 + gameSquareHeight / 2;
             var lineWidth = height / 160;
 
-            // set opacity for player cards
-            $("#gameBoardBackgroundLayer").css({ opacity: 0.3 });
-
             // draw pass lines
             context.lineWidth = layout.borderWidth / 2;
             for (index in tactic.passes) {
@@ -434,8 +431,6 @@ window.PlayByPlay = (function ($) {
             var canvas = document.getElementById("gameBoardTacticalCanvas");
             // remove drawn tactic
             canvas.width = canvas.width;
-            // reset opacity to the player cards
-            $("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
         }
     };
 
@@ -460,12 +455,16 @@ window.PlayByPlay = (function ($) {
             // mouse over
             $('.tacticCard').each(function () {
                 $(this).css({ opacity: 0.5 });
+                // reset opacity to the player cards
+                $("#gameBoardBackgroundLayer").css({ opacity: 0.3 });
             });
         },
         function () {
             // mouse out
             $('.tacticCard').each(function () {
                 $(this).css({ opacity: 1.0 });
+                // reset opacity to the player cards
+                $("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
             });
         });
         $(".draggable").draggable({
@@ -625,7 +624,7 @@ window.PlayByPlay = (function ($) {
                     def.text(parseInt(def.text()) - 1);
                     def.attr("style", "color: #fff");
                 }
-                // remove strong hovering if leving a special square
+                // remove strong hovering if leaving a special square
                 $(this).removeClass("gameSquareHoverStrong");
             }
         });
