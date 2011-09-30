@@ -60,6 +60,7 @@ window.PlayByPlay = (function ($) {
             var data = { name: name, diff: diff };
             var template = $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
             template.hover(function () {
+                // mouse over
                 layout.drawTactic(tactic);
                 $('.tacticCard').each(function () {
                     $(this).css({ opacity: 0.5 });
@@ -67,6 +68,7 @@ window.PlayByPlay = (function ($) {
                 $(this).css({ opacity: 1.0 });
             },
             function () {
+                // mouse out
                 layout.clearTactic();
                 $(this).css({ opacity: 0.5 });
             });
@@ -150,8 +152,8 @@ window.PlayByPlay = (function ($) {
             var canvas = document.getElementById("gameBoardCanvas");
             var context = canvas.getContext("2d");
 
-            layout.boardHeight = document.getElementById('center').offsetHeight;
-            layout.boardWidth = document.getElementById('center').offsetWidth;
+            layout.boardHeight = $(window).height();
+            layout.boardWidth = $(window).width() * 0.4;
             var containerWidth = layout.boardWidth;
 
             // correct proportions if neccessary
@@ -169,6 +171,7 @@ window.PlayByPlay = (function ($) {
 
             document.getElementById('gameBoardBackgroundLayer').style.height = layout.boardHeight + 'px';
             document.getElementById('gameBoardBackgroundLayer').style.width = layout.boardWidth + 'px';
+            document.getElementById('center').style.width = layout.boardWidth + 'px';
 
             canvas.height = layout.boardHeight;
             canvas.width = layout.boardWidth;
@@ -291,7 +294,7 @@ window.PlayByPlay = (function ($) {
             var boxLeft = lineLeft + 'px';
             var boxRight = lineLeft + 'px';
             var boxHeight = height * 0.1875 + 'px';
-            var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 6 + 'px';
+            var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 10 + 'px';
             document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
 
             document.getElementById('gameBoardLW').style.left = boxLeft;

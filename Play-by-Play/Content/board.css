@@ -44,6 +44,7 @@
 {
     height: 18%;
     position: relative;
+    overflow: hidden;
 }
 
 .gameSquareLeft
@@ -62,22 +63,22 @@
 
 .gameSquareActive
 {
-    background-color: rgba(255, 165, 0, 0.2);
+    background-color: rgba(0, 102, 255, 0.2);
 }
 
 .gameSquareHover
 {
-    background-color: rgba(255, 165, 0, 0.5);
+    background-color: rgba(0, 102, 255, 0.5);
 }
 
 .gameSquareActiveStrong
 {
-    background-color: rgba(255, 65, 0, 0.2);
+    background-color: rgba(0, 255, 0, 0.2);
 }
 
 .gameSquareHoverStrong
 {
-    background-color: rgba(255, 65, 0, 0.5);
+    background-color: rgba(0, 255, 0, 0.5);
 }
 
 .gameSquareFaceOff
