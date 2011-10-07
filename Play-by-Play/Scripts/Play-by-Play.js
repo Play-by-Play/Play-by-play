@@ -49,13 +49,36 @@ window.PlayByPlay = (function ($) {
             $this.width(parentWidth - decoration);
         });
     };
+    $.fn.getPlayerCard = function () {
+        return $(this);
+    };
+
+    function PlayerCard(info, color, formation, draggable) {
+        this.color = color;
+        this.team = info.team;
+        this.name = info.name;
+        this.attr1 = info.attr1;
+        this.attr2 = info.attr2;
+        this.pos = info.pos;
+        this.formation = formation;
+        this.draggable = draggable;
+        var data = { color: this.color, team: this.team, name: this.name, attr1: this.attr1, attr2: this.attr2, pos: this.pos, draggable: (this.draggable ? " draggable" : "") };
+        var elem = $('#playerCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#' + this.formation);
+        /*elem.getPlayerCard(function () {
+        return playerCard;
+        });*/
+    }
+    PlayerCard.prototype = {
+        getAttr1: function () {
+            return this.attr1;
+        },
+        getAttr2: function () {
+            return this.attr2;
+        }
+    }
 
     // Game
     var play = {
-        addPlayerCard: function (color, team, name, attr1, attr2, pos, formation, draggable) {
-            var data = { color: color, team: team, name: name, attr1: attr1, attr2: attr2, pos: pos, draggable: draggable };
-            var elem = $('#playerCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#' + formation);
-        },
         addTacticCard: function (name, diff, tactic) {
             var data = { name: name, diff: diff };
             var template = $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
@@ -72,34 +95,48 @@ window.PlayByPlay = (function ($) {
             });
         },
         addDetroitPlayers: function () {
-            play.addPlayerCard("c00", "DET", "Zetterberg", 5, 3, "LW", "line1", " draggable");
-            play.addPlayerCard("c00", "DET", "Datsyuk", 4, 4, "C", "line1", " draggable");
-            play.addPlayerCard("c00", "DET", "Holmstrom", 3, 3, "RW", "line1", " draggable");
-            play.addPlayerCard("c00", "DET", "Lidstrom", 3, 4, "LD", "line1", " draggable");
-            play.addPlayerCard("c00", "DET", "Rafalski", 2, 4, "RD", "line1", " draggable");
-            play.addPlayerCard("c00", "DET", "Howard", 3, 5, "G", "goalies", " draggable");
+            var color = "c00";
+            var draggable = true;
 
-            play.addPlayerCard("c00", "DET", "Cleary", 4, 2, "LW", "line2", " draggable");
-            play.addPlayerCard("c00", "DET", "Filppula", 4, 2, "C", "line2", " draggable");
-            play.addPlayerCard("c00", "DET", "Bertuzzi", 4, 3, "RW", "line2", " draggable");
-            play.addPlayerCard("c00", "DET", "Kronwall", 3, 3, "LD", "line2", " draggable");
-            play.addPlayerCard("c00", "DET", "Stuart", 2, 4, "RD", "line2", " draggable");
-            play.addPlayerCard("c00", "DET", "Osgood", 3, 4, "G", "goalies", " draggable");
+            var formation = "line1";
+            new PlayerCard({ team: "DET", name: "Zetterberg", attr1: 5, attr2: 3, pos: "LW" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Datsyuk", attr1: 4, attr2: 4, pos: "C" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Holmstrom", attr1: 3, attr2: 3, pos: "RW" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Lidstrom", attr1: 3, attr2: 4, pos: "LD" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Rafalski", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable);
+
+            var formation = "line2";
+            new PlayerCard({ team: "DET", name: "Cleary", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Filppula", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Bertuzzi", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Kronwall", attr1: 3, attr2: 3, pos: "LD" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Stuart", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable);
+
+            var formation = "goalies";
+            new PlayerCard({ team: "DET", name: "Howard", attr1: 3, attr2: 5, pos: "G" }, color, formation, draggable);
+            new PlayerCard({ team: "DET", name: "Osgood", attr1: 3, attr2: 4, pos: "G" }, color, formation, draggable);
         },
         addRangersPlayers: function () {
-            play.addPlayerCard("00c", "NYR", "Dubinsky", 5, 2, "LW", "oppLine1");
-            play.addPlayerCard("00c", "NYR", "Drury", 5, 3, "C", "oppLine1");
-            play.addPlayerCard("00c", "NYR", "Gaborik", 6, 1, "RW", "oppLine1");
-            play.addPlayerCard("00c", "NYR", "Girardi", 1, 4, "LD", "oppLine1");
-            play.addPlayerCard("00c", "NYR", "Staal", 3, 4, "RD", "oppLine1");
-            play.addPlayerCard("00c", "NYR", "Lundqvist", 4, 4, "G", "oppGoalies");
+            var color = "00c";
+            var draggable = false;
 
-            play.addPlayerCard("00c", "NYR", "Zuccarello", 4, 2, "LW", "oppLine2");
-            play.addPlayerCard("00c", "NYR", "Anisimov", 4, 2, "C", "oppLine2");
-            play.addPlayerCard("00c", "NYR", "Callahan", 4, 3, "RW", "oppLine2");
-            play.addPlayerCard("00c", "NYR", "McCabe", 2, 4, "LD", "oppLine2");
-            play.addPlayerCard("00c", "NYR", "Del Zotto", 2, 3, "RD", "oppLine2");
-            play.addPlayerCard("00c", "NYR", "Biron", 2, 3, "G", "oppGoalies");
+            var formation = "oppLine1";
+            new PlayerCard({ team: "NYR", name: "Dubinsky", attr1: 5, attr2: 2, pos: "LW" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Drury", attr1: 5, attr2: 3, pos: "C" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Gaborik", attr1: 6, attr2: 1, pos: "RW" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Girardi", attr1: 1, attr2: 4, pos: "LD" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Staal", attr1: 3, attr2: 4, pos: "RD" }, color, formation, draggable);
+
+            var formation = "oppLine2";
+            new PlayerCard({ team: "NYR", name: "Zuccarello", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Anisimov", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Callahan", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "McCabe", attr1: 2, attr2: 4, pos: "LD" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Del Zotto", attr1: 2, attr2: 3, pos: "RD" }, color, formation, draggable);
+
+            var formation = "oppGoalies";
+            new PlayerCard({ team: "NYR", name: "Lundqvist", attr1: 4, attr2: 4, pos: "G" }, color, formation, draggable);
+            new PlayerCard({ team: "NYR", name: "Biron", attr1: 2, attr2: 3, pos: "G" }, color, formation, draggable);
         },
         addTacticCards: function () {
             play.addTacticCard("Give 'n Take", 4, { startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
@@ -471,7 +508,9 @@ window.PlayByPlay = (function ($) {
             revert: "invalid",
             stack: ".draggable",
             start: function (event, ui) {
-                var pos = $(this).find(".playerPos").text();
+                var card = ui.draggable.getPlayerCard();
+                var pos = card.getPos();
+                //var pos = $(this).find(".playerPos").text();
                 if (pos == "LW") {
                     $(".gameSquareLW").each(function () {
                         $(this).addClass("gameSquareActiveStrong");
