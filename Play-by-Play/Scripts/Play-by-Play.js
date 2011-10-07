@@ -328,7 +328,7 @@ window.PlayByPlay = (function ($) {
             var boxLeft = lineLeft + 'px';
             var boxRight = lineLeft + 'px';
             var boxHeight = height * 0.1875 + 'px';
-            var boxWidth = (lineRight - lineLeft) / 2 + 'px';
+            var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 6 + 'px';
             document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
 
             document.getElementById('gameBoardLW').style.left = boxLeft;
@@ -362,6 +362,11 @@ window.PlayByPlay = (function ($) {
             document.getElementById('gameBoardRD').style.right = boxRight;
             document.getElementById('gameBoardRD').style.width = boxWidth;
             document.getElementById('gameBoardRD').style.height = boxHeight;
+
+            $(".gameSquareFaceOff").each(function () {
+                $(this).width = boxWidth;
+                $(this).height = boxHeight;
+            });
 
             $('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
             //layout.drawTactic({ startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
