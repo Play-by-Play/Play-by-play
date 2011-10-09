@@ -1,0 +1,41 @@
+#lobby-dialog{
+	display: none;
+}
+
+#lobby{
+}
+
+#lobby-playerName{
+	display: inline-block;
+	margin: 0 auto;
+}
+
+#lobby-team {
+	
+}
+
+#lobby-chat {
+	
+}
+
+#lobby-games {
+	height: 300px;
+	width: 49%;
+	position: relative;
+	
+}
+
+#active-games {
+	border: 1px solid #fff;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 30px;
+}
+
+#new-game {
+	position: absolute;
+	bottom: 0;
+	height: 30px;
+}
