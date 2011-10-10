@@ -636,10 +636,10 @@ window.PlayByPlay = (function ($) {
 				$(this).removeClass("gameSquareHoverStrong");
 			}
 		});
+		
+		PlayByPlay.lobby = new Lobby();
 
-		var lobby = new Lobby();
-
-		lobby.initialize();
+		PlayByPlay.lobby.initialize();
 
 		chat.init();
 	});

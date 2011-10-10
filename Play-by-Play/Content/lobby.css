@@ -1,28 +1,24 @@
-#lobby-dialog{
+#lobby-dialog {
 	display: none;
 }
 
-#lobby{
+#lobby {
 }
 
-#lobby-playerName{
-	display: inline-block;
+#lobby-playerName {
 	margin: 0 auto;
 }
 
 #lobby-team {
-	
 }
 
 #lobby-chat {
-	
 }
 
 #lobby-games {
 	height: 300px;
 	width: 49%;
 	position: relative;
-	
 }
 
 #active-games {
@@ -49,4 +45,25 @@
 
 #new-user {
 	display: none;
+}
+
+.lobby-game {
+	cursor: pointer;
+	margin: 5px;
+	padding: 5px;
+	border-radius: 5px;
+}
+
+.lobby-game:hover {
+	border: 1px solid #666;
+	padding: 4px;
+}
+
+.selected {
+	background-color: #666;
+}
+
+.selected:hover {
+	border: none;
+	padding: 5px;
 }

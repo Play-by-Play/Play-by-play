@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="/Content/lobby.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico" />
 	<script type="text/template" id="lobby-game-tmpl">
-		<div class="lobby-game">
+		<div class="lobby-game" data-game-id="${Id}">
 			${HomeUser.Name}
 		</div>
 	</script>
@@ -136,6 +136,7 @@
 			<input id="playerNameInput" type="text" />
 			<button id="add-user">Create user</button>
 		</div>
+		<div id="username-exist"></div>
 	</div>
 	<div id="lobby-dialog">
 		<div id="lobby">
