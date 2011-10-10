@@ -677,6 +677,32 @@ window.PlayByPlay = (function ($) {
             activeClass: "gameSquareActive",
             hoverClass: "gameSquareHover",
             drop: function (event, ui) {
+                // Remove existing card
+                if ($(this).has(".card")) {
+                    // Get replaced goalie card
+                    var replacedGoalie = $(this).find(".card");
+                    // Move it back to bench
+                    replacedGoalie.appendTo("#goalies");
+                    // Remove styling
+                    replacedGoalie.css('width', '');
+                    replacedGoalie.css('top', '');
+                    replacedGoalie.css('left', '');
+                    // Reconstruct draggable
+                    replacedGoalie.draggable({
+                        revert: "invalid",
+                        stack: ".draggable",
+                        start: function (event, ui) {
+                            $("#gameBoardGoalkeeper").each(function () {
+                                $(this).addClass("gameSquareActiveStrong");
+                            });
+                        },
+                        stop: function (event, ui) {
+                            $("#gameBoardGoalkeeper").each(function () {
+                                $(this).removeClass("gameSquareActiveStrong");
+                            });
+                        }
+                    });
+                }
                 // Resize and move card
                 ui.draggable.css('width', '100%');
                 ui.draggable.appendTo($(this));
