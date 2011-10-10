@@ -29,6 +29,7 @@
 
 	connection.startGame = function (game) {
 		console.log('Starting game');
+		$('#lobby').dialog('close');
 	};
 
 	connection.usernameExists = function () {
