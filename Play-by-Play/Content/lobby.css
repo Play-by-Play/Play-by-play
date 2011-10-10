@@ -37,5 +37,16 @@
 #new-game {
 	position: absolute;
 	bottom: 0;
+	right: 0;
 	height: 30px;
+}
+
+#join-game {
+	position: absolute;
+	bottom: 0;
+	height: 30px;
+}
+
+#new-user {
+	display: none;
 }

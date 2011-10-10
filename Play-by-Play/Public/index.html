@@ -9,6 +9,11 @@
 	<link rel="Stylesheet" href="/Content/board.css" />
 	<link rel="stylesheet" href="/Content/lobby.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico" />
+	<script type="text/template" id="lobby-game-tmpl">
+		<div class="lobby-game">
+			${HomeUser.Name}
+		</div>
+	</script>
 	<script type="text/template" id="chatMessageTemplate">
 			<li>
 				<span class="name">${name}</span>
@@ -139,8 +144,8 @@
 			<div id="lobby-games">
 				<div id="active-games">	
 				</div>
-				<button id="new-game">
-					Create new game</button>
+				<button id="new-game">Create new game</button>
+				<button id="join-game">Join game</button>
 			</div>
 			<div id="lobby-chat">
 			</div>
@@ -152,8 +157,9 @@
 	<script type="text/javascript" src="/Scripts/jQuery.tmpl.min.js"></script>
 	<script type="text/javascript" src="/Scripts/jquery.signalR.min.js"></script>
 	<script type="text/javascript" src="/signalr/hubs"></script>
+	<script type="text/javascript" src="/Scripts/GameConnection.js"></script>
 	<script type="text/javascript" src="/Scripts/Play-by-play.jquery.js"></script>
-	<script type="text/javascript" src="/Scripts/Lobby.js"></script>
 	<script type="text/javascript" src="/Scripts/Play-by-Play.js"></script>
+	<script type="text/javascript" src="/Scripts/Lobby.js"></script>
 </body>
 </html>

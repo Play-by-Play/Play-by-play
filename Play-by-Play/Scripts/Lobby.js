@@ -8,22 +8,19 @@ Lobby.prototype = {
 		    userDialog = $('#new-user'),
 			el = $('#lobby');
 
-		userDialog.dialog({
+		el.dialog({
 			title: 'Lobby',
 			height: height,
 			width: width,
 			modal: true,
 			resizable: false,
 			initialize: 'slide',
-			draggable: false
+			draggable: false,
+			autoOpen: false
 		});
-		$('#add-user').click(function () {
-			var username = $('#playerNameInput').val();
-			if (username) {
-				connection.createUser(username);
-			}
-			userDialog.dialog('close');
-			el.dialog({
+
+		if (!window.user) {
+			userDialog.dialog({
 				title: 'Lobby',
 				height: height,
 				width: width,
@@ -32,10 +29,19 @@ Lobby.prototype = {
 				initialize: 'slide',
 				draggable: false
 			});
-
-		});
-
-
+			$('#add-user').click(function () {
+				var username = $('#playerNameInput').val();
+				if (username) {
+					connection.createUser(username);
+				}
+				userDialog.dialog('close');
+				el.dialog('open');
+				el.dialog('option', 'title', 'Lobby - ' + username);
+			});
+		} else {
+			el.dialog('open');
+			el.dialog('option', 'title', 'Lobby - ' + user.Name);
+		}
 
 		$('#lobby-playerName').height(el.height() * 0.1);
 
@@ -49,7 +55,9 @@ Lobby.prototype = {
 	},
 
 	newGame: function () {
-
+		connection.createGame();
 	}
+
+
 };
 

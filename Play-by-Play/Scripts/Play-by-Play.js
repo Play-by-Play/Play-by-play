@@ -14,7 +14,7 @@ window.PlayByPlay = (function ($) {
 
 
 	// Game
-	window.connection = $.connection.game;
+
 
 	var play = {
 		addPlayerCard: function (color, team, name, attr1, attr2, pos, formation, draggable) {
@@ -137,7 +137,7 @@ window.PlayByPlay = (function ($) {
 			connection.addMessage = function (name, message) {
 				var data = { name: name, message: message };
 				$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
-			}
+			};
 
 			$('#chatSubmit').live('click', function () {
 				connection.send($('#chatInput').val())
@@ -151,7 +151,7 @@ window.PlayByPlay = (function ($) {
 				if (key == 13) {
 					$('#chatSubmit').click();
 				}
-			})
+			});
 
 			$.connection.hub.start();
 		}
@@ -476,70 +476,37 @@ window.PlayByPlay = (function ($) {
 				// reset opacity to the player cards
 				$("#gameBoardBackgroundLayer").css({ opacity: 0.3 });
 			});
-		},
-						function () {
-							// mouse out
-							$('.tacticCard').each(function () {
-								$(this).css({ opacity: 1.0 });
-								// reset opacity to the player cards
-								$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
-							});
-						});
+		}, function () {
+			// mouse out
+			$('.tacticCard').each(function () {
+				$(this).css({ opacity: 1.0 });
+				// reset opacity to the player cards
+				$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
+			});
+		});
 		$(".draggable").draggable({
 			revert: "invalid",
 			stack: ".draggable",
 			start: function (event, ui) {
 				var pos = $(this).find(".playerPos").text();
-				if (pos == "LW") {
-					$(".gameSquareLW").each(function () {
-						$(this).addClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "RW") {
-					$(".gameSquareRW").each(function () {
-						$(this).addClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "LD") {
-					$(".gameSquareLD").each(function () {
-						$(this).addClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "RD") {
-					$(".gameSquareRD").each(function () {
-						$(this).addClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "G") {
+				if (pos == "G") {
 					$("#gameBoardGoalkeeper").each(function () {
+						$(this).addClass("gameSquareActiveStrong");
+					});
+				} else {
+					$(".gameSquare" + pos).each(function () {
 						$(this).addClass("gameSquareActiveStrong");
 					});
 				}
 			},
 			stop: function (event, ui) {
 				var pos = $(this).find(".playerPos").text();
-				if (pos == "LW") {
-					$(".gameSquareLW").each(function () {
-						$(this).removeClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "RW") {
-					$(".gameSquareRW").each(function () {
-						$(this).removeClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "LD") {
-					$(".gameSquareLD").each(function () {
-						$(this).removeClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "RD") {
-					$(".gameSquareRD").each(function () {
-						$(this).removeClass("gameSquareActiveStrong");
-					});
-				}
-				else if (pos == "G") {
+				if (pos == "G") {
 					$("#gameBoardGoalkeeper").each(function () {
+						$(this).removeClass("gameSquareActiveStrong");
+					});
+				} else{
+					$(".gameSquare" + pos).each(function () {
 						$(this).removeClass("gameSquareActiveStrong");
 					});
 				}

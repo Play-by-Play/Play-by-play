@@ -251,6 +251,7 @@
     <Content Include="Public\index.html" />
     <Content Include="Global.asax" />
     <Content Include="README.jQuery.vsdoc.txt" />
+    <Content Include="Scripts\GameConnection.js" />
     <Content Include="Scripts\jquery-1.6.3-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.3.js" />
     <Content Include="Scripts\jquery-1.6.3.min.js" />
@@ -278,6 +279,7 @@
     <Content Include="Scripts\modernizr-1.7.min.js" />
     <Content Include="Scripts\Play-by-play.jquery.js" />
     <Content Include="Scripts\Play-by-Play.js" />
+    <Content Include="Scripts\User.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
