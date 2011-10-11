@@ -7,7 +7,7 @@
 {
     height: 100%;
     width: 100%;
-    position: relative;
+    position: absolute;
     z-index: 2;
 }
 
@@ -78,6 +78,16 @@
 .gameSquareHoverStrong
 {
     background-color: rgba(255, 65, 0, 0.5);
+}
+
+.gameSquareFaceOff
+{
+    position: absolute;
+    background-color: #f00;
+    top: 300px;
+    left: 50px;
+    z-index: 120;
+    visibility: hidden;
 }
 
 #puck 
