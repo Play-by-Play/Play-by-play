@@ -16,8 +16,8 @@ Lobby.prototype = {
 			resizable: false,
 			initialize: 'slide',
 			draggable: false,
-			autoOpen: false,
-			open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			autoOpen: false//,
+			//open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});
 
 		this.userDialog.dialog({
@@ -27,8 +27,8 @@ Lobby.prototype = {
 			modal: true,
 			resizable: false,
 			initialize: 'slide',
-			draggable: false,
-			open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			draggable: false//,
+			//open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});
 		$('#add-user').click(function () {
 			var username = $('#playerNameInput').val();
