@@ -1,8 +1,10 @@
 #lobby-dialog {
 	display: none;
+	min-height: 500px;
 }
 
 #lobby {
+	min-height: 500px;
 }
 
 #lobby-playerName {
