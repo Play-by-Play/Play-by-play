@@ -1,18 +1,22 @@
 ﻿window.connection = (function (parameters) {
 	var connection = $.connection.game;
+	// Server connectivity
 
 	$.connection.hub.start(function () {
 		window.user = connection.getUser();
 		connection.getGames();
 	});
 
+	connection.addChatMessage = function (name, message) {
+		var data = { name: name, message: message };
+		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
+	};
+
 	connection.getUser = function (user) {
 		window.user = user;
-		console.log(user);
 	};
 
 	connection.addUser = function (user) {
-		console.log(user);
 		PlayByPlay.lobby.openLobby();
 	};
 
@@ -28,7 +32,6 @@
 	};
 
 	connection.startGame = function (game) {
-		console.log('Starting game');
 		$('#lobby').dialog('close');
 	};
 

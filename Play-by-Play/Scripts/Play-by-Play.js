@@ -228,37 +228,13 @@ window.PlayByPlay = (function ($) {
 			var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 6 + 'px';
 			document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
 
-			document.getElementById('gameBoardLW').style.left = boxLeft;
-			document.getElementById('gameBoardLW').style.width = boxWidth;
-			document.getElementById('gameBoardLW').style.height = boxHeight;
+			$('.gameSquareLeft').css('left', boxLeft + 'px')
+				.width(boxWidth)
+				.height(boxHeight);
 
-			document.getElementById('gameBoardRW').style.right = boxRight;
-			document.getElementById('gameBoardRW').style.width = boxWidth;
-			document.getElementById('gameBoardRW').style.height = boxHeight;
-
-			document.getElementById('gameBoardLCW').style.left = boxLeft;
-			document.getElementById('gameBoardLCW').style.width = boxWidth;
-			document.getElementById('gameBoardLCW').style.height = boxHeight;
-
-			document.getElementById('gameBoardRCW').style.right = boxRight;
-			document.getElementById('gameBoardRCW').style.width = boxWidth;
-			document.getElementById('gameBoardRCW').style.height = boxHeight;
-
-			document.getElementById('gameBoardLCD').style.left = boxLeft;
-			document.getElementById('gameBoardLCD').style.width = boxWidth;
-			document.getElementById('gameBoardLCD').style.height = boxHeight;
-
-			document.getElementById('gameBoardRCD').style.right = boxRight;
-			document.getElementById('gameBoardRCD').style.width = boxWidth;
-			document.getElementById('gameBoardRCD').style.height = boxHeight;
-
-			document.getElementById('gameBoardLD').style.left = boxLeft;
-			document.getElementById('gameBoardLD').style.width = boxWidth;
-			document.getElementById('gameBoardLD').style.height = boxHeight;
-
-			document.getElementById('gameBoardRD').style.right = boxRight;
-			document.getElementById('gameBoardRD').style.width = boxWidth;
-			document.getElementById('gameBoardRD').style.height = boxHeight;
+			$('.gameSquareLeft').css('right', boxRight + 'px')
+				.width(boxWidth)
+				.height(boxHeight);
 
 			$(".gameSquareFaceOff").each(function () {
 				$(this).width = boxWidth;
@@ -412,7 +388,7 @@ window.PlayByPlay = (function ($) {
 			start: function (event, ui) {
 				var pos = $(this).find(".playerPos").text();
 				if (pos == "G") {
-					$("#gameBoardGoalkeeper").each(function() {
+					$("#gameBoardGoalkeeper").each(function () {
 						$(this).addClass("gameSquareActiveStrong");
 					});
 				} else {
@@ -558,8 +534,6 @@ window.PlayByPlay = (function ($) {
 		PlayByPlay.lobby = new Lobby();
 
 		PlayByPlay.lobby.initialize();
-
-		chat.init();
 	});
 
 
@@ -574,6 +548,12 @@ window.PlayByPlay = (function ($) {
 		var key = (e.keyCode || e.which);
 		if (key == 13) {
 			$('#chatSubmit').click();
+		}
+	});
+	$('#playerNameInput').live('keypress', function (e) {
+		var key = (e.keyCode || e.which);
+		if (key == 13) {
+			$('#add-user').click();
 		}
 	});
 

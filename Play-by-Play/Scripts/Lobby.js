@@ -16,7 +16,8 @@ Lobby.prototype = {
 			resizable: false,
 			initialize: 'slide',
 			draggable: false,
-			autoOpen: false
+			autoOpen: false,
+			open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});
 
 		this.userDialog.dialog({
@@ -26,7 +27,8 @@ Lobby.prototype = {
 			modal: true,
 			resizable: false,
 			initialize: 'slide',
-			draggable: false
+			draggable: false,
+			open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});
 		$('#add-user').click(function () {
 			var username = $('#playerNameInput').val();
@@ -73,6 +75,7 @@ Lobby.prototype = {
 
 	newGame: function () {
 		connection.createGame();
+		$('#lobby').dialog('close');
 	},
 
 	openLobby: function (message) {

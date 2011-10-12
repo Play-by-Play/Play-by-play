@@ -11,6 +11,12 @@ namespace Play_by_Play.Hubs {
 		private static Dictionary<string, GameUser> users = new Dictionary<string, GameUser>(StringComparer.OrdinalIgnoreCase);
 		private static Dictionary<string, Game> games = new Dictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
 
+		public void Send(string message) {
+			var user = users.Values.FirstOrDefault(x => x.ClientId == Context.ClientId);
+			if (user == null) return;
+			Clients.addChatMessage(user.Name, message);
+		}
+
 		public void GetUser() {
 
 			Caller.getUser(users.FirstOrDefault(x => x.Value.ClientId.Equals(Context.ClientId)).Value);
