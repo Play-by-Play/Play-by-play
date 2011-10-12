@@ -42,9 +42,13 @@ html, body {
 	font-family: "Century Gothic", Verdana;
 }
 
-#console, #player, #opponent {
+#console, #playerBench, #oppBench {
 	font-size: 10pt;
 	width: 90%;
+}
+
+#oppLine1, #oppLine2, #line1, #line2 {
+    text-align: center;
 }
 
 #chat {
