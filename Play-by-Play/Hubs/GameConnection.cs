@@ -73,8 +73,10 @@ namespace Play_by_Play.Hubs {
 
 			Caller.gameId = game.Id;
 			Caller.startGame(game);
+			Caller.addActionMessage("Game against " + game.HomeUser.Name + " has started");
 
 			Clients[game.HomeUser.ClientId].startGame(game);
+			Clients[game.HomeUser.ClientId].addActionMessage("Game against " + game.AwayUser.Name + " has started");
 			Clients.removeGame(game.Id);
 		}
 

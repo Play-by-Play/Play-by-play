@@ -12,6 +12,11 @@
 		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
 	};
 
+	connection.addActionMessage = function (message, type) {
+		alert(true);
+		$('#actionTemplate').tmpl({ type: type, message: message }).appendTo('#actions');
+	};
+
 	connection.getUser = function (user) {
 		window.user = user;
 	};
