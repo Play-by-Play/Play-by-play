@@ -85,7 +85,7 @@
     position: absolute;
     background-color: #f00;
     top: 300px;
-    left: 50ps;
+    left: 50px;
     z-index: 120;
     visibility: hidden;
 }
