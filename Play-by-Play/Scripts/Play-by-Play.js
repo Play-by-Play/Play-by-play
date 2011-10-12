@@ -228,11 +228,11 @@ window.PlayByPlay = (function ($) {
 			var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 6 + 'px';
 			document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
 
-			$('.gameSquareLeft').css('left', boxLeft + 'px')
+			$('.gameSquareLeft').css('left', boxLeft)
 				.width(boxWidth)
 				.height(boxHeight);
 
-			$('.gameSquareLeft').css('right', boxRight + 'px')
+			$('.gameSquareRight').css('right', boxRight)
 				.width(boxWidth)
 				.height(boxHeight);
 
@@ -449,7 +449,7 @@ window.PlayByPlay = (function ($) {
 					off.text(parseInt(off.text()) + 1);
 					off.attr("style", "color: #0c0");
 				}
-				else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquareLD")) {
+				else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
 					$(this).addClass("gameSquareHoverStrong");
 					// Get defense value
 					var def = card.find(".attr2");
@@ -463,14 +463,14 @@ window.PlayByPlay = (function ($) {
 				var card = ui.draggable;
 				// Check player position
 				var pos = card.find(".playerPos").text();
-				if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquareLW")) {
+				if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
 					// Get offense value
 					var off = card.find(".attr1");
 					// Add bonus point
 					off.text(parseInt(off.text()) - 1);
 					off.attr("style", "color: #fff");
 				}
-				else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquareLD")) {
+				else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
 					// Get defense value
 					var def = card.find(".attr2");
 					// Add bonus point
