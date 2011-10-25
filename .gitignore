@@ -9,3 +9,4 @@ obj
 *.user
 *.orig
 .idea
+_ReSharper*

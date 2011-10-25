@@ -33,11 +33,7 @@
     margin-top: 0.016%;
     padding-top: 0.016%;
     position: relative;
-}
-
-#gameBoardGoalkeeperOpponent
-{
-    padding-top: 0.016%;
+    overflow: hidden;
 }
 
 .gameSquare
@@ -84,9 +80,10 @@
 .gameSquareFaceOff
 {
     position: absolute;
+    height: 19.82%;
+    width: 22.69%;
     background-color: #f00;
-    top: 300px;
-    left: 50ps;
+    left: 50px;
     z-index: 120;
     visibility: hidden;
 }

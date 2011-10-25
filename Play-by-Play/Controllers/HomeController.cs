@@ -11,7 +11,7 @@ namespace Play_by_Play.Controllers
         public virtual ActionResult Index()
         {
             ViewBag.Message = "Welcome to ASP.NET MVC!";
-
+            
             return View();
         }
 
