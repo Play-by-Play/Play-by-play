@@ -26,19 +26,21 @@
 			</li>
 		</script>
 		<script type="text/template" id="playerCardTemplate">
-			<div class="card{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable}">
-				<div class="teamLogo">
-					<img src="/Public/images/logobacks/${team}.png"/>
-
-					<div class="playerBio">
-						<img src="/Public/images/bios/${name}.png"/>
-					</div>
-				</div>
-				<div class="playerName">${name}</div>
-				<div class="attr1">${attr1}</div>
-				<div class="attr2">${attr2}</div>
-				<div class="playerPos">${pos}</div>
-			</div>
+            <div class="placeholder">
+                ${pos}
+	            <div class="card{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable}" style="background-color: #${color}">
+				    <div class="teamLogo">
+					    <img src="/Public/images/logobacks/${team}.png"/>
+					    <div class="playerBio">
+						    <img src="/Public/images/bios/${name}.png"/>
+					    </div>
+				    </div>
+				    <div class="playerName">${name}</div>
+				    <div class="attr1">${attr1}</div>
+				    <div class="attr2">${attr2}</div>
+				    <div class="playerPos">${pos}</div>
+			    </div>
+            </div>
 		</script>
 		<script type="text/template" id="tacticCardTemplate">
 			<div class="tacticCard">
@@ -52,7 +54,7 @@
 	</head>
 	<body>
 		<div id="left" class="column">
-			<div id="opponent" class="players panel">
+			<div id="oppBench" class="players panel">
 				<ul>
 					<li><a href="#oppLine1">Line 1</a></li>
 					<li><a href="#oppLine2">Line 2</a></li>
@@ -67,7 +69,7 @@
 			</div>
 			<div id="tacticCards" class="panel">
 			</div>
-			<div id="player" class="players panel">
+			<div id="playerBench" class="players panel">
 				<ul>
 					<li><a href="#line1">Line 1</a></li>
 					<li><a href="#line2">Line 2</a></li>
