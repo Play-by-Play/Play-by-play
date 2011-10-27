@@ -33,17 +33,14 @@
     margin-top: 0.016%;
     padding-top: 0.016%;
     position: relative;
-}
-
-#gameBoardGoalkeeperOpponent
-{
-    padding-top: 0.016%;
+    overflow: hidden;
 }
 
 .gameSquare
 {
     height: 18%;
     position: relative;
+    overflow: hidden;
 }
 
 .gameSquareLeft
@@ -62,29 +59,30 @@
 
 .gameSquareActive
 {
-    background-color: rgba(255, 165, 0, 0.2);
+    background-color: rgba(0, 102, 255, 0.2);
 }
 
 .gameSquareHover
 {
-    background-color: rgba(255, 165, 0, 0.5);
+    background-color: rgba(0, 102, 255, 0.5);
 }
 
 .gameSquareActiveStrong
 {
-    background-color: rgba(255, 65, 0, 0.2);
+    background-color: rgba(0, 255, 0, 0.2);
 }
 
 .gameSquareHoverStrong
 {
-    background-color: rgba(255, 65, 0, 0.5);
+    background-color: rgba(0, 255, 0, 0.5);
 }
 
 .gameSquareFaceOff
 {
     position: absolute;
+    height: 19.82%;
+    width: 22.69%;
     background-color: #f00;
-    top: 300px;
     left: 50px;
     z-index: 120;
     visibility: hidden;
