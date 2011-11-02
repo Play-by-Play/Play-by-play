@@ -10,33 +10,33 @@ window.PlayByPlay = (function ($) {
 	var borderColor = "#000";
 	var redLineColor = "#F00";
 	var blueLineColor = "#00F";
-    $.fn.getPlayerCard = function () {
-        return $(this);
-    };
+	$.fn.getPlayerCard = function () {
+		return $(this);
+	};
 
-    function PlayerCard(info, color, formation, draggable) {
-        this.color = color;
-        this.team = info.team;
-        this.name = info.name;
-        this.attr1 = info.attr1;
-        this.attr2 = info.attr2;
-        this.pos = info.pos;
-        this.formation = formation;
-        this.draggable = draggable;
-        var data = { color: this.color, team: this.team, name: this.name, attr1: this.attr1, attr2: this.attr2, pos: this.pos, draggable: (this.draggable ? " draggable" : "") };
-        var elem = $('#playerCardTemplate').tmpl(data).appendTo('#' + this.formation);
-        /*elem.getPlayerCard(function () {
-        return playerCard;
-        });*/
-    }
-    PlayerCard.prototype = {
-        getAttr1: function () {
-            return this.attr1;
-        },
-        getAttr2: function () {
-            return this.attr2;
-        }
-    }
+	function PlayerCard(info, color, formation, draggable) {
+		this.color = color;
+		this.team = info.team;
+		this.name = info.name;
+		this.attr1 = info.attr1;
+		this.attr2 = info.attr2;
+		this.pos = info.pos;
+		this.formation = formation;
+		this.draggable = draggable;
+		var data = { color: this.color, team: this.team, name: this.name, attr1: this.attr1, attr2: this.attr2, pos: this.pos, draggable: (this.draggable ? " draggable" : "") };
+		var elem = $('#playerCardTemplate').tmpl(data).appendTo('#' + this.formation);
+		/*elem.getPlayerCard(function () {
+		return playerCard;
+		});*/
+	}
+	PlayerCard.prototype = {
+		getAttr1: function () {
+			return this.attr1;
+		},
+		getAttr2: function () {
+			return this.attr2;
+		}
+	}
 
 	// Game
 	var play = {
@@ -44,7 +44,7 @@ window.PlayByPlay = (function ($) {
 			var data = { name: name, diff: diff };
 			var template = $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
 			template.hover(function () {
-                // mouse over
+				// mouse over
 				layout.drawTactic(tactic);
 				$('.tacticCard').each(function () {
 					$(this).css({ opacity: 0.5 });
@@ -52,54 +52,54 @@ window.PlayByPlay = (function ($) {
 				$(this).css({ opacity: 1.0 });
 			},
 			function () {
-                // mouse out
+				// mouse out
 				layout.clearTactic();
 				$(this).css({ opacity: 0.5 });
 			});
 		},
 		addDetroitPlayers: function () {
-            var color = "c00";
-            var draggable = true;
+			var color = "c00";
+			var draggable = true;
 
-            var formation = "line1";
-            new PlayerCard({ team: "DET", name: "Zetterberg", attr1: 5, attr2: 3, pos: "LW" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Datsyuk", attr1: 4, attr2: 4, pos: "C" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Holmstrom", attr1: 3, attr2: 3, pos: "RW" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Lidstrom", attr1: 3, attr2: 4, pos: "LD" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Rafalski", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable);
+			var formation = "line1";
+			new PlayerCard({ team: "DET", name: "Zetterberg", attr1: 5, attr2: 3, pos: "LW" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Datsyuk", attr1: 4, attr2: 4, pos: "C" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Holmstrom", attr1: 3, attr2: 3, pos: "RW" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Lidstrom", attr1: 3, attr2: 4, pos: "LD" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Rafalski", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable);
 
-            var formation = "line2";
-            new PlayerCard({ team: "DET", name: "Cleary", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Filppula", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Bertuzzi", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Kronwall", attr1: 3, attr2: 3, pos: "LD" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Stuart", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable);
+			var formation = "line2";
+			new PlayerCard({ team: "DET", name: "Cleary", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Filppula", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Bertuzzi", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Kronwall", attr1: 3, attr2: 3, pos: "LD" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Stuart", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable);
 
-            var formation = "goalies";
-            new PlayerCard({ team: "DET", name: "Howard", attr1: 3, attr2: 5, pos: "G" }, color, formation, draggable);
-            new PlayerCard({ team: "DET", name: "Osgood", attr1: 3, attr2: 4, pos: "G" }, color, formation, draggable);
+			var formation = "goalies";
+			new PlayerCard({ team: "DET", name: "Howard", attr1: 3, attr2: 5, pos: "G" }, color, formation, draggable);
+			new PlayerCard({ team: "DET", name: "Osgood", attr1: 3, attr2: 4, pos: "G" }, color, formation, draggable);
 		},
 		addRangersPlayers: function () {
-            var color = "00c";
-            var draggable = false;
+			var color = "00c";
+			var draggable = false;
 
-            var formation = "oppLine1";
-            new PlayerCard({ team: "NYR", name: "Dubinsky", attr1: 5, attr2: 2, pos: "LW" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Drury", attr1: 5, attr2: 3, pos: "C" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Gaborik", attr1: 6, attr2: 1, pos: "RW" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Girardi", attr1: 1, attr2: 4, pos: "LD" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Staal", attr1: 3, attr2: 4, pos: "RD" }, color, formation, draggable);
+			var formation = "oppLine1";
+			new PlayerCard({ team: "NYR", name: "Dubinsky", attr1: 5, attr2: 2, pos: "LW" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Drury", attr1: 5, attr2: 3, pos: "C" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Gaborik", attr1: 6, attr2: 1, pos: "RW" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Girardi", attr1: 1, attr2: 4, pos: "LD" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Staal", attr1: 3, attr2: 4, pos: "RD" }, color, formation, draggable);
 
-            var formation = "oppLine2";
-            new PlayerCard({ team: "NYR", name: "Zuccarello", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Anisimov", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Callahan", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "McCabe", attr1: 2, attr2: 4, pos: "LD" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Del Zotto", attr1: 2, attr2: 3, pos: "RD" }, color, formation, draggable);
+			var formation = "oppLine2";
+			new PlayerCard({ team: "NYR", name: "Zuccarello", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Anisimov", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Callahan", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "McCabe", attr1: 2, attr2: 4, pos: "LD" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Del Zotto", attr1: 2, attr2: 3, pos: "RD" }, color, formation, draggable);
 
-            var formation = "oppGoalies";
-            new PlayerCard({ team: "NYR", name: "Lundqvist", attr1: 4, attr2: 4, pos: "G" }, color, formation, draggable);
-            new PlayerCard({ team: "NYR", name: "Biron", attr1: 2, attr2: 3, pos: "G" }, color, formation, draggable);
+			var formation = "oppGoalies";
+			new PlayerCard({ team: "NYR", name: "Lundqvist", attr1: 4, attr2: 4, pos: "G" }, color, formation, draggable);
+			new PlayerCard({ team: "NYR", name: "Biron", attr1: 2, attr2: 3, pos: "G" }, color, formation, draggable);
 		},
 		addTacticCards: function () {
 			play.addTacticCard("Give 'n Take", 4, { startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
@@ -123,8 +123,8 @@ window.PlayByPlay = (function ($) {
 			var canvas = document.getElementById("gameBoardCanvas");
 			var context = canvas.getContext("2d");
 
-            layout.boardHeight = $(window).height();
-            layout.boardWidth = $(window).width() * 0.4;
+			layout.boardHeight = $(window).height();
+			layout.boardWidth = $(window).width() * 0.4;
 			var containerWidth = layout.boardWidth;
 
 			// correct proportions if neccessary
@@ -142,23 +142,23 @@ window.PlayByPlay = (function ($) {
 
 			document.getElementById('gameBoardBackgroundLayer').style.height = layout.boardHeight + 'px';
 			document.getElementById('gameBoardBackgroundLayer').style.width = layout.boardWidth + 'px';
-            document.getElementById('center').style.width = layout.boardWidth + 'px';
+			document.getElementById('center').style.width = layout.boardWidth + 'px';
 
 			canvas.height = layout.boardHeight;
 			canvas.width = layout.boardWidth;
 
 			layout.margin = layout.boardHeight / 80;
 			layout.borderWidth = layout.boardHeight / 80;
-            layout.left = layout.margin + layout.borderWidth + layout.borderWidth / 2;
-            layout.top = layout.margin + layout.borderWidth;
+			layout.left = layout.margin + layout.borderWidth + layout.borderWidth / 2;
+			layout.top = layout.margin + layout.borderWidth;
 			var left = layout.margin + layout.borderWidth;
 			var top = layout.margin + layout.borderWidth;
 			var height = layout.boardHeight - top * 2;
 			var width = layout.boardWidth - left * 2;
 			var lineWidth = height / 160;
-            layout.innerTop = layout.top + height / 8;
-            layout.innerHeight = layout.boardHeight - top * 2;
-            layout.innerWidth = layout.boardWidth - left * 2;
+			layout.innerTop = layout.top + height / 8;
+			layout.innerHeight = layout.boardHeight - top * 2;
+			layout.innerWidth = layout.boardWidth - left * 2;
 
 
 			// draw ice rink
@@ -270,7 +270,7 @@ window.PlayByPlay = (function ($) {
 			var boxLeft = lineLeft + 'px';
 			var boxRight = lineLeft + 'px';
 			var boxHeight = height * 0.1875 + 'px';
-            var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 10 + 'px';
+			var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 10 + 'px';
 			document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
 
 			$('.gameSquareLeft').css('left', boxLeft)
@@ -281,16 +281,16 @@ window.PlayByPlay = (function ($) {
 				.width(boxWidth)
 				.height(boxHeight);
 
-            $(".gameSquareFaceOff").css({
-                "height": height * 0.1875 * 0.7 + "px",
-                "width": layout.innerWidth / 2 * 0.7 + "px",
-                "margin-left": left + (layout.innerWidth - (layout.innerWidth / 2 * 0.7)) / 2 + "px",
-                "background-color": "#0ff"
+			$(".gameSquareFaceOff").css({
+				"height": height * 0.1875 * 0.7 + "px",
+				"width": layout.innerWidth / 2 * 0.7 + "px",
+				"margin-left": left + (layout.innerWidth - (layout.innerWidth / 2 * 0.7)) / 2 + "px",
+				"background-color": "#0ff"
 			});
 
-            document.getElementById('gameBoardFaceOffOpponent').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOffOpponent").height()) / 2 + height * 0.1875 + 'px';
+			document.getElementById('gameBoardFaceOffOpponent').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOffOpponent").height()) / 2 + height * 0.1875 + 'px';
 
-            document.getElementById('gameBoardFaceOff').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2 + 'px';
+			document.getElementById('gameBoardFaceOff').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2 + 'px';
 
 			$('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
 			//layout.drawTactic({ startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
@@ -397,90 +397,90 @@ window.PlayByPlay = (function ($) {
 			var canvas = document.getElementById("gameBoardTacticalCanvas");
 			// remove drawn tactic
 			canvas.width = canvas.width;
-        },
+		},
 
-        setCardSizes: function (inWidth) {
-            var baseWidth = 120;
-            var baseHeight = 85;
-            var baseFont = 36;
-            var baseBorder = 2.5;
-            var basePadding = 8;
+		setCardSizes: function (inWidth) {
+			var baseWidth = 120;
+			var baseHeight = 85;
+			var baseFont = 36;
+			var baseBorder = 2.5;
+			var basePadding = 8;
 
-            var totalWidth = $("#playerBench").width();
-            if (inWidth > 0) {
-                totalWidth = inWidth;
-            }
+			var totalWidth = $("#playerBench").width();
+			if (inWidth > 0) {
+				totalWidth = inWidth;
+			}
 
-            var width = totalWidth * baseWidth / 405;
-            var height = baseHeight * width / baseWidth;
-            var margin = (totalWidth - 3 * width) / 4;
+			var width = totalWidth * baseWidth / 405;
+			var height = baseHeight * width / baseWidth;
+			var margin = (totalWidth - 3 * width) / 4;
 
-            var font = baseFont * width / baseWidth;
-            var border = baseBorder * width / baseWidth;
-            var cardPadding = basePadding * width / baseWidth;
+			var font = baseFont * width / baseWidth;
+			var border = baseBorder * width / baseWidth;
+			var cardPadding = basePadding * width / baseWidth;
 
-            $(".placeholder").css({
-                'width': width + 'px',
-                'height': height + 'px',
-                'font-size': font + 'px',
-                'line-height': height + 'px',
-                'margin': (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px',
-                'border': border + 'px solid #666',
-                'border-radius': (10 * width / baseWidth) + 'px'
-            });
-            $(".card").css({
-                'width': (width + 2 * border) + 'px',
-                'height': (height + 2 * border) + 'px',
-                'top': -border + 'px',
-                'left': -border + 'px'
-            });
-            $(".teamLogo").css({
-                'width': (width + 2 * border - 2 * cardPadding) + 'px',
-                'height': (height + 2 * border - 2 * cardPadding) + 'px',
-                'border': border + 'px solid #fff',
-                'border-radius': (6 * width / baseWidth) + 'px',
-                'margin': cardPadding + 'px auto'
-            });
+			$(".placeholder").css({
+				'width': width + 'px',
+				'height': height + 'px',
+				'font-size': font + 'px',
+				'line-height': height + 'px',
+				'margin': (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px',
+				'border': border + 'px solid #666',
+				'border-radius': (10 * width / baseWidth) + 'px'
+			});
+			$(".card").css({
+				'width': (width + 2 * border) + 'px',
+				'height': (height + 2 * border) + 'px',
+				'top': -border + 'px',
+				'left': -border + 'px'
+			});
+			$(".teamLogo").css({
+				'width': (width + 2 * border - 2 * cardPadding) + 'px',
+				'height': (height + 2 * border - 2 * cardPadding) + 'px',
+				'border': border + 'px solid #fff',
+				'border-radius': (6 * width / baseWidth) + 'px',
+				'margin': cardPadding + 'px auto'
+			});
 
-            var baseFont = 14;
+			var baseFont = 14;
 
-            $(".playerName").css({
-                'left': (border) + 'px',
-                'top': (border) + 'px',
-                'font-size': (baseFont * width / baseWidth) + 'px',
-                'line-height': (baseFont * width / baseWidth) + 'px'
-            });
+			$(".playerName").css({
+				'left': (border) + 'px',
+				'top': (border) + 'px',
+				'font-size': (baseFont * width / baseWidth) + 'px',
+				'line-height': (baseFont * width / baseWidth) + 'px'
+			});
 
-            var baseFont = 18;
+			var baseFont = 18;
 
-            $(".attr1").css({
-                'right': (cardPadding + border) + 'px',
-                'bottom': (cardPadding + border + 2 * ((baseFont + 2) * width / baseWidth)) + 'px',
-                'font-size': (baseFont * width / baseWidth) + 'px',
-                'line-height': (baseFont * width / baseWidth) + 'px'
-            });
-            $(".attr2").css({
-                'right': (cardPadding + border) + 'px',
-                'bottom': (cardPadding + border + ((baseFont + 2) * width / baseWidth)) + 'px',
-                'font-size': (baseFont * width / baseWidth) + 'px',
-                'line-height': (baseFont * width / baseWidth) + 'px'
-            });
+			$(".attr1").css({
+				'right': (cardPadding + border) + 'px',
+				'bottom': (cardPadding + border + 2 * ((baseFont + 2) * width / baseWidth)) + 'px',
+				'font-size': (baseFont * width / baseWidth) + 'px',
+				'line-height': (baseFont * width / baseWidth) + 'px'
+			});
+			$(".attr2").css({
+				'right': (cardPadding + border) + 'px',
+				'bottom': (cardPadding + border + ((baseFont + 2) * width / baseWidth)) + 'px',
+				'font-size': (baseFont * width / baseWidth) + 'px',
+				'line-height': (baseFont * width / baseWidth) + 'px'
+			});
 
-            var baseFont = 16;
+			var baseFont = 16;
 
-            $(".playerPos").css({
-                'right': (cardPadding + border) + 'px',
-                'bottom': (cardPadding + border) + 'px',
-                'font-size': (baseFont * width / baseWidth) + 'px',
-                'line-height': (baseFont * width / baseWidth) + 'px'
-            });
+			$(".playerPos").css({
+				'right': (cardPadding + border) + 'px',
+				'bottom': (cardPadding + border) + 'px',
+				'font-size': (baseFont * width / baseWidth) + 'px',
+				'line-height': (baseFont * width / baseWidth) + 'px'
+			});
 		}
 	};
 
 	$(window).bind('resize', function () {
 		layout.init();
 		layout.drawGameboard();
-        layout.setCardSizes();
+		layout.setCardSizes();
 	});
 
 
@@ -489,8 +489,8 @@ window.PlayByPlay = (function ($) {
 		layout.init();
 		layout.drawGameboard();
 		$('#console').tabs();
-        $('#oppBench').tabs();
-        $('#playerBench').tabs();
+		$('#oppBench').tabs();
+		$('#playerBench').tabs();
 
 		play.addDetroitPlayers();
 		play.addRangersPlayers();
@@ -511,36 +511,55 @@ window.PlayByPlay = (function ($) {
 				$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
 			});
 		});
+
+		function draggableStartStop(event, ui) {
+			/*var card = ui.draggable.getPlayerCard();
+			var pos = card.getPos();*/
+			var pos = $(this).find(".playerPos").text();
+			if (pos == "G") {
+				$("#gameBoardGoalkeeper").each(function () {
+					$(this).toggleClass("gameSquareActiveStrong");
+				});
+			} else {
+				$(".gameSquare" + pos).each(function () {
+					$(this).toggleClass("gameSquareActiveStrong");
+				});
+			}
+		}
+
 		$(".draggable").draggable({
 			revert: "invalid",
 			stack: ".draggable",
-			start: function (event, ui) {
-                /*var card = ui.draggable.getPlayerCard();
-                var pos = card.getPos();*/
-				var pos = $(this).find(".playerPos").text();
-				if (pos == "G") {
-					$("#gameBoardGoalkeeper").each(function () {
-						$(this).addClass("gameSquareActiveStrong");
-					});
-				} else {
-					$(".gameSquare" + pos).each(function () {
-						$(this).addClass("gameSquareActiveStrong");
-					});
-				}
-			},
-			stop: function (event, ui) {
-				var pos = $(this).find(".playerPos").text();
-				if (pos == "G") {
-					$("#gameBoardGoalkeeper").each(function () {
-						$(this).removeClass("gameSquareActiveStrong");
-					});
-				} else {
-					$(".gameSquare" + pos).each(function () {
-						$(this).removeClass("gameSquareActiveStrong");
-					});
-				}
-			}
+			start: draggableStartStop,
+			stop: draggableStartStop
 		});
+
+		function droppableOverOut(change, color) {
+			return function(event, ui) {
+				// Get hold of the card div
+				var card = ui.draggable;
+				// Check player position
+				var pos = card.find(".playerPos").text();
+				// add strong hovering if hovering over special square
+				// and potentially add bonus point
+				if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
+					// Get offense value
+					var off = card.find(".attr1");
+					// Add bonus point
+					off.text(parseInt(off.text()) + change);
+					off.css("color", color);
+				}
+				else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
+					// Get defense value
+					var def = card.find(".attr2");
+					// Add bonus point
+					def.text(parseInt(def.text()) + change);
+					def.css("color", color);
+				}
+				$(this).toggleClass("gameSquareHoverStrong");
+			};
+		}
+
 		$(".gameSquare").droppable({
 			accept: ".skater",
 			activeClass: "gameSquareActive",
@@ -549,7 +568,7 @@ window.PlayByPlay = (function ($) {
 				// Find out offset depending on cards already put in the square
 				var i = 2 + 30 * $(this).children().length;
 				// Resize and move card
-                layout.setCardSizes($(this).width());
+				layout.setCardSizes($(this).width());
 				ui.draggable.appendTo($(this));
 				// Place the card correctly
 				ui.draggable.position({
@@ -558,59 +577,15 @@ window.PlayByPlay = (function ($) {
 					at: 'right bottom',
 					offset: '-' + i + 'px -2px'
 				});
-                ui.draggable.draggable({ disable: true });
+				ui.draggable.draggable({ disable: true });
 				// Remove strong hover and active if in place
 				$(this).removeClass("gameSquareHoverStrong");
 				$(".gameSquare").each(function () {
 					$(this).removeClass("gameSquareActiveStrong");
 				});
 			},
-			over: function (event, ui) {
-				// Get hold of the card div
-				var card = ui.draggable;
-				// Check player position
-				var pos = card.find(".playerPos").text();
-				// add strong hovering if hovering over special square
-				// and potentially add bonus point
-				if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
-					$(this).addClass("gameSquareHoverStrong");
-					// Get offense value
-					var off = card.find(".attr1");
-					// Add bonus point
-					off.text(parseInt(off.text()) + 1);
-					off.attr("style", "color: #0c0");
-				}
-				else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
-					$(this).addClass("gameSquareHoverStrong");
-					// Get defense value
-					var def = card.find(".attr2");
-					// Add bonus point
-					def.text(parseInt(def.text()) + 1);
-					def.attr("style", "color: #0c0");
-				}
-			},
-			out: function (event, ui) {
-				// Get hold of the card div
-				var card = ui.draggable;
-				// Check player position
-				var pos = card.find(".playerPos").text();
-				if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
-					// Get offense value
-					var off = card.find(".attr1");
-					// Add bonus point
-					off.text(parseInt(off.text()) - 1);
-					off.attr("style", "color: #fff");
-				}
-				else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
-					// Get defense value
-					var def = card.find(".attr2");
-					// Add bonus point
-					def.text(parseInt(def.text()) - 1);
-					def.attr("style", "color: #fff");
-				}
-				// remove strong hovering if leaving a special square
-				$(this).removeClass("gameSquareHoverStrong");
-			}
+			over: droppableOverOut(1, '#0c0'),
+			out: droppableOverOut(-1, '#fff')
 		});
 		$("#gameBoardGoalkeeper").droppable({
 			accept: ".goalie",
@@ -628,7 +603,7 @@ window.PlayByPlay = (function ($) {
 					replacedGoalie.css('top', '');
 					replacedGoalie.css('left', '');
 					// Reconstruct draggable
-                    replacedGoalie.draggable("enable");
+					replacedGoalie.draggable("enable");
 				}
 				// Resize and move card
 				ui.draggable.css('width', '100%');
@@ -639,7 +614,7 @@ window.PlayByPlay = (function ($) {
 					my: 'center center',
 					at: 'center center'
 				});
-                ui.draggable.draggable({ disable: true });
+				ui.draggable.draggable({ disable: true });
 			},
 			over: function (event, ui) {
 				$(this).addClass("gameSquareHoverStrong");
@@ -648,24 +623,24 @@ window.PlayByPlay = (function ($) {
 				$(this).removeClass("gameSquareHoverStrong");
 			}
 		});
-        layout.setCardSizes();
-        $("#gameBoardFaceOff").droppable({
-            accept: function (draggable) {
-                return draggable.find(".playerPos").text() == "C";
-            },
-            drop: function (event, ui) {
-                // Resize and move card
-                ui.draggable.css('width', '100%');
-                ui.draggable.appendTo($(this));
-                // Place the card correctly
-                ui.draggable.position({
-                    of: $(this),
-                    my: 'center center',
-                    at: 'center center'
-                });
-                ui.draggable.draggable("destroy");
-            }
-        });
+		layout.setCardSizes();
+		$("#gameBoardFaceOff").droppable({
+			accept: function (draggable) {
+				return draggable.find(".playerPos").text() == "C";
+			},
+			drop: function (event, ui) {
+				// Resize and move card
+				ui.draggable.css('width', '100%');
+				ui.draggable.appendTo($(this));
+				// Place the card correctly
+				ui.draggable.position({
+					of: $(this),
+					my: 'center center',
+					at: 'center center'
+				});
+				ui.draggable.draggable("destroy");
+			}
+		});
 
 		PlayByPlay.lobby = new Lobby();
 
