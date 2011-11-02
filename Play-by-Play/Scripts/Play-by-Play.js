@@ -394,9 +394,14 @@ window.PlayByPlay = (function ($) {
 		},
 
 		clearTactic: function () {
-			var canvas = document.getElementById("gameBoardTacticalCanvas");
 			// remove drawn tactic
-			canvas.width = canvas.width;
+
+		    var elem = $("#gameBoardTacticalCanvas");
+		    var canvas = elem.get(0);
+		    var context = canvas.getContext("2d");
+
+		    context.clearRect(0, 0, canvas.width, canvas.height);
+		    context.beginPath();
 		},
 
 		setCardSizes: function (inWidth) {
