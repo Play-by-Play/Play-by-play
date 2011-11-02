@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using SignalR.Hubs;
+using Play_by_Play.Models.StateMachine;
 
 namespace Play_by_Play.Hubs {
 	[HubName("game")]
@@ -101,33 +102,17 @@ namespace Play_by_Play.Hubs {
 				.Select(b => b.ToString("x2")));
 		}
 
-		[Serializable]
-		public class GameUser {
-			public string ClientId { get; set; }
-			public string Id { get; set; }
-			public string Name { get; set; }
-			public string Hash { get; set; }
-
-			public GameUser() {
-
-			}
-
-			public GameUser(string name, string hash) {
-				Name = name;
-				Hash = hash;
-				Id = Guid.NewGuid().ToString("d");
-			}
-		}
+		
 
 		public class Game {
 			public string Id { get; set; }
-			public List<GameEvent> Events { get; set; }
+			public GameStateMachine GameState { get; private set; }
 			public GameUser HomeUser { get; set; }
 			public GameUser AwayUser { get; set; }
 
 			public Game() {
 				Id = Guid.NewGuid().ToString("d");
-				Events = new List<GameEvent>();
+				GameState = new GameStateMachine();
 			}
 		}
 		public class GameEvent {
