@@ -74,6 +74,7 @@ window.PlayByPlay = (function ($) {
             var data = { name: name, diff: diff };
             var template = $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
             template.hover(function () {
+                // mouse over
                 layout.drawTactic(tactic);
                 $('.tacticCard').each(function () {
                     $(this).css({ opacity: 0.5 });
@@ -81,6 +82,7 @@ window.PlayByPlay = (function ($) {
                 $(this).css({ opacity: 1.0 });
             },
 			function () {
+                // mouse out
 			    layout.clearTactic();
 			    $(this).css({ opacity: 0.5 });
 			});
@@ -154,8 +156,8 @@ window.PlayByPlay = (function ($) {
             var canvas = document.getElementById("gameBoardCanvas");
             var context = canvas.getContext("2d");
 
-            layout.boardHeight = document.getElementById('center').offsetHeight;
-            layout.boardWidth = document.getElementById('center').offsetWidth;
+            layout.boardHeight = $(window).height();
+            layout.boardWidth = $(window).width() * 0.4;
             var containerWidth = layout.boardWidth;
 
             // correct proportions if neccessary
@@ -173,17 +175,23 @@ window.PlayByPlay = (function ($) {
 
             document.getElementById('gameBoardBackgroundLayer').style.height = layout.boardHeight + 'px';
             document.getElementById('gameBoardBackgroundLayer').style.width = layout.boardWidth + 'px';
+            document.getElementById('center').style.width = layout.boardWidth + 'px';
 
             canvas.height = layout.boardHeight;
             canvas.width = layout.boardWidth;
 
             layout.margin = layout.boardHeight / 80;
             layout.borderWidth = layout.boardHeight / 80;
+            layout.left = layout.margin + layout.borderWidth + layout.borderWidth / 2;
+            layout.top = layout.margin + layout.borderWidth;
             var left = layout.margin + layout.borderWidth;
             var top = layout.margin + layout.borderWidth;
             var height = layout.boardHeight - top * 2;
             var width = layout.boardWidth - left * 2;
             var lineWidth = height / 160;
+            layout.innerTop = layout.top + height / 8;
+            layout.innerHeight = layout.boardHeight - top * 2;
+            layout.innerWidth = layout.boardWidth - left * 2;
 
 
             // draw ice rink
@@ -295,7 +303,7 @@ window.PlayByPlay = (function ($) {
             var boxLeft = lineLeft + 'px';
             var boxRight = lineLeft + 'px';
             var boxHeight = height * 0.1875 + 'px';
-            var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 6 + 'px';
+            var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 10 + 'px';
             document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
 
             $('.gameSquareLeft').css('left', boxLeft)
@@ -306,10 +314,16 @@ window.PlayByPlay = (function ($) {
 				.width(boxWidth)
 				.height(boxHeight);
 
-            $(".gameSquareFaceOff").each(function () {
-                $(this).width = boxWidth;
-                $(this).height = boxHeight;
+            $(".gameSquareFaceOff").css({
+                "height": height * 0.1875 * 0.7 + "px",
+                "width": layout.innerWidth / 2 * 0.7 + "px",
+                "margin-left": left + (layout.innerWidth - (layout.innerWidth / 2 * 0.7)) / 2 + "px",
+                "background-color": "#0ff"
             });
+
+            document.getElementById('gameBoardFaceOffOpponent').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOffOpponent").height()) / 2 + height * 0.1875 + 'px';
+
+            document.getElementById('gameBoardFaceOff').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2 + 'px';
 
             $('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
             //layout.drawTactic({ startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
@@ -677,6 +691,23 @@ window.PlayByPlay = (function ($) {
             }
         });
         layout.setCardSizes();
+        $("#gameBoardFaceOff").droppable({
+            accept: function (draggable) {
+                return draggable.find(".playerPos").text() == "C";
+            },
+            drop: function (event, ui) {
+                // Resize and move card
+                ui.draggable.css('width', '100%');
+                ui.draggable.appendTo($(this));
+                // Place the card correctly
+                ui.draggable.position({
+                    of: $(this),
+                    my: 'center center',
+                    at: 'center center'
+                });
+                ui.draggable.draggable("destroy");
+            }
+        });
 
         PlayByPlay.lobby = new Lobby();
 
@@ -708,6 +739,7 @@ window.PlayByPlay = (function ($) {
 })(jQuery);
 
 CanvasRenderingContext2D.prototype.dashedLine = function (x1, y1, x2, y2, dashLen) {
+    // code that extends the canvas drawing with a dashed line functionality
 	if (dashLen == undefined) dashLen = 2;
 
 	this.beginPath();

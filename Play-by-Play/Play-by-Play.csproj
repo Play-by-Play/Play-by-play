@@ -278,8 +278,9 @@
     <Content Include="Scripts\modernizr-1.7.min.js" />
     <Content Include="Scripts\Play-by-play.jquery.js" />
     <Content Include="Scripts\Play-by-Play.js" />
-    <Content Include="Scripts\User.js" />
-    <Content Include="Web.config" />
+    <Content Include="Scripts\User.js">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -310,6 +311,7 @@
       <LastGenOutput>T4MVC.cs</LastGenOutput>
     </None>
     <None Include="T4MVC.tt.settings.t4" />
+    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
