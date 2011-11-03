@@ -3,14 +3,6 @@
 	display: inline-block;
 }
 
-#gameBoardBackgroundLayer
-{
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    z-index: 2;
-}
-
 #gameBoardCanvas
 {
     position: absolute;
@@ -21,6 +13,14 @@
 {
     position: absolute;
     z-index: 100;
+}
+
+#gameBoardBackgroundLayer
+{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 2;
 }
 
 .gameSquareGoalkeeper
@@ -79,14 +79,23 @@
 
 .gameSquareFaceOff
 {
-    position: absolute;
-    height: 19.82%;
-    width: 22.69%;
-    background-color: #f00;
-    left: 50px;
-    z-index: 120;
-    visibility: hidden;
+    position: absolute !important;
+    height: 10.82% !important;
+    width: 22.69% !important;
+    margin-left: 38.655% !important;
+    background-color: #333;
 }
+
+#gameBoardFaceOffOpponent
+{
+  top: 35%;  
+}
+
+#gameBoardFaceOff
+{
+  top: 52%;  
+}
+
 
 #puck 
 {
