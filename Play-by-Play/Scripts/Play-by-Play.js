@@ -40,11 +40,10 @@ window.PlayByPlay = (function ($) {
         this.pos = info.pos;
         this.formation = formation;
         this.draggable = draggable;
+        // assemble data
         var data = { color: this.color, team: this.team, name: this.name, attr1: this.attr1, attr2: this.attr2, pos: this.pos, draggable: (this.draggable ? " draggable" : "") };
-        var elem = $('#playerCardTemplate').tmpl(data).appendTo('#' + this.formation);
-        /*elem.getPlayerCard(function () {
-        return playerCard;
-        });*/
+        // construct card
+        $('#playerCardTemplate').tmpl(data).appendTo('#' + this.formation);
     }
     PlayerCard.prototype = {
         getAttr1: function () {
@@ -82,13 +81,27 @@ window.PlayByPlay = (function ($) {
                 $(this).css({ opacity: 1.0 });
             },
 			function () {
-                // mouse out
+			    // mouse out
 			    layout.clearTactic();
 			    $(this).css({ opacity: 0.5 });
 			});
         },
         placeOpponentPlayerCard: function (card, square) {
-
+            // Find card
+            var cardDiv = $("#" + card.getLine()).find("." + card.getPos());
+            // Find out offset depending on cards already put in the square
+            var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
+            // Resize and move card
+            cardDiv.addClass("onBoard");
+            layout.setCardSizes();
+            cardDiv.appendTo($("#" + square));
+            // Place the card correctly
+            cardDiv.position({
+                of: $("#" + square),
+                my: 'left top',
+                at: 'left top',
+                offset: i + 'px 2px'
+            });
         },
         showBattleView: function (title, square) {
 
@@ -432,7 +445,7 @@ window.PlayByPlay = (function ($) {
             canvas.width = canvas.width;
         },
 
-        setCardSizes: function (inWidth) {
+        setCardSizes: function () {
             var baseWidth = 120;
             var baseHeight = 85;
             var baseFont = 36;
@@ -440,9 +453,6 @@ window.PlayByPlay = (function ($) {
             var basePadding = 8;
 
             var totalWidth = $("#playerBench").width();
-            if (inWidth > 0) {
-                totalWidth = inWidth;
-            }
 
             var width = totalWidth * baseWidth / 405;
             var height = baseHeight * width / baseWidth;
@@ -509,12 +519,65 @@ window.PlayByPlay = (function ($) {
             });
 
             // For cards on the game board... ----------------------------------------------------
-            $(".teamLogo").css({
+            var baseWidth = 100;
+            var baseHeight = 70;
+            var baseFont = 15;
+            var baseBorder = 2;
+            var basePadding = 6;
+
+            var totalWidth = $("#gameBoardLW").width();
+
+            var width = totalWidth * baseWidth / 220;
+            var height = baseHeight * width / baseWidth;
+            var margin = (totalWidth - 3 * width) / 4;
+
+            var font = baseFont * width / baseWidth;
+            var border = baseBorder * width / baseWidth;
+            var cardPadding = basePadding * width / baseWidth;
+
+            $(".onBoard").css({
+                'width': (width + 2 * border) + 'px',
+                'height': (height + 2 * border) + 'px'
+            });
+            $(".onBoard .teamLogo").css({
                 'width': (width + 2 * border - 2 * cardPadding) + 'px',
                 'height': (height + 2 * border - 2 * cardPadding) + 'px',
                 'border': border + 'px solid #fff',
                 'border-radius': (6 * width / baseWidth) + 'px',
                 'margin': cardPadding + 'px auto'
+            });
+
+            var baseFont = 14;
+
+            $(".onBoard .playerName").css({
+                'left': (border) + 'px',
+                'top': (border) + 'px',
+                'font-size': (baseFont * width / baseWidth) + 'px',
+                'line-height': (baseFont * width / baseWidth) + 'px'
+            });
+
+            var baseFont = 18;
+
+            $(".onBoard .attr1").css({
+                'right': (cardPadding + border) + 'px',
+                'bottom': (cardPadding + border + 2 * ((baseFont + 2) * width / baseWidth)) + 'px',
+                'font-size': (baseFont * width / baseWidth) + 'px',
+                'line-height': (baseFont * width / baseWidth) + 'px'
+            });
+            $(".onBoard .attr2").css({
+                'right': (cardPadding + border) + 'px',
+                'bottom': (cardPadding + border + ((baseFont + 2) * width / baseWidth)) + 'px',
+                'font-size': (baseFont * width / baseWidth) + 'px',
+                'line-height': (baseFont * width / baseWidth) + 'px'
+            });
+
+            var baseFont = 16;
+
+            $(".onBoard .playerPos").css({
+                'right': (cardPadding + border) + 'px',
+                'bottom': (cardPadding + border) + 'px',
+                'font-size': (baseFont * width / baseWidth) + 'px',
+                'line-height': (baseFont * width / baseWidth) + 'px'
             });
         }
     };
@@ -557,8 +620,6 @@ window.PlayByPlay = (function ($) {
             revert: "invalid",
             stack: ".draggable",
             start: function (event, ui) {
-                /*var card = ui.draggable.getPlayerCard();
-                var pos = card.getPos();*/
                 var pos = $(this).find(".playerPos").text();
                 if (pos == "G") {
                     $("#gameBoardGoalkeeper").each(function () {
@@ -589,9 +650,10 @@ window.PlayByPlay = (function ($) {
             hoverClass: "gameSquareHover",
             drop: function (event, ui) {
                 // Find out offset depending on cards already put in the square
-                var i = 2 + 30 * $(this).children().length;
+                var i = 2 + ui.draggable.width() * 0.2 * $(this).children().length;
                 // Resize and move card
-                $(this).addClass("onBoard");
+                ui.draggable.addClass("onBoard");
+                layout.setCardSizes();
                 ui.draggable.appendTo($(this));
                 // Place the card correctly
                 ui.draggable.position({
@@ -669,6 +731,12 @@ window.PlayByPlay = (function ($) {
                     replacedGoalie.css('width', '');
                     replacedGoalie.css('top', '');
                     replacedGoalie.css('left', '');
+                    // Place on top of placeholder
+                    replacedGoalie.position({
+                        of: $("#goalies").find(".placeholder")[1],
+                        my: 'left top',
+                        at: 'left top'
+                    });
                     // Reconstruct draggable
                     replacedGoalie.draggable("enable");
                 }
