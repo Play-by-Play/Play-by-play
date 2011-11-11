@@ -10,9 +10,6 @@ window.PlayByPlay = (function ($) {
     var borderColor = "#000";
     var redLineColor = "#F00";
     var blueLineColor = "#00F";
-    $.fn.getPlayerCard = function () {
-        return $(this);
-    };
 
     var players = {
         home: {
@@ -652,16 +649,17 @@ window.PlayByPlay = (function ($) {
                 // Find out offset depending on cards already put in the square
                 var i = 2 + ui.draggable.width() * 0.2 * $(this).children().length;
                 // Resize and move card
+                //ui.draggable.effect("scale", { percent: 80, scale: 'content' }, 1000);
                 ui.draggable.addClass("onBoard");
                 layout.setCardSizes();
                 ui.draggable.appendTo($(this));
                 // Place the card correctly
-                ui.draggable.position({
+                /*ui.draggable.position({
                     of: $(this),
                     my: 'right bottom',
                     at: 'right bottom',
                     offset: '-' + i + 'px -2px'
-                });
+                });*/
                 ui.draggable.draggable({ disable: true });
                 // Remove strong hover and active if in place
                 $(this).removeClass("gameSquareHoverStrong");
