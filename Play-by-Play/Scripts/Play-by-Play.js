@@ -324,16 +324,14 @@ window.PlayByPlay = (function ($) {
 				.width(boxWidth)
 				.height(boxHeight);
 
-            $(".gameSquareFaceOff").css({
-                "height": height * 0.1875 * 0.7 + "px",
-                "width": layout.innerWidth / 2 * 0.7 + "px",
-                "margin-left": left + (layout.innerWidth - (layout.innerWidth / 2 * 0.7)) / 2 + "px",
-                "background-color": "#0ff"
+//            $("#gameBoardFaceOffOpponent").css("top", 40 + 'px');
+//            $("#gameBoardFaceOff").css("top", layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2));
             });
 
-            document.getElementById('gameBoardFaceOffOpponent').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOffOpponent").height()) / 2 + height * 0.1875 + 'px';
 
-            document.getElementById('gameBoardFaceOff').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2 + 'px';
+            //			document.getElementById('gameBoardFaceOffOpponent').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOffOpponent").height()) / 2 + height * 0.1875 + 'px';
+
+            //			document.getElementById('gameBoardFaceOff').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2 + 'px';
 
             $('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
             //layout.drawTactic({ startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
@@ -440,6 +438,12 @@ window.PlayByPlay = (function ($) {
             var canvas = document.getElementById("gameBoardTacticalCanvas");
             // remove drawn tactic
             canvas.width = canvas.width;
+            var elem = $("#gameBoardTacticalCanvas");
+            var canvas = elem.get(0);
+            var context = canvas.getContext("2d");
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.beginPath();
         },
 
         setCardSizes: function () {
@@ -613,34 +617,55 @@ window.PlayByPlay = (function ($) {
 		        $("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
 		    });
 		});
+
+        function draggableStartStop(event, ui) {
+            /*var card = ui.draggable.getPlayerCard();
+            var pos = card.getPos();*/
+            var pos = $(this).find(".playerPos").text();
+            if (pos == "G") {
+                $("#gameBoardGoalkeeper").each(function () {
+                    $(this).toggleClass("gameSquareActiveStrong");
+                });
+            } else {
+                $(".gameSquare" + pos).each(function () {
+                    $(this).toggleClass("gameSquareActiveStrong");
+                });
+            }
+        }
+
         $(".draggable").draggable({
             revert: "invalid",
             stack: ".draggable",
-            start: function (event, ui) {
-                var pos = $(this).find(".playerPos").text();
-                if (pos == "G") {
-                    $("#gameBoardGoalkeeper").each(function () {
-                        $(this).addClass("gameSquareActiveStrong");
-                    });
-                } else {
-                    $(".gameSquare" + pos).each(function () {
-                        $(this).addClass("gameSquareActiveStrong");
-                    });
-                }
-            },
-            stop: function (event, ui) {
-                var pos = $(this).find(".playerPos").text();
-                if (pos == "G") {
-                    $("#gameBoardGoalkeeper").each(function () {
-                        $(this).removeClass("gameSquareActiveStrong");
-                    });
-                } else {
-                    $(".gameSquare" + pos).each(function () {
-                        $(this).removeClass("gameSquareActiveStrong");
-                    });
-                }
-            }
+            start: draggableStartStop,
+            stop: draggableStartStop
         });
+
+        function droppableOverOut(change, color) {
+            return function (event, ui) {
+                // Get hold of the card div
+                var card = ui.draggable;
+                // Check player position
+                var pos = card.find(".playerPos").text();
+                // add strong hovering if hovering over special square
+                // and potentially add bonus point
+                if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
+                    // Get offense value
+                    var off = card.find(".attr1");
+                    // Add bonus point
+                    off.text(parseInt(off.text()) + change);
+                    off.css("color", color);
+                }
+                else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
+                    // Get defense value
+                    var def = card.find(".attr2");
+                    // Add bonus point
+                    def.text(parseInt(def.text()) + change);
+                    def.css("color", color);
+                }
+                $(this).toggleClass("gameSquareHoverStrong");
+            };
+        }
+
         $(".gameSquare").droppable({
             accept: ".skater",
             activeClass: "gameSquareActive",
@@ -667,52 +692,8 @@ window.PlayByPlay = (function ($) {
                     $(this).removeClass("gameSquareActiveStrong");
                 });
             },
-            over: function (event, ui) {
-                // Get hold of the card div
-                var card = ui.draggable;
-                // Check player position
-                var pos = card.find(".playerPos").text();
-                // add strong hovering if hovering over special square
-                // and potentially add bonus point
-                if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
-                    $(this).addClass("gameSquareHoverStrong");
-                    // Get offense value
-                    var off = card.find(".attr1");
-                    // Add bonus point
-                    off.text(parseInt(off.text()) + 1);
-                    off.attr("style", "color: #0c0");
-                }
-                else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
-                    $(this).addClass("gameSquareHoverStrong");
-                    // Get defense value
-                    var def = card.find(".attr2");
-                    // Add bonus point
-                    def.text(parseInt(def.text()) + 1);
-                    def.attr("style", "color: #0c0");
-                }
-            },
-            out: function (event, ui) {
-                // Get hold of the card div
-                var card = ui.draggable;
-                // Check player position
-                var pos = card.find(".playerPos").text();
-                if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
-                    // Get offense value
-                    var off = card.find(".attr1");
-                    // Add bonus point
-                    off.text(parseInt(off.text()) - 1);
-                    off.attr("style", "color: #fff");
-                }
-                else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
-                    // Get defense value
-                    var def = card.find(".attr2");
-                    // Add bonus point
-                    def.text(parseInt(def.text()) - 1);
-                    def.attr("style", "color: #fff");
-                }
-                // remove strong hovering if leaving a special square
-                $(this).removeClass("gameSquareHoverStrong");
-            }
+            over: droppableOverOut(1, '#0c0'),
+            out: droppableOverOut(-1, '#fff')
         });
         $("#gameBoardGoalkeeper").droppable({
             accept: ".goalie",
