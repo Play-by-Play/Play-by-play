@@ -104,7 +104,29 @@ window.PlayByPlay = (function ($) {
 
         },
         restorePlayers: function () {
-
+            var sum = 0;
+            $(".card").each(function () {
+                var pos = $(this).find(".pos").text();
+                if (!$(this).parent().hasClass("placeholder") && pos != "G") {
+                    var cardDiv = $(this);
+                    // get hold of the 1st line div according to players position
+                    $("#line1").find(".placeholder").each(function () {
+                        if ($(this).text() == pos) {
+                            if ($(this).has(".card")) {
+                                $("#line2").find(".placeholder").each(function () {
+                                    if ($(this).text() == pos) {
+                                        cardDiv.appendTo($(this));
+                                    }
+                                });
+                            } else {
+                                cardDiv.appendTo($(this));
+                            }
+                        }
+                    });
+                    sum++;
+                }
+            });
+            //alert(sum + " cards are out");
         },
         addDetroitPlayers: function () {
             var color = "c00";
@@ -324,13 +346,9 @@ window.PlayByPlay = (function ($) {
 				.width(boxWidth)
 				.height(boxHeight);
 
-//            $("#gameBoardFaceOffOpponent").css("top", 40 + 'px');
-//            $("#gameBoardFaceOff").css("top", layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2));
-            });
-
-
+            //          $("#gameBoardFaceOffOpponent").css("top", 40 + 'px');
+            //          $("#gameBoardFaceOff").css("top", layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2));
             //			document.getElementById('gameBoardFaceOffOpponent').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOffOpponent").height()) / 2 + height * 0.1875 + 'px';
-
             //			document.getElementById('gameBoardFaceOff').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2 + 'px';
 
             $('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
@@ -520,21 +538,21 @@ window.PlayByPlay = (function ($) {
             });
 
             // For cards on the game board... ----------------------------------------------------
-            var baseWidth = 100;
-            var baseHeight = 70;
-            var baseFont = 15;
-            var baseBorder = 2;
-            var basePadding = 6;
+            baseWidth = 100;
+            baseHeight = 70;
+            baseFont = 15;
+            baseBorder = 2;
+            basePadding = 6;
 
-            var totalWidth = $("#gameBoardLW").width();
+            totalWidth = $("#gameBoardLW").width();
 
-            var width = totalWidth * baseWidth / 220;
-            var height = baseHeight * width / baseWidth;
-            var margin = (totalWidth - 3 * width) / 4;
+            width = totalWidth * baseWidth / 220;
+            height = baseHeight * width / baseWidth;
+            margin = (totalWidth - 3 * width) / 4;
 
-            var font = baseFont * width / baseWidth;
-            var border = baseBorder * width / baseWidth;
-            var cardPadding = basePadding * width / baseWidth;
+            font = baseFont * width / baseWidth;
+            border = baseBorder * width / baseWidth;
+            cardPadding = basePadding * width / baseWidth;
 
             $(".onBoard").css({
                 'width': (width + 2 * border) + 'px',
@@ -646,7 +664,7 @@ window.PlayByPlay = (function ($) {
                 var card = ui.draggable;
                 // Check player position
                 var pos = card.find(".playerPos").text();
-                // add strong hovering if hovering over special square
+                // Add strong hovering if hovering over special square
                 // and potentially add bonus point
                 if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
                     // Get offense value
@@ -654,6 +672,7 @@ window.PlayByPlay = (function ($) {
                     // Add bonus point
                     off.text(parseInt(off.text()) + change);
                     off.css("color", color);
+                    $(this).toggleClass("gameSquareHoverStrong");
                 }
                 else if ((pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
                     // Get defense value
@@ -661,8 +680,8 @@ window.PlayByPlay = (function ($) {
                     // Add bonus point
                     def.text(parseInt(def.text()) + change);
                     def.css("color", color);
+                    $(this).toggleClass("gameSquareHoverStrong");
                 }
-                $(this).toggleClass("gameSquareHoverStrong");
             };
         }
 
@@ -671,26 +690,28 @@ window.PlayByPlay = (function ($) {
             activeClass: "gameSquareActive",
             hoverClass: "gameSquareHover",
             drop: function (event, ui) {
-                // Find out offset depending on cards already put in the square
-                var i = 2 + ui.draggable.width() * 0.2 * $(this).children().length;
+                // Check how many cards that are already in the square
+                var children = $(this).children().length;
                 // Resize and move card
                 //ui.draggable.effect("scale", { percent: 80, scale: 'content' }, 1000);
                 ui.draggable.addClass("onBoard");
                 layout.setCardSizes();
                 ui.draggable.appendTo($(this));
+                // Find out offset depending on cards already put in the square
+                var offset = 2 + ui.draggable.width() * 0.2 * children;
                 // Place the card correctly
+                //ui.draggable.css('right', offset + 'px');
+                //ui.draggable.css('bottom', '2px');
                 /*ui.draggable.position({
-                    of: $(this),
-                    my: 'right bottom',
-                    at: 'right bottom',
-                    offset: '-' + i + 'px -2px'
+                of: $(this),
+                my: 'right bottom',
+                at: 'right bottom',
+                offset: '-' + offset + 'px -2px'
                 });*/
-                ui.draggable.draggable({ disable: true });
+                ui.draggable.draggable("disable");
+                ui.draggable.css({ opacity: 1 });
                 // Remove strong hover and active if in place
                 $(this).removeClass("gameSquareHoverStrong");
-                $(".gameSquare").each(function () {
-                    $(this).removeClass("gameSquareActiveStrong");
-                });
             },
             over: droppableOverOut(1, '#0c0'),
             out: droppableOverOut(-1, '#fff')
@@ -705,22 +726,16 @@ window.PlayByPlay = (function ($) {
                     // Get replaced goalie card
                     var replacedGoalie = $(this).find(".card");
                     // Move it back to bench
-                    replacedGoalie.appendTo("#goalies");
+                    replacedGoalie.appendTo($("#goalies").find(".placeholder")[1]);
                     // Remove styling
-                    replacedGoalie.css('width', '');
-                    replacedGoalie.css('top', '');
-                    replacedGoalie.css('left', '');
-                    // Place on top of placeholder
-                    replacedGoalie.position({
-                        of: $("#goalies").find(".placeholder")[1],
-                        my: 'left top',
-                        at: 'left top'
-                    });
+                    replacedGoalie.removeClass("onBoard");
+                    layout.setCardSizes();
                     // Reconstruct draggable
                     replacedGoalie.draggable("enable");
                 }
                 // Resize and move card
-                ui.draggable.css('width', '100%');
+                ui.draggable.addClass("onBoard");
+                layout.setCardSizes();
                 ui.draggable.appendTo($(this));
                 // Place the card correctly
                 ui.draggable.position({
@@ -728,7 +743,10 @@ window.PlayByPlay = (function ($) {
                     my: 'center center',
                     at: 'center center'
                 });
-                ui.draggable.draggable({ disable: true });
+                ui.draggable.draggable("disable");
+                ui.draggable.css({ opacity: 1 });
+                // Remove strong hover
+                $(this).removeClass("gameSquareHoverStrong");
             },
             over: function (event, ui) {
                 $(this).addClass("gameSquareHoverStrong");
@@ -744,7 +762,8 @@ window.PlayByPlay = (function ($) {
             },
             drop: function (event, ui) {
                 // Resize and move card
-                ui.draggable.css('width', '100%');
+                ui.draggable.addClass("onBoard");
+                layout.setCardSizes();
                 ui.draggable.appendTo($(this));
                 // Place the card correctly
                 ui.draggable.position({
