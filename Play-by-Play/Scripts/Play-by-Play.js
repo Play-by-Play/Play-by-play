@@ -106,23 +106,61 @@ window.PlayByPlay = (function ($) {
         restorePlayers: function () {
             var sum = 0;
             $(".card").each(function () {
-                var pos = $(this).find(".pos").text();
-                if (!$(this).parent().hasClass("placeholder") && pos != "G") {
+                var pos = $(this).find(".playerPos").text();
+                if ($(this).hasClass("onBoard") && pos != "G") {
                     var cardDiv = $(this);
-                    // get hold of the 1st line div according to players position
-                    $("#line1").find(".placeholder").each(function () {
-                        if ($(this).text() == pos) {
-                            if ($(this).has(".card")) {
-                                $("#line2").find(".placeholder").each(function () {
-                                    if ($(this).text() == pos) {
-                                        cardDiv.appendTo($(this));
-                                    }
-                                });
-                            } else {
-                                cardDiv.appendTo($(this));
+                    // check which team player belongs to
+                    if (cardDiv.hasClass("draggable")) { // player team
+                        // get hold of the 1st line div according to players position
+                        $("#line1").find(".placeholder").each(function () {
+                            if ($(this).text().trim() == pos) {
+                                // if already full, must be other line
+                                if ($(this).length > 1) {
+                                    // get hold of the 2nd line div according to players position
+                                    $("#line2").find(".placeholder").each(function () {
+                                        if ($(this).text().trim() == pos) {
+                                            // place card in line 2
+                                            cardDiv.appendTo($(this));
+                                            cardDiv.removeClass("onBoard");
+                                            layout.setCardSizes();
+                                            // TODO: remove bonus points
+                                        }
+                                    });
+                                } else {
+                                    // place card in line 1
+                                    cardDiv.appendTo($(this));
+                                    cardDiv.removeClass("onBoard");
+                                    layout.setCardSizes();
+                                    // TODO: remove bonus points
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else { // opponent team
+                        // get hold of the 1st line div according to players position
+                        $("#oppLine1").find(".placeholder").each(function () {
+                            if ($(this).text().trim() == pos) {
+                                // if already full, must be other line
+                                if ($(this).length > 1) {
+                                    // get hold of the 2nd line div according to players position
+                                    $("#oppLine2").find(".placeholder").each(function () {
+                                        if ($(this).text().trim() == pos) {
+                                            // place card in line 2
+                                            cardDiv.appendTo($(this));
+                                            cardDiv.removeClass("onBoard");
+                                            layout.setCardSizes();
+                                            // TODO: remove bonus points
+                                        }
+                                    });
+                                } else {
+                                    // place card in line 1
+                                    cardDiv.appendTo($(this));
+                                    cardDiv.removeClass("onBoard");
+                                    layout.setCardSizes();
+                                    // TODO: remove bonus points
+                                }
+                            }
+                        });
+                    }
                     sum++;
                 }
             });
@@ -473,7 +511,7 @@ window.PlayByPlay = (function ($) {
 
             var totalWidth = $("#playerBench").width();
 
-            var width = totalWidth * baseWidth / 405;
+            var width = totalWidth * baseWidth / 410;
             var height = baseHeight * width / baseWidth;
             var margin = (totalWidth - 3 * width) / 4;
 
