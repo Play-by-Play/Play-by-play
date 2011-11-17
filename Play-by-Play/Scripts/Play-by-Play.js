@@ -101,7 +101,13 @@ window.PlayByPlay = (function ($) {
             });
         },
         showBattleView: function (title, square) {
-
+            $("#battle-view").dialog({
+                title: 'Battle View',
+                modal: true,
+                draggable: false,
+                resizable: false,
+                open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+            });
         },
         restorePlayers: function () {
             var sum = 0;
