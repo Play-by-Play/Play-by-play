@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="/Content/card.css" />
 		<link rel="Stylesheet" href="/Content/board.css" />
 		<link rel="stylesheet" href="/Content/lobby.css" />
+		<link rel="stylesheet" href="/Content/battle.css" />
 		<link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico" />
 		<script type="text/template" id="actionTemplate">
 		<div class="action">
@@ -27,8 +28,8 @@
 		</script>
 		<script type="text/template" id="playerCardTemplate">
             <div class="placeholder">
-                ${pos}
-	            <div class="card{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable}" style="background-color: #${color}">
+                <span>${pos}</span>
+	            <div class="card ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
 				    <div class="teamLogo">
 					    <img src="/Public/images/logobacks/${team}.png"/>
 					    <div class="playerBio">
@@ -154,6 +155,9 @@
 				</div>
 			</div>
 		</div>
+        <div id="battle-view">
+            <span>VS.</span>
+        </div>
 		<script type="text/javascript" src="/Scripts/modernizr-1.7.min.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-1.6.3.min.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.min.js"></script>
