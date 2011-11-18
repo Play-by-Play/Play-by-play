@@ -45,7 +45,7 @@
 		<script type="text/template" id="tacticCardTemplate">
 			<div class="tacticCard">
 				<div class="tactic">
-					<img src="/Public/images/tactics/${name}.png"/>
+                    <canvas></canvas>
 				</div>
 				<div class="tacticName">${name}</div>
 				<div class="diff">${diff}</div>
@@ -85,12 +85,12 @@
 		</div>
 		<div id="center" class="column">
 			<div id="gameboard">
-				<canvas id="gameBoardCanvas" width="100%" height="100%"></canvas>
-				<canvas id="gameBoardTacticalCanvas" width="100%" height="100%"></canvas>
-				<div id="gameBoardBackgroundLayer">
-                    <div id="gameBoardFaceOffOpponent" class="gameSquareFaceOff placeholder">C</div>
-					<div id="gameBoardFaceOff" class="gameSquareFaceOff placeholder">C</div>
-					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper"></div>
+				<canvas id="gameBoardCanvas"></canvas>
+				<canvas id="gameBoardTacticalCanvas"></canvas>
+                <div id="gameBoardBackgroundLayer">
+                    <div id="gameBoardFaceOffOpponent" class="gameSquareFaceOff gameBoardPlaceholder">C</div>
+					<div id="gameBoardFaceOff" class="gameSquareFaceOff gameBoardPlaceholder">C</div>
+					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper gameBoardPlaceholder">G</div>
 					<div id="gameBoardLW" class="gameSquare gameSquareLeft gameSquareLW"></div>
 					<div id="gameBoardRW" class="gameSquare gameSquareRight gameSquareRW"></div>
 					<div id="gameBoardLCW" class="gameSquare gameSquareLeft gameSquareLW"></div>
@@ -99,9 +99,9 @@
 					<div id="gameBoardRCD" class="gameSquare gameSquareRight gameSquareRD"></div>
 					<div id="gameBoardLD" class="gameSquare gameSquareLeft gameSquareLD"></div>
 					<div id="gameBoardRD" class="gameSquare gameSquareRight gameSquareRD"></div>
-					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper"></div>
-					<div id="puck"></div>
-				</div>
+					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper gameBoardPlaceholder">G</div>
+					<div id="gameBoardPuck"></div>
+                </div>
 			</div>
 		</div>
 		<div id="right" class="column">

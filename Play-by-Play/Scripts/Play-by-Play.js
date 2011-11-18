@@ -1,9 +1,3 @@
-// variables
-
-// drawing
-//var layout.margin, layout.borderWidth, left, top, height, width, lineWidth;
-
-
 window.PlayByPlay = (function ($) {
 
     var iceColor = "#FFF";
@@ -43,9 +37,24 @@ window.PlayByPlay = (function ($) {
         addTacticCard: function (name, diff, tactic) {
             var data = { name: name, diff: diff };
             var template = $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
+
+            // set templates height depending on templates width, which is set in card.css
+            template.height(template.width() / 5 * 8);
+
+            // draw card and tactic
+            var canvas = template.find('canvas')[0];
+            canvas.height = template.height();
+            canvas.width = template.width();
+            layout.drawGameboard(canvas);
+            layout.drawTactic(canvas, tactic);
+
             template.hover(function () {
                 // mouse over
-                layout.drawTactic(tactic);
+
+                // clear the canvas before proceding
+                layout.clearGameboardTactic();
+
+                layout.drawTactic(document.getElementById("gameBoardTacticalCanvas"), tactic);
                 $('.tacticCard').each(function () {
                     $(this).css({ opacity: 0.5 });
                 });
@@ -53,7 +62,7 @@ window.PlayByPlay = (function ($) {
             },
 			function () {
 			    // mouse out
-			    layout.clearTactic();
+			    layout.clearGameboardTactic();
 			    $(this).css({ opacity: 0.5 });
 			});
         },
@@ -111,6 +120,52 @@ window.PlayByPlay = (function ($) {
     };
 
 
+
+
+    // Puck
+    var puck = (function () {
+
+        getPixelPosition = function (x, y) {
+            var left = layout.margin + layout.borderWidth + layout.borderWidth / 2 + $("#gameBoardLD").height() / 2;
+            var top = layout.margin + layout.borderWidth;
+            return { top: top + $("#gameBoardLD").height() * y,
+                left: left + $("#gameBoardLD").width() * x
+            };
+        }
+
+        setPosition = function (x, y) {
+            var position = getPixelPosition(x, y);
+            $('#gameBoardPuck').css('visibility', 'visible')
+                .css('top', (position.top - $('#gameBoardPuck').height / 2))
+                .css('left', (position.left - $('#gameBoardPuck').width / 2));
+        }
+
+        return {
+            init: function () {
+            },
+
+            placeAt: function (x, y) {
+                //                setPosition(x, y);
+            },
+            moveTo: function (x, y) {
+                //                if ($('#gameBoardPuck').css('visibility') == 'visible') {
+                //                    var position = getPixelPosition(x, y)
+                //                    $("#gameBoardPuck").animate({
+                //                        top: position.top - $('#gameBoardPuck').height / 2,
+                //                        left: position.left - $('#gameBoardPuck').width / 2,
+                //                    }, 1500);
+                //                }
+                //                else
+                //                // place puck at position since it isn't visible at the moment
+                //                    setPosition(x, y);
+            }
+        };
+    })();
+
+
+
+
+
     // Layout
     var layout = {
         init: function () {
@@ -118,47 +173,70 @@ window.PlayByPlay = (function ($) {
             $('.panel').setFullWidth();
         },
 
-        drawGameboard: function () {
-            // seting up canvas
-            var canvas = document.getElementById("gameBoardCanvas");
-            var context = canvas.getContext("2d");
+        drawMainGameboard: function () {
+            // draw main gameboard
 
-            layout.boardHeight = $(window).height();
-            layout.boardWidth = $(window).width() * 0.4;
-            var containerWidth = layout.boardWidth;
+            var margin = $(window).height() / 70;
+            $('#gameboard').css({ 'margin': margin + 'px' });
+
+            height = $(window).height() - margin * 2;
+            width = $(window).width() * 0.4 - margin * 2;
 
             // correct proportions if neccessary
-            var heightProportions = layout.boardHeight / 8;
-            var widthProportions = layout.boardWidth / 5;
+            var heightProportions = height / 8;
+            var widthProportions = width / 5;
 
             if (heightProportions > widthProportions) {
                 // set height depending on width
-                layout.boardHeight = layout.boardHeight * (widthProportions / heightProportions);
+                height = height * (widthProportions / heightProportions);
             }
             else if (heightProportions < widthProportions) {
                 // set width depending on height
-                layout.boardWidth = layout.boardWidth * (heightProportions / widthProportions);
+                width = width * (heightProportions / widthProportions);
             }
 
-            document.getElementById('gameBoardBackgroundLayer').style.height = layout.boardHeight + 'px';
-            document.getElementById('gameBoardBackgroundLayer').style.width = layout.boardWidth + 'px';
-            document.getElementById('center').style.width = layout.boardWidth + 'px';
+            $('#gameBoardBackgroundLayer').height(height * 0.9739);
+            $('#gameBoardBackgroundLayer').width(width * 0.962);
+            $('#center').width = width + 'px';
 
-            canvas.height = layout.boardHeight;
-            canvas.width = layout.boardWidth;
 
-            layout.margin = layout.boardHeight / 80;
-            layout.borderWidth = layout.boardHeight / 80;
-            layout.left = layout.margin + layout.borderWidth + layout.borderWidth / 2;
-            layout.top = layout.margin + layout.borderWidth;
-            var left = layout.margin + layout.borderWidth;
-            var top = layout.margin + layout.borderWidth;
-            var height = layout.boardHeight - top * 2;
-            var width = layout.boardWidth - left * 2;
-            var lineWidth = height / 160;
-            layout.innerTop = layout.top + height / 8;
-            layout.innerHeight = layout.boardHeight - top * 2;
-            layout.innerWidth = layout.boardWidth - left * 2;
+            // seting up canvas
+            var canvas = document.getElementById("gameBoardCanvas");
+            canvas.height = height;
+            canvas.width = width;
+
+            var tacticCanvas = document.getElementById("gameBoardTacticalCanvas");
+            tacticCanvas.height = height;
+            tacticCanvas.width = width;
+
+            // draw game board on canvas
+            layout.drawGameboard(canvas);
+        },
+
+        drawGameboard: function (canvas) {
+            // canvas to draw game board in
+            var context = canvas.getContext("2d");
+
+            // get dimension of canvas
+            var height = canvas.height;
+            var width = canvas.width;
+
+            // calculate line width
+            var outerLineWidth = height / 80;
+            var lineWidthBold = height / 120;
+            var lineWidthNormal = height / 320;
+            var lineWidthThin = height / 640;
+
+            var lineLeft = outerLineWidth;
+            var lineRight = width - outerLineWidth;
+
+            // add margin to include complete outer border inside the canvas
+            var left = outerLineWidth / 2;
+            var top = outerLineWidth / 2;
+            height -= outerLineWidth;
+            width -= outerLineWidth;
+
+            context.clearRect(0, 0, width, height);
 
 
             // draw ice rink
@@ -170,35 +248,32 @@ window.PlayByPlay = (function ($) {
             context.closePath();
             context.fillStyle = iceColor;
             context.fill();
-            context.lineWidth = layout.borderWidth;
+            context.lineWidth = outerLineWidth;
             context.strokeStyle = borderColor;
             context.stroke();
 
-
             // draw lines
-            var lineLeft = left + layout.borderWidth / 2;
-            var lineRight = lineLeft + width - layout.borderWidth;
-            context.beginPath();
-            context.strokeStyle = redLineColor;
 
             // red main middle line
+            context.beginPath();
+            context.strokeStyle = redLineColor;
             context.moveTo(lineLeft, top + height / 2);
             context.lineTo(lineRight, top + height / 2);
-            context.lineWidth = lineWidth;
+            context.lineWidth = lineWidthBold;
             context.stroke();
 
             // red line between the goals
             context.beginPath();
             context.moveTo(left + width / 2, top + height / 8);
             context.lineTo(left + width / 2, top + height / 8 * 7);
-            context.lineWidth = lineWidth / 4;
+            context.lineWidth = lineWidthThin;
             context.stroke();
 
             // draw goal areas
             context.beginPath();
-            context.moveTo(left + width / 2 + Math.cos(-Math.PI / 4) * height / 15, top + height / 8 * 7 - lineWidth / 4);
-            context.arc(left + width / 2, top + height / 8 * 7 - lineWidth / 4, height / 15, -Math.PI / 4, Math.PI + Math.PI / 4, true);
-            context.lineTo(left + width / 2 + Math.cos(Math.PI + Math.PI / 4) * height / 15, top + height / 8 * 7 - lineWidth / 4);
+            context.moveTo(left + width / 2 + Math.cos(-Math.PI / 4) * height / 15, top + height / 8 * 7 - lineWidthThin);
+            context.arc(left + width / 2, top + height / 8 * 7 - lineWidthThin, height / 15, -Math.PI / 4, Math.PI + Math.PI / 4, true);
+            context.lineTo(left + width / 2 + Math.cos(Math.PI + Math.PI / 4) * height / 15, top + height / 8 * 7 - lineWidthThin);
             context.closePath();
             context.fillStyle = "#6cf";
             context.fill();
@@ -206,7 +281,7 @@ window.PlayByPlay = (function ($) {
 
             context.beginPath();
             context.moveTo(left + width / 2 + Math.cos(Math.PI + Math.PI / 4) * height / 15, top + height / 8);
-            context.arc(left + width / 2, top + height / 8 - lineWidth / 4, height / 15, Math.PI - Math.PI / 4, Math.PI / 4, true);
+            context.arc(left + width / 2, top + height / 8 - lineWidthThin, height / 15, Math.PI - Math.PI / 4, Math.PI / 4, true);
             context.lineTo(left + width / 2 + Math.cos(-Math.PI / 4) * height / 15, top + height / 8);
             context.closePath();
             context.fillStyle = "#6cf";
@@ -217,9 +292,9 @@ window.PlayByPlay = (function ($) {
             context.beginPath();
             context.moveTo(lineLeft, top + height / 8);
             context.lineTo(lineRight, top + height / 8);
-            context.moveTo(lineLeft, top + height / 8 * 7 - lineWidth / 4);
-            context.lineTo(lineRight, top + height / 8 * 7 - lineWidth / 4);
-            context.lineWidth = lineWidth / 2;
+            context.moveTo(lineLeft, top + height / 8 * 7 - lineWidthThin);
+            context.lineTo(lineRight, top + height / 8 * 7 - lineWidthThin);
+            context.lineWidth = lineWidthNormal;
             context.stroke();
 
             // blue lines
@@ -229,99 +304,84 @@ window.PlayByPlay = (function ($) {
             context.lineTo(lineRight, top + height * 0.3125);
             context.moveTo(lineLeft, top + height * 0.6875);
             context.lineTo(lineRight, top + height * 0.6875);
-            context.lineWidth = lineWidth;
+            context.lineWidth = lineWidthBold;
             context.stroke();
 
             // draw middle circle
             context.beginPath();
             context.arc(left + width / 2, top + height / 2, width / 10, 0, Math.PI * 2, true);
-            context.lineWidth = lineWidth / 2;
+            context.lineWidth = lineWidthNormal;
             context.strokeStyle = "#33f";
             context.fillStyle = "#fff";
             context.fill();
             context.stroke();
 
             // draw inner arcs
+            // red arc
             context.beginPath();
             context.arc(left + width / 2, top + height / 2, width / 12, 0, -Math.PI / 2, true);
-            context.lineWidth = lineWidth;
+            context.lineWidth = lineWidthBold;
             context.strokeStyle = "#f00";
             context.stroke();
 
+            // blue arc
             context.beginPath();
             context.arc(left + width / 2, top + height / 2, width / 12, Math.PI, Math.PI / 2, true);
-            context.lineWidth = lineWidth;
+            context.lineWidth = lineWidthBold;
             context.strokeStyle = "#00f";
             context.stroke();
 
             // draw Play-by-Play text
+            var a = (left + width / 2);
+            var b = (top + height / 2);
             context.fillStyle = "#000";
             context.rotate(-30 * Math.PI / 180);
             context.textAlign = "center";
             context.font = height / 45 + "pt Calibri bold";
-            context.fillText("Play", left - left / 5, top * 4 + height / 2);
+            context.fillText("Play",
+                            (a - height / 128) * Math.cos(Math.PI / 6) - (b - height / 70) * Math.sin(Math.PI / 6),
+                            (a - height / 128) * Math.sin(Math.PI / 6) + (b - height / 70) * Math.cos(Math.PI / 6));
             context.font = height / 55 + "pt Calibri bold";
-            context.fillText("-by-", left - left / 5, top * 4 + height / 2 + height / 45);
+            context.fillText("-by-",
+                            (a + height / 256) * Math.cos(Math.PI / 6) - (b + height / 256) * Math.sin(Math.PI / 6),
+                            (a + height / 256) * Math.sin(Math.PI / 6) + (b + height / 256) * Math.cos(Math.PI / 6));
             context.font = height / 45 + "pt Calibri bold";
-            context.fillText("Play", left - left / 5, top * 4 + height / 2 + height / 22.5);
+            context.fillText("Play",
+                            (a + height / 64) * Math.cos(Math.PI / 6) - (b + height / 40) * Math.sin(Math.PI / 6),
+                            (a + height / 64) * Math.sin(Math.PI / 6) + (b + height / 40) * Math.cos(Math.PI / 6));
 
-
-            // set up boxes
-            var boxLeft = lineLeft + 'px';
-            var boxRight = lineLeft + 'px';
-            var boxHeight = height * 0.1875 + 'px';
-            var boxWidth = (lineRight - lineLeft) / 2 + layout.borderWidth / 10 + 'px';
-            document.getElementById('gameBoardGoalkeeperOpponent').style.marginTop = top + layout.borderWidth + 'px';
-
-            $('.gameSquareLeft').css('left', boxLeft)
-				.width(boxWidth)
-				.height(boxHeight);
-
-            $('.gameSquareRight').css('right', boxRight)
-				.width(boxWidth)
-				.height(boxHeight);
-
-//            $("#gameBoardFaceOffOpponent").css("top", 40 + 'px');
-//            $("#gameBoardFaceOff").css("top", layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2));
-
-
-            //			document.getElementById('gameBoardFaceOffOpponent').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOffOpponent").height()) / 2 + height * 0.1875 + 'px';
-
-            //			document.getElementById('gameBoardFaceOff').style.top = layout.innerTop + (height * 0.1875 - $("#gameBoardFaceOff").height()) / 2 + height * 0.1875 * 2 + 'px';
-
-            $('#gameboard').css('layout.margin', '0 ' + (containerWidth - layout.boardWidth) / 2 + 'px');
-            //layout.drawTactic({ startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
+            // restore context
+            context.rotate(30 * Math.PI / 180);
         },
 
-        drawTactic: function (tactic) {
+        drawTactic: function (canvas, tactic) {
             // seting up canvas
-            var canvas = document.getElementById("gameBoardTacticalCanvas");
             var context = canvas.getContext("2d");
-
-            // clear the canvas before proceding
-            layout.clearTactic();
+            var width = canvas.width;
+            var height = canvas.height;
 
             // editable values
-            var pointSize = 0.14; // radius of gameSquare height
-            var relationWidth = 0.3;
+            var pointSize = 0.12; // radius of gameSquare height
+            var relationWidth = 0.025;
             var outerCircle = 1.4;
 
-            // don't edig below
-            canvas.height = layout.boardHeight;
-            canvas.width = layout.boardWidth;
+            // don't edit below
 
-            var gameSquareHeight = $("#gameBoardLD").height();
-            var gameSquareWidth = $("#gameBoardLD").width();
+            // calculate position
+            var left = width * 0.26;
+            var top = height * 0.2209;
+            var gameSquareWidth = width * 0.48;
+            var gameSquareHeight = height * 0.186;
 
-            var left = layout.margin + layout.borderWidth + layout.borderWidth / 2 + gameSquareWidth / 2;
-            var top = layout.margin + layout.borderWidth;
-            var height = layout.boardHeight - top * 2;
-            var width = layout.boardWidth - left * 2;
-            top = top + height / 8 + gameSquareHeight / 2;
-            var lineWidth = height / 160;
+            //            alert(width);
+            //            alert(height);
+
+            var lineWidthNormal = gameSquareWidth * relationWidth;
+            var lineWidthThin = lineWidthNormal / 2;
 
             // draw pass lines
-            context.lineWidth = layout.borderWidth / 2;
+            context.strokeStyle = "#000";
+            context.lineWidth = lineWidthNormal;
             for (index in tactic.passes) {
                 context.moveTo(left + gameSquareWidth * tactic.passes[index][0][0], top + gameSquareHeight * tactic.passes[index][0][1]);
                 context.lineTo(left + gameSquareWidth * tactic.passes[index][1][0], top + gameSquareHeight * tactic.passes[index][1][1]);
@@ -359,7 +419,7 @@ window.PlayByPlay = (function ($) {
             context.fill();
 
             // draw startnode
-            context.lineWidth = layout.borderWidth / 4;
+            context.lineWidth = lineWidthThin;
             context.strokeStyle = "#000";
             context.fillStyle = "#fff";
             context.beginPath();
@@ -378,7 +438,7 @@ window.PlayByPlay = (function ($) {
             }
 
             // draw movment point
-            context.lineWidth = layout.borderWidth / 2;
+            context.lineWidth = lineWidthNormal;
             context.fillStyle = "#fff";
             for (index in tactic.movementNode) {
                 context.beginPath();
@@ -390,8 +450,8 @@ window.PlayByPlay = (function ($) {
 
         },
 
-        clearTactic: function () {
-            // remove drawn tactic
+        clearGameboardTactic: function () {
+            // remove drawn tactic on gameboard
 
             var elem = $("#gameBoardTacticalCanvas");
             var canvas = elem.get(0);
@@ -481,7 +541,7 @@ window.PlayByPlay = (function ($) {
 
     $(window).bind('resize', function () {
         layout.init();
-        layout.drawGameboard();
+        layout.drawMainGameboard();
         layout.setCardSizes();
     });
 
@@ -489,7 +549,8 @@ window.PlayByPlay = (function ($) {
     // On ready
     $(function () {
         layout.init();
-        layout.drawGameboard();
+        layout.drawMainGameboard();
+        puck.placeAt(1, 3);
         $('#console').tabs();
         $('#oppBench').tabs();
         $('#playerBench').tabs();
@@ -497,22 +558,24 @@ window.PlayByPlay = (function ($) {
         play.addDetroitPlayers();
         play.addRangersPlayers();
         play.addTacticCards();
-        $("#tacticCards").hover(function () {
-            // mouse over
-            $('.tacticCard').each(function () {
-                $(this).css({ opacity: 0.5 });
+        $("#tacticCards").hover(
+            function () {
+                // mouse over
+                $('.tacticCard').each(function () {
+                    $(this).css({ opacity: 0.5 });
+                });
                 // reset opacity to the player cards
                 $("#gameBoardBackgroundLayer").css({ opacity: 0.3 });
-            });
-        },
-		function () {
-		    // mouse out
-		    $('.tacticCard').each(function () {
-		        $(this).css({ opacity: 1.0 });
+            },
+		    function () {
+		        // mouse out
+		        $('.tacticCard').each(function () {
+		            $(this).css({ opacity: 1.0 });
+		        });
 		        // reset opacity to the player cards
 		        $("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
-		    });
-		});
+		    }
+        );
 
         function draggableStartStop(event, ui) {
             /*var card = ui.draggable.getPlayerCard();
@@ -646,15 +709,15 @@ window.PlayByPlay = (function ($) {
 
         PlayByPlay.lobby = new Lobby();
 
-        PlayByPlay.lobby.initialize();
+        //PlayByPlay.lobby.initialize();
     });
 
 
     $('#chatSubmit').live('click', function () {
         connection.send($('#chatInput').val())
-				.fail(function (e) {
-				    alert(e);
-				});
+				    .fail(function (e) {
+				        alert(e);
+				    });
         $('#chatInput').val('');
     });
     $('#chatInput').live('keypress', function (e) {
