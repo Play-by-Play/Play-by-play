@@ -561,7 +561,7 @@ window.PlayByPlay = (function ($) {
 
         clearGameboardTactic: function () {
             // remove drawn tactic on gameboard
-            canvas.width = canvas.width;
+
             var elem = $("#gameBoardTacticalCanvas");
             var canvas = elem.get(0);
             var context = canvas.getContext("2d");
