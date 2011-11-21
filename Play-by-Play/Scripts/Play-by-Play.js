@@ -102,11 +102,26 @@ window.PlayByPlay = (function ($) {
         },
         showBattleView: function (title, square) {
             $("#battle-view").dialog({
-                title: 'Battle View',
+                title: title,
                 modal: true,
                 draggable: false,
                 resizable: false,
                 open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+            });
+            $("#battle-view").delay(3000).dialog('close');
+        },
+        movePlayer: function (card, square) {
+            // Find card
+            var cardDiv = $(".onBoard").find("." + card.getPos());
+            // Find out offset depending on cards already put in the square
+            var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
+            cardDiv.appendTo($("#" + square));
+            // Place the card correctly
+            cardDiv.position({
+                of: $("#" + square),
+                my: 'left top',
+                at: 'left top',
+                offset: i + 'px 2px'
             });
         },
         restorePlayers: function () {
@@ -129,6 +144,7 @@ window.PlayByPlay = (function ($) {
                                             cardDiv.appendTo($(this));
                                             cardDiv.removeClass("onBoard");
                                             layout.setCardSizes();
+                                            cardDiv.draggable("enable");
                                             // TODO: remove bonus points
                                         }
                                     });
@@ -137,6 +153,7 @@ window.PlayByPlay = (function ($) {
                                     cardDiv.appendTo($(this));
                                     cardDiv.removeClass("onBoard");
                                     layout.setCardSizes();
+                                    cardDiv.draggable("enable");
                                     // TODO: remove bonus points
                                 }
                             }
@@ -154,6 +171,7 @@ window.PlayByPlay = (function ($) {
                                             cardDiv.appendTo($(this));
                                             cardDiv.removeClass("onBoard");
                                             layout.setCardSizes();
+                                            cardDiv.draggable("enable");
                                             // TODO: remove bonus points
                                         }
                                     });
@@ -162,6 +180,7 @@ window.PlayByPlay = (function ($) {
                                     cardDiv.appendTo($(this));
                                     cardDiv.removeClass("onBoard");
                                     layout.setCardSizes();
+                                    cardDiv.draggable("enable");
                                     // TODO: remove bonus points
                                 }
                             }
