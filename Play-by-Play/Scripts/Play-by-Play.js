@@ -117,11 +117,13 @@ window.PlayByPlay = (function ($) {
                 resizable: false,
                 open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
             });
-            $("#battle-view").delay(3000).dialog('close');
+            $("#battle-view").delay(3000).queue(function () {
+                $(this).dialog('close');
+            });
         },
         movePlayer: function (card, square) {
             // Find card
-            var cardDiv = $(".onBoard").find("." + card.getPos());
+            var cardDiv = $(".onBoard > ." + card.getPos());
             // Find out offset depending on cards already put in the square
             var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
             cardDiv.appendTo($("#" + square));
@@ -143,12 +145,12 @@ window.PlayByPlay = (function ($) {
                     if (cardDiv.hasClass("draggable")) { // player team
                         // get hold of the 1st line div according to players position
                         $("#line1").find(".placeholder").each(function () {
-                            if ($(this).text().trim() == pos) {
+                            if ($(this).find("span").text() == pos) {
                                 // if already full, must be other line
-                                if ($(this).length > 1) {
+                                if ($(this).has(".card").length != 0) {
                                     // get hold of the 2nd line div according to players position
                                     $("#line2").find(".placeholder").each(function () {
-                                        if ($(this).text().trim() == pos) {
+                                        if ($(this).find("span").text() == pos) {
                                             // place card in line 2
                                             cardDiv.appendTo($(this));
                                             cardDiv.removeClass("onBoard");
@@ -170,12 +172,12 @@ window.PlayByPlay = (function ($) {
                     } else { // opponent team
                         // get hold of the 1st line div according to players position
                         $("#oppLine1").find(".placeholder").each(function () {
-                            if ($(this).text().trim() == pos) {
+                            if ($(this).find("span").text() == pos) {
                                 // if already full, must be other line
-                                if ($(this).length > 1) {
+                                if ($(this).has(".card").length != 0) {
                                     // get hold of the 2nd line div according to players position
                                     $("#oppLine2").find(".placeholder").each(function () {
-                                        if ($(this).text().trim() == pos) {
+                                        if ($(this).find("span").text() == pos) {
                                             // place card in line 2
                                             cardDiv.appendTo($(this));
                                             cardDiv.removeClass("onBoard");
