@@ -29,7 +29,7 @@
 		<script type="text/template" id="playerCardTemplate">
             <div class="placeholder">
                 <span>${pos}</span>
-	            <div class="card ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
+	            <div id="${id}" class="card ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
 				    <div class="teamLogo">
 					    <img src="/Public/images/logobacks/${team}.png"/>
 					    <div class="playerBio">

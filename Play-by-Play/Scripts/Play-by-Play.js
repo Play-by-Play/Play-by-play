@@ -6,12 +6,12 @@ window.PlayByPlay = (function ($) {
     var blueLineColor = "#00F";
 
     var players = {
-        home: {
+        user: {
             line1: {},
             line2: {},
             goalies: {}
         },
-        away: {
+        opponent: {
             oppLine1: {},
             oppLine2: {},
             oppGoalies: {}
@@ -22,7 +22,13 @@ window.PlayByPlay = (function ($) {
         }
     };
 
-    function PlayerCard(info, color, formation, draggable) {
+    var Bonus = {
+        NONE: 0,
+        OFF: 1,
+        DEF: 2
+    };
+
+    function PlayerCard(info, color, formation, userControlled, id) {
         this.color = color;
         this.team = info.team;
         this.name = info.name;
@@ -30,11 +36,15 @@ window.PlayByPlay = (function ($) {
         this.attr2 = info.attr2;
         this.pos = info.pos;
         this.formation = formation;
-        this.draggable = draggable;
+        this.userControlled = userControlled;
+        this.id = id;
         // assemble data
-        var data = { color: this.color, team: this.team, name: this.name, attr1: this.attr1, attr2: this.attr2, pos: this.pos, draggable: (this.draggable ? " draggable" : "") };
+        var data = { color: this.color, team: this.team, name: this.name, attr1: this.attr1, attr2: this.attr2, pos: this.pos, draggable: (this.userControlled ? " draggable" : ""), id: "card" + this.id };
         // construct card
         $('#playerCardTemplate').tmpl(data).appendTo('#' + this.formation);
+
+        this.bonus = Bonus.NONE;
+        this.location = $("#" + this.formation);
     }
     PlayerCard.prototype = {
         getAttr1: function () {
@@ -43,11 +53,93 @@ window.PlayByPlay = (function ($) {
         getAttr2: function () {
             return this.attr2;
         },
+        getBonus: function () {
+            return this.bonus;
+        },
         getPos: function () {
             return this.pos;
         },
         getLine: function () {
             return this.formation;
+        },
+        getId: function () {
+            return this.id;
+        },
+        isUserControlled: function () {
+            return this.userControlled;
+        },
+        setBonus: function (bonus) {
+            // Find card div
+            var cardDiv = $("#card" + this.id);
+            switch (bonus) {
+                case Bonus.OFF:
+                    // Get offense value
+                    var off = cardDiv.find(".attr1");
+                    // Add bonus point
+                    off.text(this.attr1 + 1);
+                    off.css("color", "#0c0");
+                    break;
+                case Bonus.DEF:
+                    // Get defense value
+                    var def = cardDiv.find(".attr2");
+                    // Add bonus point
+                    def.text(this.attr2 + 1);
+                    def.css("color", "#0c0");
+                    break;
+                default:
+                    if (this.bonus == Bonus.OFF) {
+                        // Get offense value
+                        var off = cardDiv.find(".attr1");
+                        // Remove bonus point
+                        off.text(this.attr1);
+                        off.css("color", "#fff");
+                    } else if (this.bonus == Bonus.DEF) {
+                        // Get defense value
+                        var def = cardDiv.find(".attr2");
+                        // Remove bonus point
+                        def.text(this.attr2);
+                        def.css("color", "#fff");
+                    }
+            }
+            this.bonus = bonus;
+        },
+        setLocation: function (newLocation) {
+            // Find card div
+            var cardDiv = $("#card" + this.id);
+            // Find out offset depending on cards already put in the square
+            var i = 2 + cardDiv.width() * 0.2 * newLocation.children().length;
+            // Resize and move card
+            cardDiv.addClass("onBoard");
+            layout.setCardSizes();
+            cardDiv.appendTo(newLocation);
+            // Potentially add bonus
+            if (!this.userControlled) {
+                // Bonus areas are on opposite sides of the board
+                if (this.pos == "LW" && newLocation.hasClass("gameSquareRD") || this.pos == "RW" && newLocation.hasClass("gameSquareLD")) {
+                    this.setBonus(Bonus.OFF);
+                } else if (this.pos == "LD" && newLocation.hasClass("gameSquareRW") || this.pos == "RD" && newLocation.hasClass("gameSquareLW")) {
+                    this.setBonus(Bonus.DEF);
+                } else {
+                    this.setBonus(Bonus.NONE);
+                }
+            } else {
+                if ((this.pos == "LW" || this.pos == "RW") && newLocation.hasClass("gameSquare" + this.pos)) {
+                    this.setBonus(Bonus.OFF);
+                }
+                else if ((this.pos == "LD" || this.pos == "RD") && newLocation.hasClass("gameSquare" + this.pos)) {
+                    this.setBonus(Bonus.DEF);
+                } else {
+                    this.setBonus(Bonus.NONE);
+                }
+            }
+            // Place the card correctly
+            cardDiv.position({
+                of: newLocation,
+                my: 'left top',
+                at: 'left top',
+                offset: i + 'px 2px'
+            });
+            this.location = newLocation;
         }
     }
 
@@ -92,7 +184,7 @@ window.PlayByPlay = (function ($) {
 			    $(this).css({ opacity: 0.5 });
 			});
         },
-        placeOpponentPlayerCard: function (card, square) {
+        /*placeOpponentPlayerCard: function (card, square) {
             // Find card
             var cardDiv = $("#" + card.getLine()).find("." + card.getPos());
             // Find out offset depending on cards already put in the square
@@ -108,33 +200,35 @@ window.PlayByPlay = (function ($) {
                 at: 'left top',
                 offset: i + 'px 2px'
             });
-        },
-        showBattleView: function (title, square) {
-            $("#battle-view").dialog({
+        },*/
+        showBattleView: function (title, location) {
+            var viewDiv = $("#battle-view");
+            // Add content...
+            viewDiv.dialog({
                 title: title,
                 modal: true,
                 draggable: false,
                 resizable: false,
                 open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
             });
-            $("#battle-view").delay(3000).queue(function () {
+            viewDiv.delay(3000).queue(function () {
                 $(this).dialog('close');
             });
         },
-        movePlayer: function (card, square) {
-            // Find card
-            var cardDiv = $(".onBoard > ." + card.getPos());
-            // Find out offset depending on cards already put in the square
-            var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
-            cardDiv.appendTo($("#" + square));
-            // Place the card correctly
-            cardDiv.position({
-                of: $("#" + square),
-                my: 'left top',
-                at: 'left top',
-                offset: i + 'px 2px'
-            });
-        },
+        /*movePlayer: function (card, square) {
+        // Find card
+        var cardDiv = $(".onBoard > ." + card.getPos());
+        // Find out offset depending on cards already put in the square
+        var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
+        cardDiv.appendTo($("#" + square));
+        // Place the card correctly
+        cardDiv.position({
+        of: $("#" + square),
+        my: 'left top',
+        at: 'left top',
+        offset: i + 'px 2px'
+        });
+        },*/
         restorePlayers: function () {
             var sum = 0;
             $(".card").each(function () {
@@ -202,51 +296,84 @@ window.PlayByPlay = (function ($) {
             });
             //alert(sum + " cards are out");
         },
-        addDetroitPlayers: function () {
+        addUserPlayers: function () {
             var color = "c00";
-            var draggable = true;
+            var userControlled = true;
+            var id = 0;
 
             var formation = "line1";
-            players.add(new PlayerCard({ team: "DET", name: "Zetterberg", attr1: 5, attr2: 3, pos: "LW" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Datsyuk", attr1: 4, attr2: 4, pos: "C" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Holmstrom", attr1: 3, attr2: 3, pos: "RW" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Lidstrom", attr1: 3, attr2: 4, pos: "LD" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Rafalski", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable), players.home);
+            var playerInfo = [{ team: "DET", name: "Zetterberg", attr1: 5, attr2: 3, pos: "LW" },
+            { team: "DET", name: "Datsyuk", attr1: 4, attr2: 4, pos: "C" },
+            { team: "DET", name: "Holmstrom", attr1: 3, attr2: 3, pos: "RW" },
+            { team: "DET", name: "Lidstrom", attr1: 3, attr2: 4, pos: "LD" },
+            { team: "DET", name: "Rafalski", attr1: 2, attr2: 4, pos: "RD"}];
 
-            var formation = "line2";
-            players.add(new PlayerCard({ team: "DET", name: "Cleary", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Filppula", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Bertuzzi", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Kronwall", attr1: 3, attr2: 3, pos: "LD" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Stuart", attr1: 2, attr2: 4, pos: "RD" }, color, formation, draggable), players.home);
+            for (var i = 0; i < playerInfo.length; i++) {
+                players.add(new PlayerCard(playerInfo[i], color, formation, userControlled, id), players.user);
+                id++;
+            }
 
-            var formation = "goalies";
-            players.add(new PlayerCard({ team: "DET", name: "Howard", attr1: 3, attr2: 5, pos: "G" }, color, formation, draggable), players.home);
-            players.add(new PlayerCard({ team: "DET", name: "Osgood", attr1: 3, attr2: 4, pos: "G" }, color, formation, draggable), players.home);
+            formation = "line2";
+            playerInfo = [{ team: "DET", name: "Cleary", attr1: 4, attr2: 2, pos: "LW" },
+            { team: "DET", name: "Filppula", attr1: 4, attr2: 2, pos: "C" },
+            { team: "DET", name: "Bertuzzi", attr1: 4, attr2: 3, pos: "RW" },
+            { team: "DET", name: "Kronwall", attr1: 3, attr2: 3, pos: "LD" },
+            { team: "DET", name: "Stuart", attr1: 2, attr2: 4, pos: "RD"}];
+
+            for (var i = 0; i < playerInfo.length; i++) {
+                players.add(new PlayerCard(playerInfo[i], color, formation, userControlled, id), players.user);
+                id++;
+            }
+
+            formation = "goalies";
+            playerInfo = [{ team: "DET", name: "Howard", attr1: 3, attr2: 5, pos: "G" },
+            { team: "DET", name: "Osgood", attr1: 3, attr2: 4, pos: "G"}];
+
+            for (var i = 0; i < playerInfo.length; i++) {
+                players.add(new PlayerCard(playerInfo[i], color, formation, userControlled, id), players.user);
+                id++;
+            }
         },
-        addRangersPlayers: function () {
+        addOpponentPlayers: function () {
             var color = "00c";
-            var draggable = false;
+            var userControlled = false;
+            var id = 12;
 
             var formation = "oppLine1";
-            players.add(new PlayerCard({ team: "NYR", name: "Dubinsky", attr1: 5, attr2: 2, pos: "LW" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Drury", attr1: 5, attr2: 3, pos: "C" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Gaborik", attr1: 6, attr2: 1, pos: "RW" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Girardi", attr1: 1, attr2: 4, pos: "LD" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Staal", attr1: 3, attr2: 4, pos: "RD" }, color, formation, draggable), players.away);
+            var playerInfo = [{ team: "NYR", name: "Dubinsky", attr1: 5, attr2: 2, pos: "LW" },
+            { team: "NYR", name: "Drury", attr1: 5, attr2: 3, pos: "C" },
+            { team: "NYR", name: "Gaborik", attr1: 6, attr2: 1, pos: "RW" },
+            { team: "NYR", name: "Girardi", attr1: 1, attr2: 4, pos: "LD" },
+            { team: "NYR", name: "Staal", attr1: 3, attr2: 4, pos: "RD"}];
 
-            var formation = "oppLine2";
-            players.add(new PlayerCard({ team: "NYR", name: "Zuccarello", attr1: 4, attr2: 2, pos: "LW" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Anisimov", attr1: 4, attr2: 2, pos: "C" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Callahan", attr1: 4, attr2: 3, pos: "RW" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "McCabe", attr1: 2, attr2: 4, pos: "LD" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Del Zotto", attr1: 2, attr2: 3, pos: "RD" }, color, formation, draggable), players.away);
+            for (var i = 0; i < playerInfo.length; i++) {
+                players.add(new PlayerCard(playerInfo[i], color, formation, userControlled, id), players.opponent);
+                id++;
+            }
 
-            var formation = "oppGoalies";
-            players.add(new PlayerCard({ team: "NYR", name: "Lundqvist", attr1: 4, attr2: 4, pos: "G" }, color, formation, draggable), players.away);
-            players.add(new PlayerCard({ team: "NYR", name: "Biron", attr1: 2, attr2: 3, pos: "G" }, color, formation, draggable), players.away);
+            formation = "oppLine2";
+            playerInfo = [{ team: "NYR", name: "Zuccarello", attr1: 4, attr2: 2, pos: "LW" },
+            { team: "NYR", name: "Anisimov", attr1: 4, attr2: 2, pos: "C" },
+            { team: "NYR", name: "Callahan", attr1: 4, attr2: 3, pos: "RW" },
+            { team: "NYR", name: "McCabe", attr1: 2, attr2: 4, pos: "LD" },
+            { team: "NYR", name: "Del Zotto", attr1: 2, attr2: 3, pos: "RD"}];
+
+            for (var i = 0; i < playerInfo.length; i++) {
+                players.add(new PlayerCard(playerInfo[i], color, formation, userControlled, id), players.opponent);
+                id++;
+            }
+
+            formation = "oppGoalies";
+            playerInfo = [{ team: "NYR", name: "Lundqvist", attr1: 4, attr2: 4, pos: "G" },
+            { team: "NYR", name: "Biron", attr1: 2, attr2: 3, pos: "G"}];
+
+            for (var i = 0; i < playerInfo.length; i++) {
+                players.add(new PlayerCard(playerInfo[i], color, formation, userControlled, id), players.opponent);
+                id++;
+            }
         },
-        players: players
+        players: players,
+        Bonus: Bonus
     };
 
 
@@ -744,8 +871,8 @@ window.PlayByPlay = (function ($) {
         $('#oppBench').tabs();
         $('#playerBench').tabs();
 
-        play.addDetroitPlayers();
-        play.addRangersPlayers();
+        play.addUserPlayers();
+        play.addOpponentPlayers();
         play.addTacticCards();
         $("#tacticCards").hover(
             function () {
