@@ -3,14 +3,6 @@
 	display: inline-block;
 }
 
-#gameBoardBackgroundLayer
-{
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    z-index: 2;
-}
-
 #gameBoardCanvas
 {
     position: absolute;
@@ -23,76 +15,95 @@
     z-index: 100;
 }
 
-.gameSquareGoalkeeper
+#gameBoardBackgroundLayer
 {
-    height: 10.82%;
-    width: 22.69%;
-    margin-left: 38.655%;
-    background-color: rgba(233, 233, 233, 0.0);
-    clear: both;
-    margin-top: 0.016%;
-    padding-top: 0.016%;
-    position: relative;
+    margin-left: 1.9%;
+    margin-top: 1.3029%;
+    position: absolute;
+    overflow: hidden;
+    z-index: 2;
 }
 
-#gameBoardGoalkeeperOpponent
+.gameSquareGoalkeeper
 {
-    padding-top: 0.016%;
+    background-color: #333;
+    clear: both;
+    position: relative;
+    overflow: hidden;
 }
 
 .gameSquare
 {
-    height: 18%;
+    height: 19.09%;
+    width: 50%;
     position: relative;
+    overflow: hidden;
 }
 
 .gameSquareLeft
 {
-    background-color: rgba(255, 200, 200, 0.0);
-    width: 50%;
     float: left;
 }
  
 .gameSquareRight
 {
-    background-color: rgba(0, 255, 0, 0.0); 
     float: right;
-    width: 50%;
 }
 
 .gameSquareActive
 {
-    background-color: rgba(255, 165, 0, 0.2);
+    background-color: rgba(0, 102, 255, 0.2);
 }
 
 .gameSquareHover
 {
-    background-color: rgba(255, 165, 0, 0.5);
+    background-color: rgba(0, 102, 255, 0.5);
 }
 
 .gameSquareActiveStrong
 {
-    background-color: rgba(255, 65, 0, 0.2);
+    background-color: rgba(0, 255, 0, 0.2);
 }
 
 .gameSquareHoverStrong
 {
-    background-color: rgba(255, 65, 0, 0.5);
+    background-color: rgba(0, 255, 0, 0.5);
 }
 
 .gameSquareFaceOff
 {
+    z-index: 10;
+    background-color: #333;
+    overflow: hidden;
     position: absolute;
-    background-color: #f00;
-    top: 300px;
-    left: 50px;
-    z-index: 120;
     visibility: hidden;
 }
 
-#puck 
+#gameBoardFaceOffOpponent
 {
-    background-color: Black;
+  top: 35.12%;  
+}
+
+#gameBoardFaceOff
+{
+  top: 53%;  
+}
+
+.gameBoardPlaceholder 
+{
+    height: 11.82%;
+    width: 26.768%;
+    border: 0.03% solid #666;
+    background-color: #333;
+    margin-bottom: 0.3%;
+    margin-left: 36.616%;
+    font-weight: bold;
+	text-align: center;
+}
+
+#gameBoardPuck 
+{
+    background-color: #000;
     height: 3%;
     width: 4.8%;
     position: absolute;

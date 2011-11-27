@@ -149,6 +149,7 @@
     <Content Include="Content\lobby.css" />
     <Content Include="Content\reset.css" />
     <Content Include="Content\style.css" />
+    <Content Include="Content\battle.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -277,6 +278,36 @@
     <Content Include="Public\images\logobacks\VAN.png" />
     <Content Include="Public\images\logobacks\WPG.png" />
     <Content Include="Public\images\logobacks\WSH.png" />
+    <Content Include="Public\images\logos\ANA.png" />
+    <Content Include="Public\images\logos\BOS.png" />
+    <Content Include="Public\images\logos\BUF.png" />
+    <Content Include="Public\images\logos\CAR.png" />
+    <Content Include="Public\images\logos\CBJ.png" />
+    <Content Include="Public\images\logos\CGY.png" />
+    <Content Include="Public\images\logos\CHI.png" />
+    <Content Include="Public\images\logos\COL.png" />
+    <Content Include="Public\images\logos\DAL.png" />
+    <Content Include="Public\images\logos\DET.png" />
+    <Content Include="Public\images\logos\EDM.png" />
+    <Content Include="Public\images\logos\FLA.png" />
+    <Content Include="Public\images\logos\LAK.png" />
+    <Content Include="Public\images\logos\MIN.png" />
+    <Content Include="Public\images\logos\MTL.png" />
+    <Content Include="Public\images\logos\NJD.png" />
+    <Content Include="Public\images\logos\NSH.png" />
+    <Content Include="Public\images\logos\NYI.png" />
+    <Content Include="Public\images\logos\NYR.png" />
+    <Content Include="Public\images\logos\OTT.png" />
+    <Content Include="Public\images\logos\PHI.png" />
+    <Content Include="Public\images\logos\PHX.png" />
+    <Content Include="Public\images\logos\PIT.png" />
+    <Content Include="Public\images\logos\SJS.png" />
+    <Content Include="Public\images\logos\STL.png" />
+    <Content Include="Public\images\logos\TBL.png" />
+    <Content Include="Public\images\logos\TOR.png" />
+    <Content Include="Public\images\logos\VAN.png" />
+    <Content Include="Public\images\logos\WPG.png" />
+    <Content Include="Public\images\logos\WSH.png" />
     <Content Include="Public\images\tactics\Give-%27n-Take.png" />
     <Content Include="Public\index.html" />
     <Content Include="Global.asax" />
@@ -343,6 +374,7 @@
       <LastGenOutput>T4MVC.cs</LastGenOutput>
     </None>
     <None Include="T4MVC.tt.settings.t4" />
+    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

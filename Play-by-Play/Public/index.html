@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="/Content/card.css" />
 		<link rel="Stylesheet" href="/Content/board.css" />
 		<link rel="stylesheet" href="/Content/lobby.css" />
+		<link rel="stylesheet" href="/Content/battle.css" />
 		<link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico" />
 		<script type="text/template" id="actionTemplate">
 		<div class="action">
@@ -27,8 +28,8 @@
 		</script>
 		<script type="text/template" id="playerCardTemplate">
             <div class="placeholder">
-                ${pos}
-	            <div class="card{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable}" style="background-color: #${color}">
+                <span>${pos}</span>
+	            <div id="${id}" class="card ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
 				    <div class="teamLogo">
 					    <img src="/Public/images/logobacks/${team}.png"/>
 					    <div class="playerBio">
@@ -45,7 +46,7 @@
 		<script type="text/template" id="tacticCardTemplate">
 			<div class="tacticCard">
 				<div class="tactic">
-					<img src="/Public/images/tactics/${name}.png"/>
+                    <canvas></canvas>
 				</div>
 				<div class="tacticName">${name}</div>
 				<div class="diff">${diff}</div>
@@ -85,36 +86,23 @@
 		</div>
 		<div id="center" class="column">
 			<div id="gameboard">
-				<canvas id="gameBoardCanvas" width="100%" height="100%"></canvas>
-				<canvas id="gameBoardTacticalCanvas" width="100%" height="100%"></canvas>
-				<div id="gameBoardBackgroundLayer">
-					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper">
-					</div>
-					<div id="gameBoardLW" class="gameSquare gameSquareLeft gameSquareLW">
-					</div>
-					<div id="gameBoardRW" class="gameSquare gameSquareRight gameSquareRW">
-					</div>
-					<div id="gameBoardLCW" class="gameSquare gameSquareLeft gameSquareLW">
-					</div>
-					<div id="gameBoardRCW" class="gameSquare gameSquareRight gameSquareRW">
-					</div>
-					<div id="gameBoardLCD" class="gameSquare gameSquareLeft gameSquareLD">
-					</div>
-					<div id="gameBoardRCD" class="gameSquare gameSquareRight gameSquareRD">
-					</div>
-					<div id="gameBoardLD" class="gameSquare gameSquareLeft gameSquareLD">
-					</div>
-					<div id="gameBoardRD" class="gameSquare gameSquareRight gameSquareRD">
-					</div>
-					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper">
-					</div>
-					<div id="gameBoardFaceOffOpponent" class="gameSquare gameSquareFaceOff">
-					</div>
-					<div id="gameBoardFaceOff" class="gameSquareFaceOff">
-					</div>
-					<div id="puck">
-					</div>
-				</div>
+				<canvas id="gameBoardCanvas"></canvas>
+				<canvas id="gameBoardTacticalCanvas"></canvas>
+                <div id="gameBoardBackgroundLayer">
+                    <div id="gameBoardFaceOffOpponent" class="gameSquareFaceOff gameBoardPlaceholder">C</div>
+					<div id="gameBoardFaceOff" class="gameSquareFaceOff gameBoardPlaceholder">C</div>
+					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper gameBoardPlaceholder">G</div>
+					<div id="gameBoardLW" class="gameSquare gameSquareLeft gameSquareLW"></div>
+					<div id="gameBoardRW" class="gameSquare gameSquareRight gameSquareRW"></div>
+					<div id="gameBoardLCW" class="gameSquare gameSquareLeft gameSquareLW"></div>
+					<div id="gameBoardRCW" class="gameSquare gameSquareRight gameSquareRW"></div>
+					<div id="gameBoardLCD" class="gameSquare gameSquareLeft gameSquareLD"></div>
+					<div id="gameBoardRCD" class="gameSquare gameSquareRight gameSquareRD"></div>
+					<div id="gameBoardLD" class="gameSquare gameSquareLeft gameSquareLD"></div>
+					<div id="gameBoardRD" class="gameSquare gameSquareRight gameSquareRD"></div>
+					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper gameBoardPlaceholder">G</div>
+					<div id="gameBoardPuck"></div>
+                </div>
 			</div>
 		</div>
 		<div id="right" class="column">
@@ -167,6 +155,9 @@
 				</div>
 			</div>
 		</div>
+        <div id="battle-view">
+            <span>VS.</span>
+        </div>
 		<script type="text/javascript" src="/Scripts/modernizr-1.7.min.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-1.6.3.min.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.min.js"></script>
