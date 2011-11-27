@@ -1,4 +1,4 @@
-﻿window.connection = (function (parameters) {
+﻿window.connection = (function () {
 	var connection = $.connection.game;
 	// Server connectivity
 
@@ -38,6 +38,11 @@
 
 	connection.startGame = function (game) {
 		$('#lobby').dialog('close');
+		connection.getTacticCards(5);
+	};
+
+	connection.createTacticCards = function (cards) {
+		PlayByPlay.addTacticCards(cards);
 	};
 
 	connection.usernameExists = function () {
