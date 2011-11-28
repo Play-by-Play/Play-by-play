@@ -155,8 +155,22 @@ window.PlayByPlay = (function ($) {
 	// Game
 	var play = {
 		addTacticCards: function (cards) {
-			$.each(cards, function (card) {
-				addTacticCard(card.Name, card.Difficulty, { startNode: card.StartNode, nodes: card.Nodes, movementNode: card.MovementNodes, passes: card.Passes, movingPass: card.Movements, shot: card.Shot });
+			_.each(cards, function (card) {
+				var start = [card.StartNode.X, card.StartNode.Y];
+				var nodes = _.map(card.Nodes, function (node) {
+					return [node.X, node.Y];
+				});
+				var movementNodes = _.map(card.MovementNodes, function (node) {
+					return [node.X, node.Y];
+				});
+				var passes = _.map(card.Passes, function (pass) {
+					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
+				});
+				var movingPass = _.map(card.Movements, function(movement) {
+					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
+				});
+				var shot = [card.Shot.X, card.Shot.Y];
+				play.addTacticCard(card.Name, card.Difficulty, { startNode: start, nodes: nodes, movementNode: movementNodes, passes: passes, movingPass: movingPass, shot: shot });
 			});
 
 			$("#tacticCards").hover(
@@ -198,23 +212,25 @@ window.PlayByPlay = (function ($) {
 			layout.drawGameboard(canvas);
 			layout.drawTactic(canvas, tactic);
 
-			template.hover(function () {
-				// mouse over
+			template.hover(
+			// mouse over
+				function () {
 
-				// clear the canvas before proceding
-				layout.clearGameboardTactic();
+					// clear the canvas before proceding
+					layout.clearGameboardTactic();
 
-				layout.drawTactic(document.getElementById("gameBoardTacticalCanvas"), tactic);
-				$('.tacticCard').each(function () {
+					layout.drawTactic(document.getElementById("gameBoardTacticalCanvas"), tactic);
+					$('.tacticCard').each(function () {
+						$(this).css({ opacity: 0.5 });
+					});
+					$(this).css({ opacity: 1.0 });
+				},
+			// mouse out
+				function () {
+					layout.clearGameboardTactic();
 					$(this).css({ opacity: 0.5 });
-				});
-				$(this).css({ opacity: 1.0 });
-			},
-			function () {
-				// mouse out
-				layout.clearGameboardTactic();
-				$(this).css({ opacity: 0.5 });
-			});
+				}
+			);
 		},
 		/*placeOpponentPlayerCard: function (card, square) {
 		// Find card
@@ -992,7 +1008,7 @@ window.PlayByPlay = (function ($) {
 		$('#playerBench').tabs();
 
 
-		
+
 
 		PlayByPlay.lobby = new Lobby();
 
