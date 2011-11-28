@@ -290,6 +290,17 @@ namespace Play_by_Play.Hubs {
 				Caller.addPlayers(awayteam, hometeam);
 		}
 
+		public void PlacePlayer(int playerId, int x, int y) {
+			var game = games.Values.Where(z => z.AwayUser.ClientId.Equals(Context.ClientId) || z.HomeUser.ClientId.Equals(Context.ClientId)).First();
+			var oppositeX = 1 - x;
+			var oppositeY = 3 - y;
+			var opponentId = Context.ClientId == game.HomeUser.ClientId
+			                 	? game.AwayUser.ClientId
+			                 	: game.HomeUser.ClientId;
+
+			Clients[opponentId].placeOpponentPlayer(playerId, oppositeX, oppositeY);
+		}
+
 		public void AbortGame(Game game) {
 			if (game.HomeUser != null) {
 				Clients[game.HomeUser.ClientId].abortGame();
