@@ -1,4 +1,4 @@
-﻿window.connection = (function (parameters) {
+﻿window.connection = (function () {
 	var connection = $.connection.game;
 	// Server connectivity
 
@@ -13,7 +13,6 @@
 	};
 
 	connection.addActionMessage = function (message, type) {
-		alert(true);
 		$('#actionTemplate').tmpl({ type: type, message: message }).appendTo('#actions');
 	};
 
@@ -38,7 +37,17 @@
 
 	connection.startGame = function (game) {
 		$('#lobby').dialog('close');
+		connection.getPlayers();
+		connection.getTacticCards(5);
 	};
+
+	connection.createTacticCards = function (cards) {
+		PlayByPlay.addTacticCards(eval(cards));
+	};
+
+	connection.addPlayers = function (userteam, opponentteam) {
+		PlayByPlay.addPlayers(userteam, opponentteam);
+	}
 
 	connection.usernameExists = function () {
 		$('#username-exist').text('Another user is using that username.').slideDown(200);
