@@ -346,6 +346,8 @@
     <Content Include="Scripts\modernizr-2.0.6-development-only.js" />
     <Content Include="Scripts\Play-by-play.jquery.js" />
     <Content Include="Scripts\Play-by-Play.js" />
+    <Content Include="Scripts\underscore.js" />
+    <Content Include="Scripts\underscore.min.js" />
     <Content Include="Scripts\User.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

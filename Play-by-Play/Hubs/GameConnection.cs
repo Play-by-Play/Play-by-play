@@ -49,7 +49,7 @@ namespace Play_by_Play.Hubs {
 		public void CreateGame() {
 			string name = Caller.Name;
 			if (!users.ContainsKey(Caller.Name)) return;
-			if (games.Values.Where(x => x.HomeUser.Name == Caller.Name || (x.AwayUser != null && x.AwayUser.Name == Caller.Name)).Count() > 0) return;
+			if (games.Values.Count(x => x.HomeUser.Name == Caller.Name || (x.AwayUser != null && x.AwayUser.Name == Caller.Name)) > 0) return;
 			var user = users[Caller.Name];
 			var game = new Game {
 				HomeUser = user
@@ -85,12 +85,209 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void GetTacticCards(int amount) {
-			var game = games.Values.Single(x => x.AwayUser.ClientId.Equals(Context.ClientId) || x.HomeUser.ClientId.Equals(Context.ClientId));
+			var game = games.Values.Where(x => x.AwayUser.ClientId.Equals(Context.ClientId) || x.HomeUser.ClientId.Equals(Context.ClientId)).First();
 			var tactics = game.GenerateTactics(amount);
 
 			var writer = new JavaScriptSerializer();
 			var result = writer.Serialize(tactics);
 			Caller.createTacticCards(result);
+		}
+
+		public void GetPlayers() {
+			var hometeam = new {
+				Name = "DET",
+				Color = "c00",
+				Line1 = new List<object> {
+					new {
+						Name = "Zetterberg",
+						Attr1 = 5,
+						Attr2 = 3,
+						Pos = "LW",
+						Id = 1
+					},
+					new {
+						Name = "Datsyuk",
+						Attr1 = 4,
+						Attr2 = 4,
+						Pos = "C",
+						Id = 2
+					},
+					new {
+						Name = "Holmstrom",
+						Attr1 = 3,
+						Attr2 = 3,
+						Pos = "RW",
+						Id = 3
+					},
+					new {
+						Name = "Lidstrom",
+						Attr1 = 3,
+						Attr2 = 4,
+						Pos = "LD",
+						Id = 4
+					},
+					new {
+						Name = "Rafalski",
+						Attr1 = 2,
+						Attr2 = 4,
+						Pos = "RD",
+						Id = 5
+					}
+				},
+				Line2 = new List<object> {
+					new {
+						Name = "Cleary",
+						Attr1 = 4,
+						Attr2 = 2,
+						Pos = "LW",
+						Id = 6
+					},
+					new {
+						Name = "Filppula",
+						Attr1 = 4,
+						Attr2 = 2,
+						Pos = "C",
+						Id = 7
+					},
+					new {
+						Name = "Bertuzzi",
+						Attr1 = 4,
+						Attr2 = 3,
+						Pos = "RW",
+						Id = 8
+					},
+					new {
+						Name = "Kronwall",
+						Attr1 = 3,
+						Attr2 = 3,
+						Pos = "LD",
+						Id = 9
+					},
+					new {
+						Name = "Stuart",
+						Attr1 = 2,
+						Attr2 = 4,
+						Pos = "RD",
+						Id = 10
+					}
+				},
+				Goalies = new List<object> {
+					new {
+						Name = "Howard",
+						Attr1 = 3,
+						Attr2 = 5,
+						Pos = "G",
+						Id = 11
+					},
+					new {
+						Name = "Osgood",
+						Attr1 = 3,
+						Attr2 = 4,
+						Pos = "G",
+						Id = 12
+					}
+				}
+			};
+			var awayteam = new {
+				Name = "NYR",
+				Color = "00c",
+				Line1 = new List<object> {
+					new {
+						Name = "Dubinsky",
+						Attr1 = 5,
+						Attr2 = 2,
+						Pos = "LW",
+						Id = 13
+					},
+					new {
+						Name = "Drury",
+						Attr1 = 5,
+						Attr2 = 3,
+						Pos = "C",
+						Id = 14
+					},
+					new {
+						Name = "Gaborik",
+						Attr1 = 6,
+						Attr2 = 1,
+						Pos = "RW",
+						Id = 15
+					},
+					new {
+						Name = "Girardi",
+						Attr1 = 1,
+						Attr2 = 4,
+						Pos = "LD",
+						Id = 16
+					},
+					new {
+						Name = "Staal",
+						Attr1 = 3,
+						Attr2 = 4,
+						Pos = "RD",
+						Id = 17
+					}
+				},
+				Line2 = new List<object> {
+					new {
+						Name = "Zuccarello",
+						Attr1 = 4,
+						Attr2 = 2,
+						Pos = "LW",
+						Id = 18
+					},
+					new {
+						Name = "Anisimov",
+						Attr1 = 4,
+						Attr2 = 2,
+						Pos = "C",
+						Id = 19
+					},
+					new {
+						Name = "Callahan",
+						Attr1 = 4,
+						Attr2 = 3,
+						Pos = "RW",
+						Id = 20
+					},
+					new {
+						Name = "McCabe",
+						Attr1 = 2,
+						Attr2 = 4,
+						Pos = "LD",
+						Id = 21
+					},
+					new {
+						Name = "Del Zotto",
+						Attr1 = 2,
+						Attr2 = 3,
+						Pos = "RD",
+						Id = 22
+					}
+				},
+				Goalies = new List<object> {
+					new {
+						Name = "Lundqvist",
+						Attr1 = 4,
+						Attr2 = 4,
+						Pos = "G",
+						Id = 23
+					},
+					new {
+						Name = "Biron",
+						Attr1 = 2,
+						Attr2 = 3,
+						Pos = "G",
+						Id = 24
+					}
+				}
+			};
+
+			var isHome = games.Values.Where(x => x.HomeUser.ClientId == Context.ClientId).Count() > 0;
+			if (isHome)
+				Caller.addPlayers(hometeam, awayteam);
+			else
+				Caller.addPlayers(awayteam, hometeam);
 		}
 
 		public void AbortGame(Game game) {
