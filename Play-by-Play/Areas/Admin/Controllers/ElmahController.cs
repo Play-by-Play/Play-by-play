@@ -1,43 +1,49 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace Play_by_Play.Areas.Admin.Controllers {
-    //[Authorize(Roles = "Admin")]
-    public class ElmahController : Controller {
-        public ActionResult Index() {
+     //[Authorize(Roles = "Admin")]
+    public partial class ElmahController : Controller {
+			public virtual ActionResult Index() {
             return new ElmahResult();
         }
 
-        public ActionResult Stylesheet() {
+			public virtual ActionResult Stylesheet() {
             return new ElmahResult("stylesheet");
         }
 
-        public ActionResult Rss() {
+			public virtual ActionResult Rss() {
             return new ElmahResult("rss");
         }
 
-        public ActionResult DigestRss() {
+			public virtual ActionResult DigestRss() {
             return new ElmahResult("digestrss");
         }
 
-        public ActionResult About() {
+			public virtual ActionResult About() {
             return new ElmahResult("about");
         }
 
-        public ActionResult Detail() {
+			public virtual ActionResult Detail() {
             return new ElmahResult("detail");
         }
 
-        public ActionResult Download() {
+			public virtual ActionResult Download() {
             return new ElmahResult("download");
+        }
+
+			public virtual ActionResult Json() {
+            return new ElmahResult("json");
+        }
+
+			public virtual ActionResult Xml() {
+            return new ElmahResult("xml");
         }
     }
 
     internal class ElmahResult : ActionResult {
-        private string _resouceType;
+        private readonly string _resouceType;
 
         public ElmahResult()
             : this(null) {
@@ -59,13 +65,14 @@ namespace Play_by_Play.Areas.Admin.Controllers {
             var currentContext = GetCurrentContext(context);
 
             var httpHandler = factory.GetHandler(currentContext, null, null, null);
-            if (httpHandler is IHttpAsyncHandler) {
-                var asyncHttpHandler = (IHttpAsyncHandler)httpHandler;
-                asyncHttpHandler.BeginProcessRequest(currentContext, (r) => { }, null);
+            var httpAsyncHandler = httpHandler as IHttpAsyncHandler;
+
+            if (httpAsyncHandler != null) {
+                httpAsyncHandler.BeginProcessRequest(currentContext, r => { }, null);
+                return;
             }
-            else {
-                httpHandler.ProcessRequest(currentContext);
-            }
+
+            httpHandler.ProcessRequest(currentContext);
         }
 
         private static HttpContext GetCurrentContext(ControllerContext context) {
