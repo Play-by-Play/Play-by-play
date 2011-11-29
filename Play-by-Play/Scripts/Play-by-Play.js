@@ -212,7 +212,16 @@ window.PlayByPlay = (function ($) {
         },*/
         showBattleView: function (title, location) {
             var viewDiv = $("#battle-view");
-            // Add content...
+            var cards = location.find(".card").each(function () {
+                var name = $(this).find(".playerName").text();
+                var span = document.createElement("span");
+                span.appendChild(document.createTextNode(name));
+                var playerDiv = viewDiv.find("#userBattle")[0];
+                if (!$(this).hasClass("draggable")) {
+                    playerDiv = viewDiv.find("#oppBattle")[0];
+                }
+                playerDiv.appendChild(span);
+            });
             viewDiv.dialog({
                 title: title,
                 modal: true,
