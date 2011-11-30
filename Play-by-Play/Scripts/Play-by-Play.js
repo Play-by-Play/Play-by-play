@@ -48,28 +48,28 @@ window.PlayByPlay = (function ($) {
 		this.location = $("#" + this.formation);
 	}
 	PlayerCard.prototype = {
-		getAttr1: function() {
+		getAttr1: function () {
 			return this.attr1;
 		},
-		getAttr2: function() {
+		getAttr2: function () {
 			return this.attr2;
 		},
-		getBonus: function() {
+		getBonus: function () {
 			return this.bonus;
 		},
-		getPos: function() {
+		getPos: function () {
 			return this.pos;
 		},
-		getLine: function() {
+		getLine: function () {
 			return this.formation;
 		},
-		getId: function() {
+		getId: function () {
 			return this.id;
 		},
-		isUserControlled: function() {
+		isUserControlled: function () {
 			return this.userControlled;
 		},
-		setBonus: function(bonus) {
+		setBonus: function (bonus) {
 			// Find card div
 			var cardDiv = $("#card" + this.id);
 			switch (bonus) {
@@ -107,7 +107,7 @@ window.PlayByPlay = (function ($) {
 			}
 			this.bonus = bonus;
 		},
-		setLocation: function(newLocation) {
+		setLocation: function (newLocation) {
 			// Find card div
 			var cardDiv = $("#card" + this.id);
 			// Find out offset depending on cards already put in the square
@@ -144,7 +144,7 @@ window.PlayByPlay = (function ($) {
 					this.setBonus(Bonus.DEF);
 				else
 					this.setBonus(Bonus.NONE);
-			}
+				}
 			this.location = newLocation;
 		}
 	};
@@ -163,7 +163,7 @@ window.PlayByPlay = (function ($) {
 				var passes = _.map(card.Passes, function (pass) {
 					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
 				});
-				var movingPass = _.map(card.Movements, function (movement) {
+				var movingPass = _.map(card.Movements, function(movement) {
 					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
 				});
 				var shot = [card.Shot.X, card.Shot.Y];
@@ -229,26 +229,51 @@ window.PlayByPlay = (function ($) {
 				}
 			);
 		},
-		placeOpponentPlayerCard: function (card, square) {
-			// Find card
-			var cardDiv = $("#" + card.getLine()).find("." + card.getPos());
-			// Find out offset depending on cards already put in the square
-			var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
-			// Resize and move card
-			cardDiv.addClass("onBoard");
-			layout.setCardSizes();
-			cardDiv.appendTo($("#" + square));
-			// Place the card correctly
-			cardDiv.position({
-				of: $("#" + square),
-				my: 'left top',
-				at: 'left top',
-				offset: i + 'px 2px'
-			});
+        placePlayerCard: function (id, x, y) {
+            // Get hold of the card div
+            var cardDiv = $("#card" + id);
+            // Check player position
+            var pos = cardDiv.find(".playerPos").text();
+            // Find out which line player belongs to
+            var id = cardDiv[0].id.substring(4);
+            var mod = id % 12;
+            var line = "goalies";
+            if (mod < 5) {
+                var line = "line1";
+            } else if (mod < 10) {
+                var line = "line2";
+            }
+            // Get the card object
+            var playerCard = players.user[line][pos];
+            // Transform coordinates to gameboard square ID
+            var squareID = "#gameBoard";
+            // X coord
+            if (x == 0) {
+                squareID += "L";
+            } else if (x == 1) {
+                squareID += "R";
+            }
+            // Y coord
+            switch (y) {
+                case 0: squareID += "W";
+                case 1: squareID += "CW";
+                case 2: squareID += "CD";
+                case 3: squareID += "D";
+            }
+            playerCard.setLocation($(squareID));
 		},
 		showBattleView: function (title, location) {
 			var viewDiv = $("#battle-view");
-			// Add content...
+            var cards = location.find(".card").each(function () {
+                //                var name = $(this).find(".playerName").text();
+                //                var span = $("<span>");
+                //                span.text(name);
+                //                var playerDiv = viewDiv.find("#userBattle")[0];
+                //                if (!$(this).hasClass("draggable")) {
+                //                    playerDiv = viewDiv.find("#oppBattle")[0];
+                //                }
+                //                playerDiv.append(span);
+            });
 			viewDiv.dialog({
 				title: title,
 				modal: true,
@@ -260,20 +285,18 @@ window.PlayByPlay = (function ($) {
 				$(this).dialog('close');
 			});
 		},
-		/*movePlayer: function (card, square) {
-		// Find card
-		var cardDiv = $(".onBoard > ." + card.getPos());
-		// Find out offset depending on cards already put in the square
-		var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
-		cardDiv.appendTo($("#" + square));
-		// Place the card correctly
-		cardDiv.position({
-		of: $("#" + square),
-		my: 'left top',
-		at: 'left top',
-		offset: i + 'px 2px'
-		});
-		},*/
+        showFaceoff: function () {
+            // Show faceoff squares
+            $(".gameSquareFaceOff").show();
+            // Disable other squares
+            $(".gameSquare").droppable("disable");
+        },
+        hideFaceoff: function () {
+            // Hide faceoff squares
+            $(".gameSquareFaceOff").hide();
+            // Enable other squares
+            $(".gameSquare").droppable("enable");
+        },
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
 				var cardDiv = $(this);
@@ -456,8 +479,14 @@ window.PlayByPlay = (function ($) {
 					if ($(this).has(".card")) {
 						// Get replaced goalie card
 						var replacedGoalie = $(this).find(".card");
+                        // Check which placeholder to return to
+                        var curPlaceHolder = ui.parent();
+                        var placeHolder = $("#goalies").find(".placeholder")[0];
+                        if (curPlaceHolder == placeHolder) {
+                            placeHolder = $("#goalies").find(".placeholder")[1];
+                        }
 						// Move it back to bench
-						replacedGoalie.appendTo($("#goalies").find(".placeholder")[1]);
+                        replacedGoalie.appendTo(placeHolder);
 						// Remove styling
 						replacedGoalie.removeClass("onBoard");
 						layout.setCardSizes();
