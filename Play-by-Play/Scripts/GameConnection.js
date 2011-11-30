@@ -49,8 +49,8 @@
 		PlayByPlay.addPlayers(userteam, opponentteam);
 	};
 
-	connection.placeOpponentPlayer = function(playerId, x, y) {
-		
+	connection.placeOpponentPlayer = function (playerId, square) {
+		var game = [];
 	};
 
 	connection.usernameExists = function () {

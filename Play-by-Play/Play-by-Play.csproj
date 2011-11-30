@@ -122,6 +122,7 @@
     <Compile Include="HomeController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\Models\Formation.cs" />
     <Compile Include="Hubs\Models\GameUser.cs" />
     <Compile Include="Hubs\Models\Game.cs" />
     <Compile Include="Hubs\GameConnection.cs" />

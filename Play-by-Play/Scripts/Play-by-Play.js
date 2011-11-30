@@ -48,28 +48,28 @@ window.PlayByPlay = (function ($) {
 		this.location = $("#" + this.formation);
 	}
 	PlayerCard.prototype = {
-		getAttr1: function () {
+		getAttr1: function() {
 			return this.attr1;
 		},
-		getAttr2: function () {
+		getAttr2: function() {
 			return this.attr2;
 		},
-		getBonus: function () {
+		getBonus: function() {
 			return this.bonus;
 		},
-		getPos: function () {
+		getPos: function() {
 			return this.pos;
 		},
-		getLine: function () {
+		getLine: function() {
 			return this.formation;
 		},
-		getId: function () {
+		getId: function() {
 			return this.id;
 		},
-		isUserControlled: function () {
+		isUserControlled: function() {
 			return this.userControlled;
 		},
-		setBonus: function (bonus) {
+		setBonus: function(bonus) {
 			// Find card div
 			var cardDiv = $("#card" + this.id);
 			switch (bonus) {
@@ -107,7 +107,7 @@ window.PlayByPlay = (function ($) {
 			}
 			this.bonus = bonus;
 		},
-		setLocation: function (newLocation) {
+		setLocation: function(newLocation) {
 			// Find card div
 			var cardDiv = $("#card" + this.id);
 			// Find out offset depending on cards already put in the square
@@ -124,33 +124,30 @@ window.PlayByPlay = (function ($) {
 					at: 'left top',
 					offset: i + 'px 2px'
 				});
-			} else {
+			} else
 				cardDiv.removeClass("onBoard");
-			}
 			layout.setCardSizes();
 			cardDiv.appendTo(newLocation);
 			// Potentially add bonus
 			if (!this.userControlled) {
 				// Bonus areas are on opposite sides of the board
-				if (this.pos == "LW" && newLocation.hasClass("gameSquareRD") || this.pos == "RW" && newLocation.hasClass("gameSquareLD")) {
+				if (this.pos == "LW" && newLocation.hasClass("gameSquareRD") || this.pos == "RW" && newLocation.hasClass("gameSquareLD"))
 					this.setBonus(Bonus.OFF);
-				} else if (this.pos == "LD" && newLocation.hasClass("gameSquareRW") || this.pos == "RD" && newLocation.hasClass("gameSquareLW")) {
+				else if (this.pos == "LD" && newLocation.hasClass("gameSquareRW") || this.pos == "RD" && newLocation.hasClass("gameSquareLW"))
 					this.setBonus(Bonus.DEF);
-				} else {
+				else
 					this.setBonus(Bonus.NONE);
-				}
 			} else {
-				if ((this.pos == "LW" || this.pos == "RW") && newLocation.hasClass("gameSquare" + this.pos)) {
+				if ((this.pos == "LW" || this.pos == "RW") && newLocation.hasClass("gameSquare" + this.pos))
 					this.setBonus(Bonus.OFF);
-				} else if ((this.pos == "LD" || this.pos == "RD") && newLocation.hasClass("gameSquare" + this.pos)) {
+				else if ((this.pos == "LD" || this.pos == "RD") && newLocation.hasClass("gameSquare" + this.pos))
 					this.setBonus(Bonus.DEF);
-				} else {
+				else
 					this.setBonus(Bonus.NONE);
-				}
 			}
 			this.location = newLocation;
 		}
-	}
+	};
 
 	// Game
 	var play = {
@@ -166,7 +163,7 @@ window.PlayByPlay = (function ($) {
 				var passes = _.map(card.Passes, function (pass) {
 					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
 				});
-				var movingPass = _.map(card.Movements, function(movement) {
+				var movingPass = _.map(card.Movements, function (movement) {
 					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
 				});
 				var shot = [card.Shot.X, card.Shot.Y];
@@ -232,23 +229,23 @@ window.PlayByPlay = (function ($) {
 				}
 			);
 		},
-		/*placeOpponentPlayerCard: function (card, square) {
-		// Find card
-		var cardDiv = $("#" + card.getLine()).find("." + card.getPos());
-		// Find out offset depending on cards already put in the square
-		var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
-		// Resize and move card
-		cardDiv.addClass("onBoard");
-		layout.setCardSizes();
-		cardDiv.appendTo($("#" + square));
-		// Place the card correctly
-		cardDiv.position({
-		of: $("#" + square),
-		my: 'left top',
-		at: 'left top',
-		offset: i + 'px 2px'
-		});
-		},*/
+		placeOpponentPlayerCard: function (card, square) {
+			// Find card
+			var cardDiv = $("#" + card.getLine()).find("." + card.getPos());
+			// Find out offset depending on cards already put in the square
+			var i = 2 + cardDiv.width() * 0.2 * $("#" + square).children().length;
+			// Resize and move card
+			cardDiv.addClass("onBoard");
+			layout.setCardSizes();
+			cardDiv.appendTo($("#" + square));
+			// Place the card correctly
+			cardDiv.position({
+				of: $("#" + square),
+				my: 'left top',
+				at: 'left top',
+				offset: i + 'px 2px'
+			});
+		},
 		showBattleView: function (title, location) {
 			var viewDiv = $("#battle-view");
 			// Add content...
@@ -389,13 +386,14 @@ window.PlayByPlay = (function ($) {
 					var mod = id % 12;
 					var line = "goalies";
 					if (mod < 5) {
-						var line = "line1";
+						line = "line1";
 					} else if (mod < 10) {
-						var line = "line2";
+						line = "line2";
 					}
 					// Get the card object
 					var playerCard = players.user[line][pos];
 					playerCard.setLocation($($(this)));
+					connection.placePlayer(playerCard.id, $(this).attr('id'));
 					// Disable draggability
 					cardDiv.draggable("disable");
 					cardDiv.css({ opacity: 1 });

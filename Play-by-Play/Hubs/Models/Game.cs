@@ -159,15 +159,17 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void Start() {
+			# region Team Init
 			HomeUser.Team = new Team {
 				Name = "DET",
 				Color = "c00",
-				Line1 = new List<Player> {
+				Players = new List<Player> {
 					new Player{
 						Name = "Zetterberg",
 						Offence = 5,
 						Defence = 3,
 						Position = Position.LW,
+						Formation = Formation.Line1,
 						Id = 1
 					},
 					new Player{
@@ -175,6 +177,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 4,
 						Defence = 4,
 						Position = Position.C,
+						Formation = Formation.Line1,
 						Id = 2
 					},
 					new Player{
@@ -182,6 +185,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 3,
 						Defence = 3,
 						Position = Position.RW,
+						Formation = Formation.Line1,
 						Id = 3
 					},
 					new Player{
@@ -189,6 +193,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 3,
 						Defence = 4,
 						Position = Position.LD,
+						Formation = Formation.Line1,
 						Id = 4
 					},
 					new Player{
@@ -196,15 +201,15 @@ namespace Play_by_Play.Hubs {
 						Offence = 2,
 						Defence = 4,
 						Position = Position.RD,
+						Formation = Formation.Line1,
 						Id = 5
-					}
-				},
-				Line2 = new List<Player> {
+					},
 					new Player{
 						Name = "Cleary",
 						Offence = 4,
 						Defence = 2,
 						Position = Position.LW,
+						Formation = Formation.Line2,
 						Id = 6
 					},
 					new Player{
@@ -212,6 +217,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 4,
 						Defence = 2,
 						Position = Position.C,
+						Formation = Formation.Line2,
 						Id = 7
 					},
 					new Player{
@@ -219,6 +225,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 4,
 						Defence = 3,
 						Position = Position.RW,
+						Formation = Formation.Line2,
 						Id = 8
 					},
 					new Player{
@@ -226,6 +233,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 3,
 						Defence = 3,
 						Position = Position.LD,
+						Formation = Formation.Line2,
 						Id = 9
 					},
 					new Player{
@@ -233,15 +241,15 @@ namespace Play_by_Play.Hubs {
 						Offence = 2,
 						Defence = 4,
 						Position = Position.RD,
+						Formation = Formation.Line2,
 						Id = 10
-					}
-				},
-				Goalies = new List<Player> {
+					},
 					new Player{
 						Name = "Howard",
 						Offence = 3,
 						Defence = 5,
 						Position = Position.G,
+						Formation = Formation.Goalies,
 						Id = 11
 					},
 					new Player{
@@ -249,6 +257,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 3,
 						Defence = 4,
 						Position = Position.G,
+						Formation = Formation.Goalies,
 						Id = 12
 					}
 				}
@@ -257,12 +266,13 @@ namespace Play_by_Play.Hubs {
 			AwayUser.Team = new Team {
 				Name = "NYR",
 				Color = "00c",
-				Line1 = new List<Player> {
+				Players = new List<Player> {
 					new Player{
 						Name = "Dubinsky",
 						Offence = 5,
 						Defence = 2,
 						Position = Position.LW,
+						Formation = Formation.Line1,
 						Id = 13
 					},
 					new Player{
@@ -270,6 +280,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 5,
 						Defence = 3,
 						Position = Position.C,
+						Formation = Formation.Line1,
 						Id = 14
 					},
 					new Player{
@@ -277,6 +288,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 6,
 						Defence = 1,
 						Position = Position.RW,
+						Formation = Formation.Line1,
 						Id = 15
 					},
 					new Player{
@@ -284,6 +296,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 1,
 						Defence = 4,
 						Position = Position.LD,
+						Formation = Formation.Line1,
 						Id = 16
 					},
 					new Player{
@@ -291,15 +304,15 @@ namespace Play_by_Play.Hubs {
 						Offence = 3,
 						Defence = 4,
 						Position = Position.RD,
+						Formation = Formation.Line1,
 						Id = 17
-					}
-				},
-				Line2 = new List<Player> {
+					},
 					new Player{
 						Name = "Zuccarello",
 						Offence = 4,
 						Defence = 2,
 						Position = Position.LW,
+						Formation = Formation.Line2,
 						Id = 18
 					},
 					new Player{
@@ -307,6 +320,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 4,
 						Defence = 2,
 						Position = Position.C,
+						Formation = Formation.Line2,
 						Id = 19
 					},
 					new Player{
@@ -314,6 +328,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 4,
 						Defence = 3,
 						Position = Position.RW,
+						Formation = Formation.Line2,
 						Id = 20
 					},
 					new Player{
@@ -321,6 +336,7 @@ namespace Play_by_Play.Hubs {
 						Offence = 2,
 						Defence = 4,
 						Position = Position.LD,
+						Formation = Formation.Line2,
 						Id = 21
 					},
 					new Player{
@@ -328,15 +344,15 @@ namespace Play_by_Play.Hubs {
 						Offence = 2,
 						Defence = 3,
 						Position = Position.RD,
+						Formation = Formation.Line2,
 						Id = 22
-					}
-				},
-				Goalies = new List<Player> {
+					},
 					new Player{
 						Name = "Lundqvist",
 						Offence = 4,
 						Defence = 4,
 						Position = Position.G,
+						Formation = Formation.Goalies,
 						Id = 23
 					},
 					new Player{
@@ -344,10 +360,14 @@ namespace Play_by_Play.Hubs {
 						Offence = 2,
 						Defence = 3,
 						Position = Position.G,
+						Formation = Formation.Goalies,
 						Id = 24
 					}
 				}
 			};
+			# endregion
+
+
 		}
 	}
 
@@ -355,6 +375,7 @@ namespace Play_by_Play.Hubs {
 		public List<GameArea> Areas { get; set; }
 
 		public GameBoard() {
+			Areas = new List<GameArea>();
 			for (int i = 0; i < 4; i++) {
 				for (int j = 0; j < 2; j++) {
 					Areas.Add(new GameArea {
@@ -363,6 +384,14 @@ namespace Play_by_Play.Hubs {
 					});
 				}
 			}
+		}
+
+		public void PlacePlayer(Player player, int x, int y, bool isHome) {
+			var area = GetArea(x, y);
+			if(isHome)
+				area.HomePlayers.Add(player);
+			else
+				area.AwayPlayers.Add(player);
 		}
 
 		public GameArea GetArea(int x, int y) {
@@ -380,6 +409,26 @@ namespace Play_by_Play.Hubs {
 		public GameArea() {
 			HomePlayers = new List<Player>();
 			AwayPlayers = new List<Player>();
+		}
+
+
+		private static string[][] areaNames = new []{
+			new[]{"gameBoardLW", "gameBoardRW"},
+ 			new[]{"gameBoardLCW", "gameBoardLRW"}, 
+			new[]{"gameBoardLCD", "gameBoardRCD"},
+ 			new[]{"gameBoardLD", "gameBoardRD"} 
+		};
+		public static string GetAreaName(int x, int y) {
+			return areaNames[x][y];
+		}
+		public static int[] GetCoords(string areaName) {
+			for (int x = 0; x < areaNames.Count(); x++) {
+				for (int y = 0; y < areaNames[x].Count(); y++) {
+					if (areaNames[x][y].Equals(areaName))
+						return new[] {x, y};
+				}
+			}
+			throw new Exception("No area with the specified name");
 		}
 	}
 }

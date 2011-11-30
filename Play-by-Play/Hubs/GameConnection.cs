@@ -49,9 +49,16 @@ namespace Play_by_Play.Hubs {
 			if (!users.ContainsKey(Caller.Name)) return;
 			if (games.Values.Count(x => x.HomeUser.Name == Caller.Name || (x.AwayUser != null && x.AwayUser.Name == Caller.Name)) > 0) return;
 			var user = users[Caller.Name];
-			var game = new Game {
-				HomeUser = user
-			};
+			Game game;
+			try {
+				game = new Game {
+					HomeUser = user
+				};
+			}
+			catch (Exception e) {
+				Console.WriteLine(e);
+				throw;
+			}
 			games[game.Id] = game;
 
 			Caller.gameId = game.Id;
@@ -101,15 +108,24 @@ namespace Play_by_Play.Hubs {
 				Caller.addPlayers(game.AwayUser.Team, game.HomeUser.Team);
 		}
 
-		public void PlacePlayer(int playerId, int x, int y) {
-			var game = games.Values.Where(z => z.AwayUser.ClientId.Equals(Context.ClientId) || z.HomeUser.ClientId.Equals(Context.ClientId)).First();
-			var oppositeX = 1 - x;
-			var oppositeY = 3 - y;
-			var opponentId = Context.ClientId == game.HomeUser.ClientId
+		public void PlacePlayer(int playerId, string areaName) {
+			var username = Caller.Name;
+			var user = users[Caller.Name] as GameUser;
+			if(user == null)
+				throw new Exception("User does not exist");
+			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var coords = GameArea.GetCoords(areaName);
+			var oppositeX = 1 - coords[0];
+			var oppositeY = 3 - coords[1];
+			var isHome = user == game.HomeUser;
+			var opponentId = isHome
 			                 	? game.AwayUser.ClientId
 			                 	: game.HomeUser.ClientId;
 
-			Clients[opponentId].placeOpponentPlayer(playerId, oppositeX, oppositeY);
+			var player = user.Team.Players.Single(p => p.Id == playerId);
+			game.Board.PlacePlayer(player, coords[0], coords[1], isHome);
+
+			Clients[opponentId].placeOpponentPlayer(playerId, GameArea.GetAreaName(oppositeX, oppositeY));
 		}
 
 		public void AbortGame(Game game) {
