@@ -1,6 +1,4 @@
-﻿using Play_by_Play.Models;
-using Play_by_Play.Models.StateMachine;
-using SignalR.Hubs;
+﻿using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -51,9 +49,16 @@ namespace Play_by_Play.Hubs {
 			if (!users.ContainsKey(Caller.Name)) return;
 			if (games.Values.Count(x => x.HomeUser.Name == Caller.Name || (x.AwayUser != null && x.AwayUser.Name == Caller.Name)) > 0) return;
 			var user = users[Caller.Name];
-			var game = new Game {
-				HomeUser = user
-			};
+			Game game;
+			try {
+				game = new Game {
+					HomeUser = user
+				};
+			}
+			catch (Exception e) {
+				Console.WriteLine(e);
+				throw;
+			}
 			games[game.Id] = game;
 
 			Caller.gameId = game.Id;
@@ -74,6 +79,7 @@ namespace Play_by_Play.Hubs {
 			var user = users.FirstOrDefault(x => x.Key.Equals(Caller.Name)).Value;
 
 			game.AwayUser = user;
+			game.Start();
 
 			Caller.gameId = game.Id;
 			Caller.startGame(game);
@@ -85,7 +91,7 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void GetTacticCards(int amount) {
-			var game = games.Values.Where(x => x.AwayUser.ClientId.Equals(Context.ClientId) || x.HomeUser.ClientId.Equals(Context.ClientId)).First();
+			var game = games.Values.First(x => x.AwayUser.ClientId.Equals(Context.ClientId) || x.HomeUser.ClientId.Equals(Context.ClientId));
 			var tactics = game.GenerateTactics(amount);
 
 			var writer = new JavaScriptSerializer();
@@ -94,200 +100,39 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void GetPlayers() {
-			var hometeam = new {
-				Name = "DET",
-				Color = "c00",
-				Line1 = new List<object> {
-					new {
-						Name = "Zetterberg",
-						Attr1 = 5,
-						Attr2 = 3,
-						Pos = "LW",
-						Id = 1
-					},
-					new {
-						Name = "Datsyuk",
-						Attr1 = 4,
-						Attr2 = 4,
-						Pos = "C",
-						Id = 2
-					},
-					new {
-						Name = "Holmstrom",
-						Attr1 = 3,
-						Attr2 = 3,
-						Pos = "RW",
-						Id = 3
-					},
-					new {
-						Name = "Lidstrom",
-						Attr1 = 3,
-						Attr2 = 4,
-						Pos = "LD",
-						Id = 4
-					},
-					new {
-						Name = "Rafalski",
-						Attr1 = 2,
-						Attr2 = 4,
-						Pos = "RD",
-						Id = 5
-					}
-				},
-				Line2 = new List<object> {
-					new {
-						Name = "Cleary",
-						Attr1 = 4,
-						Attr2 = 2,
-						Pos = "LW",
-						Id = 6
-					},
-					new {
-						Name = "Filppula",
-						Attr1 = 4,
-						Attr2 = 2,
-						Pos = "C",
-						Id = 7
-					},
-					new {
-						Name = "Bertuzzi",
-						Attr1 = 4,
-						Attr2 = 3,
-						Pos = "RW",
-						Id = 8
-					},
-					new {
-						Name = "Kronwall",
-						Attr1 = 3,
-						Attr2 = 3,
-						Pos = "LD",
-						Id = 9
-					},
-					new {
-						Name = "Stuart",
-						Attr1 = 2,
-						Attr2 = 4,
-						Pos = "RD",
-						Id = 10
-					}
-				},
-				Goalies = new List<object> {
-					new {
-						Name = "Howard",
-						Attr1 = 3,
-						Attr2 = 5,
-						Pos = "G",
-						Id = 11
-					},
-					new {
-						Name = "Osgood",
-						Attr1 = 3,
-						Attr2 = 4,
-						Pos = "G",
-						Id = 12
-					}
-				}
-			};
-			var awayteam = new {
-				Name = "NYR",
-				Color = "00c",
-				Line1 = new List<object> {
-					new {
-						Name = "Dubinsky",
-						Attr1 = 5,
-						Attr2 = 2,
-						Pos = "LW",
-						Id = 13
-					},
-					new {
-						Name = "Drury",
-						Attr1 = 5,
-						Attr2 = 3,
-						Pos = "C",
-						Id = 14
-					},
-					new {
-						Name = "Gaborik",
-						Attr1 = 6,
-						Attr2 = 1,
-						Pos = "RW",
-						Id = 15
-					},
-					new {
-						Name = "Girardi",
-						Attr1 = 1,
-						Attr2 = 4,
-						Pos = "LD",
-						Id = 16
-					},
-					new {
-						Name = "Staal",
-						Attr1 = 3,
-						Attr2 = 4,
-						Pos = "RD",
-						Id = 17
-					}
-				},
-				Line2 = new List<object> {
-					new {
-						Name = "Zuccarello",
-						Attr1 = 4,
-						Attr2 = 2,
-						Pos = "LW",
-						Id = 18
-					},
-					new {
-						Name = "Anisimov",
-						Attr1 = 4,
-						Attr2 = 2,
-						Pos = "C",
-						Id = 19
-					},
-					new {
-						Name = "Callahan",
-						Attr1 = 4,
-						Attr2 = 3,
-						Pos = "RW",
-						Id = 20
-					},
-					new {
-						Name = "McCabe",
-						Attr1 = 2,
-						Attr2 = 4,
-						Pos = "LD",
-						Id = 21
-					},
-					new {
-						Name = "Del Zotto",
-						Attr1 = 2,
-						Attr2 = 3,
-						Pos = "RD",
-						Id = 22
-					}
-				},
-				Goalies = new List<object> {
-					new {
-						Name = "Lundqvist",
-						Attr1 = 4,
-						Attr2 = 4,
-						Pos = "G",
-						Id = 23
-					},
-					new {
-						Name = "Biron",
-						Attr1 = 2,
-						Attr2 = 3,
-						Pos = "G",
-						Id = 24
-					}
-				}
-			};
-
-			var isHome = games.Values.Where(x => x.HomeUser.ClientId == Context.ClientId).Count() > 0;
+			var game = games.Values.First(x => x.AwayUser.ClientId.Equals(Context.ClientId) || x.HomeUser.ClientId.Equals(Context.ClientId));
+			var isHome = game.HomeUser.ClientId == Context.ClientId;
 			if (isHome)
-				Caller.addPlayers(hometeam, awayteam);
+				Caller.addPlayers(game.HomeUser.Team, game.AwayUser.Team);
 			else
-				Caller.addPlayers(awayteam, hometeam);
+				Caller.addPlayers(game.AwayUser.Team, game.HomeUser.Team);
+		}
+
+		public void PlacePlayer(int playerId, string areaName) {
+			var username = Caller.Name;
+			var user = users[Caller.Name] as GameUser;
+			if(user == null)
+				throw new Exception("User does not exist");
+			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var coords = GameArea.GetCoords(areaName);
+			var oppositeX = 1 - coords[0];
+			var oppositeY = 3 - coords[1];
+			var isHome = user == game.HomeUser;
+			var opponentId = isHome
+			                 	? game.AwayUser.ClientId
+			                 	: game.HomeUser.ClientId;
+
+			var player = user.Team.Players.Single(p => p.Id == playerId);
+			game.Board.PlacePlayer(player, coords[0], coords[1], isHome);
+			string name;
+			try {
+				name = GameArea.GetAreaName(oppositeX, oppositeY);
+			}
+			catch (Exception e) {
+				Console.WriteLine(e.Message);
+				throw;
+			}
+			Clients[opponentId].placeOpponentPlayer(playerId, name);
 		}
 
 		public void AbortGame(Game game) {
@@ -324,211 +169,5 @@ namespace Play_by_Play.Hubs {
 				AbortGame(gamesToRemove[i]);
 			}
 		}
-	}
-	public class Game {
-		public string Id { get; set; }
-		public GameStateMachine GameState { get; private set; }
-		public GameUser HomeUser { get; set; }
-		public GameUser AwayUser { get; set; }
-		private List<TacticCard> AvailableCards { get; set; }
-
-		public Game() {
-			Id = Guid.NewGuid().ToString("d");
-			GameState = new GameStateMachine();
-			AvailableCards = GenerateTacticCards();
-		}
-
-		private List<TacticCard> GenerateTacticCards() {
-			var cards = new List<TacticCard>();
-			var nodes = new List<Node>();
-
-			nodes.Add(new Node { X = 0, Y = 0 });
-			nodes.Add(new Node { X = 0, Y = 1 });
-			nodes.Add(new Node { X = 0, Y = 2 });
-			nodes.Add(new Node { X = 0, Y = 3 });
-			nodes.Add(new Node { X = 1, Y = 0 });
-			nodes.Add(new Node { X = 1, Y = 1 });
-			nodes.Add(new Node { X = 1, Y = 2 });
-			nodes.Add(new Node { X = 1, Y = 3 });
-			
-			cards.Add(new TacticCard {
-				Name = "Give 'n Take",
-				Difficulty = 4,
-				Nodes = new List<Node>() {
-					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 0).First()
-				},
-				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-				Movements = new List<Movement> {
-					new Movement {
-						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
-						Order = 1
-					}
-				},
-				Passes = new List<Movement> {
-					new Movement {
-						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-						Order = 1
-					},
-					new Movement {
-						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
-						Order = 2
-					},
-					new Movement {
-						Start = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
-						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
-						Order = 3
-					}
-				},
-				Shot = nodes.Where(x => x.X == 1 && x.Y == 0).First()
-			});
-
-			cards.Add(new TacticCard {
-				Name = "Left On",
-				Difficulty = 4,
-				Nodes = new List<Node>() {
-					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First()
-				},
-				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-				Movements = new List<Movement>(),
-				Passes = new List<Movement> {
-					new Movement {
-						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
-						Order = 1
-					}
-				},
-				Shot = nodes.Where(x => x.X == 0 && x.Y == 0).First()
-			});
-
-			cards.Add(new TacticCard {
-				Name = "Longshot",
-				Difficulty = 4,
-				Nodes = new List<Node>() {
-					nodes.Where(x => x.X == 0 && x.Y == 3).First()
-				},
-				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-				Movements = new List<Movement>(),
-				Passes = new List<Movement>(),
-				Shot = nodes.Where(x => x.X == 0 && x.Y == 3).First()
-			});
-
-			cards.Add(new TacticCard {
-				Name = "Straight",
-				Difficulty = 4,
-				Nodes = new List<Node>() {
-					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First()
-				},
-				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-				Movements = new List<Movement>(),
-				Passes = new List<Movement> {
-					new Movement {
-						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-						Order = 1
-					},
-					new Movement {
-						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
-						Order = 2
-					}
-				},
-				Shot = nodes.Where(x => x.X == 0 && x.Y == 0).First()
-			});
-
-			cards.Add(new TacticCard {
-				Name = "Nailed",
-				Difficulty = 3,
-				Nodes = new List<Node>() {
-					nodes.Where(x => x.X == 0 && x.Y == 2).First()
-				},
-				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-				Movements = new List<Movement>(),
-				Passes = new List<Movement>(),
-				Shot = nodes.Where(x => x.X == 0 && x.Y == 2).First()
-			});
-
-			return cards;
-		}
-
-		public List<TacticCard> GenerateTactics(int amount) {
-			var list = new List<TacticCard>(amount);
-
-			for (var i = 0; i < amount; i++) {
-				var nrAvailable = AvailableCards.Count;
-				var choosen = (int)Math.Floor(new Random(nrAvailable).NextDouble());
-				var card = AvailableCards.ElementAt(choosen);
-				HomeUser.AddTactic(card);
-
-				nrAvailable = AvailableCards.Count;
-				choosen = (int)Math.Floor(new Random(nrAvailable).NextDouble());
-				card = AvailableCards.ElementAt(choosen);
-				AwayUser.AddTactic(card);
-			}
-
-			//return list;
-			return AvailableCards;
-		}
-	}
-
-	public class GameEvent {
-
-	}
-
-	[Serializable]
-	public class GameUser {
-		public string ClientId { get; set; }
-		public string Id { get; set; }
-		public string Name { get; set; }
-		public string Hash { get; set; }
-		private List<TacticCard> CurrentCards { get; set; }
-		private List<TacticCard> UsedCards { get; set; }
-		public Team Team { get; set; }
-
-		public GameUser() {
-
-		}
-
-		public GameUser(string name, string hash) {
-			Name = name;
-			Hash = hash;
-			Id = Guid.NewGuid().ToString("d");
-			CurrentCards = new List<TacticCard>();
-			UsedCards = new List<TacticCard>();
-		}
-
-		public void AddTactic(TacticCard card) {
-			CurrentCards.Add(card);
-		}
-	}
-
-	public class Team {
-		public List<Player> Players { get; set; }
-	}
-
-	public class Player {
-		public string Name { get; private set; }
-		public Position Position { get; set; }
-
-		public Player(string name) {
-			Name = name;
-		}
-	}
-
-	public enum Position {
-		C,
-		LW,
-		RW,
-		LD,
-		RD,
-		G
 	}
 }

@@ -1,6 +1,8 @@
+/// <reference path="underscore.js" />
 /// <reference path="jquery-1.7-vsdoc.js" />
 
-window.PlayByPlay = (function ($) {
+
+window.PlayByPlay = (function ($, _) {
 
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -21,6 +23,25 @@ window.PlayByPlay = (function ($) {
 
 		add: function (card, team) {
 			team[card.getLine()][card.getPos()] = card;
+		},
+
+		find: function (id) {
+			var player;
+			_.each(players.opponent, function (line) {
+				_.each(line, function (pos) {
+					if (pos.id === +id) {
+						player = pos;
+					}
+				});
+			});
+			_.each(players.user, function (line) {
+				_.each(line, function (pos) {
+					if (pos.id === +id) {
+						player = pos;
+					}
+				});
+			});
+			return player;
 		}
 	};
 
@@ -34,9 +55,9 @@ window.PlayByPlay = (function ($) {
 		this.color = color;
 		this.team = info.team;
 		this.name = info.Name;
-		this.attr1 = info.Attr1;
-		this.attr2 = info.Attr2;
-		this.pos = info.Pos;
+		this.attr1 = info.Offence;
+		this.attr2 = info.Defence;
+		this.pos = info.Position;
 		this.formation = formation;
 		this.userControlled = userControlled;
 		this.id = id;
@@ -126,33 +147,30 @@ window.PlayByPlay = (function ($) {
 					at: 'left top',
 					offset: i + 'px 2px'
 				});
-			} else {
+			} else
 				cardDiv.removeClass("onBoard");
-			}
 			layout.setCardSizes();
 			cardDiv.appendTo(newLocation);
 			// Potentially add bonus
 			if (!this.userControlled) {
 				// Bonus areas are on opposite sides of the board
-				if (this.pos == "LW" && newLocation.hasClass("gameSquareRD") || this.pos == "RW" && newLocation.hasClass("gameSquareLD")) {
+				if (this.pos == "LW" && newLocation.hasClass("gameSquareRD") || this.pos == "RW" && newLocation.hasClass("gameSquareLD"))
 					this.setBonus(Bonus.OFF);
-				} else if (this.pos == "LD" && newLocation.hasClass("gameSquareRW") || this.pos == "RD" && newLocation.hasClass("gameSquareLW")) {
+				else if (this.pos == "LD" && newLocation.hasClass("gameSquareRW") || this.pos == "RD" && newLocation.hasClass("gameSquareLW"))
 					this.setBonus(Bonus.DEF);
-				} else {
+				else
 					this.setBonus(Bonus.NONE);
-				}
 			} else {
-				if ((this.pos == "LW" || this.pos == "RW") && newLocation.hasClass("gameSquare" + this.pos)) {
+				if ((this.pos == "LW" || this.pos == "RW") && newLocation.hasClass("gameSquare" + this.pos))
 					this.setBonus(Bonus.OFF);
-				} else if ((this.pos == "LD" || this.pos == "RD") && newLocation.hasClass("gameSquare" + this.pos)) {
+				else if ((this.pos == "LD" || this.pos == "RD") && newLocation.hasClass("gameSquare" + this.pos))
 					this.setBonus(Bonus.DEF);
-				} else {
+				else
 					this.setBonus(Bonus.NONE);
-				}
 			}
 			this.location = newLocation;
 		}
-	}
+	};
 
 	// Game
 	var play = {
@@ -168,7 +186,7 @@ window.PlayByPlay = (function ($) {
 				var passes = _.map(card.Passes, function (pass) {
 					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
 				});
-				var movingPass = _.map(card.Movements, function(movement) {
+				var movingPass = _.map(card.Movements, function (movement) {
 					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
 				});
 				var shot = [card.Shot.X, card.Shot.Y];
@@ -241,13 +259,13 @@ window.PlayByPlay = (function ($) {
 			// set card to disable as default
 			template.disable(true);
 		},
-		placePlayerCard: function (id, x, y) {
+		placePlayerCard: function (id, square) {
 			// Get hold of the card div
 			var cardDiv = $("#card" + id);
 			// Check player position
 			var pos = cardDiv.find(".playerPos").text();
 			// Find out which line player belongs to
-			var id = cardDiv[0].id.substring(4);
+			id = cardDiv[0].id.substring(4);
 			var mod = id % 12;
 			var line = "goalies";
 			if (mod < 5) {
@@ -439,6 +457,7 @@ window.PlayByPlay = (function ($) {
 					// Get the card object
 					var playerCard = players.user[line][pos];
 					playerCard.setLocation($($(this)));
+					connection.placePlayer(playerCard.id, $(this).attr('id'));
 					// Disable draggability
 					cardDiv.draggable("disable");
 					cardDiv.css({ opacity: 1 });
@@ -791,7 +810,7 @@ window.PlayByPlay = (function ($) {
 														(a + height / 64) * Math.cos(Math.PI / 6) - (b + height / 40) * Math.sin(Math.PI / 6),
 														(a + height / 64) * Math.sin(Math.PI / 6) + (b + height / 40) * Math.cos(Math.PI / 6));
 
-			// restore context rotation
+			// restore context
 			context.rotate(30 * Math.PI / 180);
 		},
 
@@ -1067,7 +1086,6 @@ window.PlayByPlay = (function ($) {
 		}
 	};
 
-
 	$(window).bind('resize', function () {
 		layout.init();
 		layout.drawMainGameboard();
@@ -1114,7 +1132,7 @@ window.PlayByPlay = (function ($) {
 	});
 
 	return play;
-})(jQuery);
+})(jQuery, _);
 
 CanvasRenderingContext2D.prototype.dashedLine = function (x1, y1, x2, y2, dashLen) {
 	// code that extends the canvas drawing with a dashed line functionality
