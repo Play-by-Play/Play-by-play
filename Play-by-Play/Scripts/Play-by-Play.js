@@ -251,6 +251,13 @@ window.PlayByPlay = (function ($, _) {
 					$(this).css({ opacity: 0.5 });
 				}
 			);
+
+			template.click(function () {
+				layout.drawPlayerPlacedTactic(tactic, template);
+			});
+
+			// set card to disable as default
+			template.disable(true);
 		},
 		placePlayerCard: function (id, square) {
 			// Get hold of the card div
@@ -595,7 +602,6 @@ window.PlayByPlay = (function ($, _) {
 
 
 
-
 	// Layout
 	var layout = {
 		init: function () {
@@ -782,13 +788,40 @@ window.PlayByPlay = (function ($, _) {
 
 			// restore context
 			context.rotate(30 * Math.PI / 180);
+
+		drawPlayerPlacedTactic: function (tactic, card) {
+			// remove placed tactic card
+			card.remove();
+
+			// inform server of selected tactical card
+
+			// lock tactic cards
+			$('.tacticCard').each(function () {
+				$(this).disable(true);
+			});
+
+			var canvas = document.getElementById("gameBoardCanvas");
+
+			layout.drawTactic(canvas, tactic);
 		},
 
-		drawTactic: function (canvas, tactic) {
-			// seting up canvas
+		drarwOpponentPlacedTactic: function (tactic) {
+			var canvas = document.getElementById("gameBoardCanvas");
 			var context = canvas.getContext("2d");
-			var width = canvas.width;
-			var height = canvas.height;
+
+			context.rotate(-Math.PI);
+
+			layou.drawTactic(canvas, tactic);
+
+			// restore context rotation
+			context.rotate(Math.PI);
+		},
+
+        drawTactic: function (canvas, tactic) {
+            // seting up canvas
+            var context = canvas.getContext("2d");
+            var width = canvas.width;
+            var height = canvas.height;
 
 			// editable values
 			var pointSize = 0.12; // radius of gameSquare height

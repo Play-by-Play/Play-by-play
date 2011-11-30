@@ -45,6 +45,10 @@
 		PlayByPlay.addTacticCards(eval(cards));
 	};
 
+	connection.opponentSelectTacticCard = function (tactic) {
+		
+	};
+
 	connection.addPlayers = function (userteam, opponentteam) {
 		PlayByPlay.addPlayers(userteam, opponentteam);
 	};
