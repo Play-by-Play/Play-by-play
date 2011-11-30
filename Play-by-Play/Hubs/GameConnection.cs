@@ -124,8 +124,15 @@ namespace Play_by_Play.Hubs {
 
 			var player = user.Team.Players.Single(p => p.Id == playerId);
 			game.Board.PlacePlayer(player, coords[0], coords[1], isHome);
-
-			Clients[opponentId].placeOpponentPlayer(playerId, GameArea.GetAreaName(oppositeX, oppositeY));
+			string name;
+			try {
+				name = GameArea.GetAreaName(oppositeX, oppositeY);
+			}
+			catch (Exception e) {
+				Console.WriteLine(e.Message);
+				throw;
+			}
+			Clients[opponentId].placeOpponentPlayer(playerId, name);
 		}
 
 		public void AbortGame(Game game) {

@@ -50,7 +50,7 @@
 	};
 
 	connection.placeOpponentPlayer = function (playerId, square) {
-		var game = [];
+		PlayByPlay.placePlayerCard(playerId, square);
 	};
 
 	connection.usernameExists = function () {

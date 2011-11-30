@@ -414,17 +414,17 @@ namespace Play_by_Play.Hubs {
 
 		private static string[][] areaNames = new []{
 			new[]{"gameBoardLW", "gameBoardRW"},
- 			new[]{"gameBoardLCW", "gameBoardLRW"}, 
+ 			new[]{"gameBoardLCW", "gameBoardLCW"}, 
 			new[]{"gameBoardLCD", "gameBoardRCD"},
  			new[]{"gameBoardLD", "gameBoardRD"} 
 		};
 		public static string GetAreaName(int x, int y) {
-			return areaNames[x][y];
+			return areaNames[y][x];
 		}
 		public static int[] GetCoords(string areaName) {
-			for (int x = 0; x < areaNames.Count(); x++) {
-				for (int y = 0; y < areaNames[x].Count(); y++) {
-					if (areaNames[x][y].Equals(areaName))
+			for (int y = 0; y < areaNames.Count(); y++) {
+				for (int x = 0; x < areaNames[y].Count(); x++) {
+					if (areaNames[y][x].Equals(areaName))
 						return new[] {x, y};
 				}
 			}
