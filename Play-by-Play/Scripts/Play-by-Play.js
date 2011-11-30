@@ -246,8 +246,14 @@ window.PlayByPlay = (function ($) {
             } else if (mod < 10) {
                 var line = "line2";
             }
-            // Get the card object
-            var playerCard = players.user[line][pos];
+            // Check which team player belongs to
+            if (cardDiv.hasClass("draggable")) { // player team
+                // Get the card object
+                var playerCard = players.user[line][pos];
+            } else { // opponent team
+                // Get the card object
+                var playerCard = players.opponent[line][pos];
+            }
             // Transform coordinates to gameboard square ID
             var squareID = "#gameBoard";
             // X coord
@@ -268,14 +274,14 @@ window.PlayByPlay = (function ($) {
         showBattleView: function (title, location) {
             var viewDiv = $("#battle-view");
             var cards = location.find(".card").each(function () {
-                //                var name = $(this).find(".playerName").text();
-                //                var span = $("<span>");
-                //                span.text(name);
-                //                var playerDiv = viewDiv.find("#userBattle")[0];
-                //                if (!$(this).hasClass("draggable")) {
-                //                    playerDiv = viewDiv.find("#oppBattle")[0];
-                //                }
-                //                playerDiv.append(span);
+                var name = $(this).find(".playerName").text();
+                var span = $("<span>");
+                span.text(name);
+                var playerDiv = viewDiv.find("#userBattle")[0];
+                if (!$(this).hasClass("draggable")) {
+                    playerDiv = viewDiv.find("#oppBattle")[0];
+                }
+                playerDiv.append(span);
             });
             viewDiv.dialog({
                 title: title,
@@ -295,6 +301,8 @@ window.PlayByPlay = (function ($) {
             $(".gameSquare").droppable("disable");
         },
         hideFaceoff: function () {
+            // Restore centers
+            play.restorePlayers();
             // Hide faceoff squares
             $(".gameSquareFaceOff").hide();
             // Enable other squares
