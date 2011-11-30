@@ -251,6 +251,13 @@ window.PlayByPlay = (function ($, _) {
 					$(this).css({ opacity: 0.5 });
 				}
 			);
+
+			template.click(function () {
+				layout.drawPlayerPlacedTactic(tactic, template);
+			});
+
+			// set card to disable as default
+			//template.disable(true);
 		},
 		placePlayerCard: function (id, square) {
 			// Get hold of the card div
@@ -595,7 +602,6 @@ window.PlayByPlay = (function ($, _) {
 
 
 
-
 	// Layout
 	var layout = {
 		init: function () {
@@ -667,7 +673,6 @@ window.PlayByPlay = (function ($, _) {
 			width -= outerLineWidth;
 
 			context.clearRect(0, 0, width, height);
-
 
 			// draw ice rink
 			context.beginPath();
@@ -769,26 +774,54 @@ window.PlayByPlay = (function ($, _) {
 			context.textAlign = "center";
 			context.font = height / 45 + "pt Calibri bold";
 			context.fillText("Play",
-														(a - height / 128) * Math.cos(Math.PI / 6) - (b - height / 70) * Math.sin(Math.PI / 6),
-														(a - height / 128) * Math.sin(Math.PI / 6) + (b - height / 70) * Math.cos(Math.PI / 6));
+				(a - height / 128) * Math.cos(Math.PI / 6) - (b - height / 70) * Math.sin(Math.PI / 6),
+				(a - height / 128) * Math.sin(Math.PI / 6) + (b - height / 70) * Math.cos(Math.PI / 6));
 			context.font = height / 55 + "pt Calibri bold";
 			context.fillText("-by-",
-														(a + height / 256) * Math.cos(Math.PI / 6) - (b + height / 256) * Math.sin(Math.PI / 6),
-														(a + height / 256) * Math.sin(Math.PI / 6) + (b + height / 256) * Math.cos(Math.PI / 6));
+				(a + height / 256) * Math.cos(Math.PI / 6) - (b + height / 256) * Math.sin(Math.PI / 6),
+				(a + height / 256) * Math.sin(Math.PI / 6) + (b + height / 256) * Math.cos(Math.PI / 6));
 			context.font = height / 45 + "pt Calibri bold";
 			context.fillText("Play",
-														(a + height / 64) * Math.cos(Math.PI / 6) - (b + height / 40) * Math.sin(Math.PI / 6),
-														(a + height / 64) * Math.sin(Math.PI / 6) + (b + height / 40) * Math.cos(Math.PI / 6));
+				(a + height / 64) * Math.cos(Math.PI / 6) - (b + height / 40) * Math.sin(Math.PI / 6),
+				(a + height / 64) * Math.sin(Math.PI / 6) + (b + height / 40) * Math.cos(Math.PI / 6));
 
 			// restore context
 			context.rotate(30 * Math.PI / 180);
 		},
 
-		drawTactic: function (canvas, tactic) {
-			// seting up canvas
+		drawPlayerPlacedTactic: function (tactic, card) {
+			// remove placed tactic card
+			card.remove();
+
+			// inform server of selected tactical card
+
+			// lock tactic cards
+			$('.tacticCard').each(function () {
+				//$(this).disable(true);
+			});
+
+			var canvas = document.getElementById("gameBoardCanvas");
+
+			layout.drawTactic(canvas, tactic);
+		},
+
+		drarwOpponentPlacedTactic: function (tactic) {
+			var canvas = document.getElementById("gameBoardCanvas");
 			var context = canvas.getContext("2d");
-			var width = canvas.width;
-			var height = canvas.height;
+
+			context.rotate(-Math.PI);
+
+			layou.drawTactic(canvas, tactic);
+
+			// restore context rotation
+			context.rotate(Math.PI);
+		},
+
+        drawTactic: function (canvas, tactic) {
+            // seting up canvas
+            var context = canvas.getContext("2d");
+            var width = canvas.width;
+            var height = canvas.height;
 
 			// editable values
 			var pointSize = 0.12; // radius of gameSquare height
