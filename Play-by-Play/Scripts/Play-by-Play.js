@@ -257,7 +257,7 @@ window.PlayByPlay = (function ($, _) {
 			});
 
 			// set card to disable as default
-			template.disable(true);
+			//template.disable(true);
 		},
 		placePlayerCard: function (id, square) {
 			// Get hold of the card div
@@ -674,7 +674,6 @@ window.PlayByPlay = (function ($, _) {
 
 			context.clearRect(0, 0, width, height);
 
-
 			// draw ice rink
 			context.beginPath();
 			context.arc(left + width / 5, top + height / 8, width / 5, -Math.PI / 2, Math.PI, true);
@@ -775,19 +774,20 @@ window.PlayByPlay = (function ($, _) {
 			context.textAlign = "center";
 			context.font = height / 45 + "pt Calibri bold";
 			context.fillText("Play",
-														(a - height / 128) * Math.cos(Math.PI / 6) - (b - height / 70) * Math.sin(Math.PI / 6),
-														(a - height / 128) * Math.sin(Math.PI / 6) + (b - height / 70) * Math.cos(Math.PI / 6));
+				(a - height / 128) * Math.cos(Math.PI / 6) - (b - height / 70) * Math.sin(Math.PI / 6),
+				(a - height / 128) * Math.sin(Math.PI / 6) + (b - height / 70) * Math.cos(Math.PI / 6));
 			context.font = height / 55 + "pt Calibri bold";
 			context.fillText("-by-",
-														(a + height / 256) * Math.cos(Math.PI / 6) - (b + height / 256) * Math.sin(Math.PI / 6),
-														(a + height / 256) * Math.sin(Math.PI / 6) + (b + height / 256) * Math.cos(Math.PI / 6));
+				(a + height / 256) * Math.cos(Math.PI / 6) - (b + height / 256) * Math.sin(Math.PI / 6),
+				(a + height / 256) * Math.sin(Math.PI / 6) + (b + height / 256) * Math.cos(Math.PI / 6));
 			context.font = height / 45 + "pt Calibri bold";
 			context.fillText("Play",
-														(a + height / 64) * Math.cos(Math.PI / 6) - (b + height / 40) * Math.sin(Math.PI / 6),
-														(a + height / 64) * Math.sin(Math.PI / 6) + (b + height / 40) * Math.cos(Math.PI / 6));
+				(a + height / 64) * Math.cos(Math.PI / 6) - (b + height / 40) * Math.sin(Math.PI / 6),
+				(a + height / 64) * Math.sin(Math.PI / 6) + (b + height / 40) * Math.cos(Math.PI / 6));
 
 			// restore context
 			context.rotate(30 * Math.PI / 180);
+		},
 
 		drawPlayerPlacedTactic: function (tactic, card) {
 			// remove placed tactic card
@@ -797,7 +797,7 @@ window.PlayByPlay = (function ($, _) {
 
 			// lock tactic cards
 			$('.tacticCard').each(function () {
-				$(this).disable(true);
+				//$(this).disable(true);
 			});
 
 			var canvas = document.getElementById("gameBoardCanvas");
