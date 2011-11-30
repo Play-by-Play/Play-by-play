@@ -76,7 +76,7 @@
     background-color: #333;
     overflow: hidden;
     position: absolute;
-    visibility: hidden;
+    display: none;
 }
 
 #gameBoardFaceOffOpponent
