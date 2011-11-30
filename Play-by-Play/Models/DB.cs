@@ -46,7 +46,7 @@ namespace Play_by_Play.Models {
 			return card;
 		}
 
-		public dynamic ToString() {
+		public override string ToString() {
 			var builder = new StringBuilder();
 
 			builder.Append("{");
