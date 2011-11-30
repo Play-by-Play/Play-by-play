@@ -363,10 +363,10 @@ window.PlayByPlay = (function ($, _) {
 						cardDiv.draggable("enable");
 					}
 				}
-			},
-			opponentPlaceTacticCard(tactic) {
-				layout.drawOpponentPlacedTactic(tactic);
 			});
+		},
+		opponentPlaceTacticCard: function (tactic) {
+			layout.drawOpponentPlacedTactic(tactic);
 		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
@@ -777,18 +777,18 @@ window.PlayByPlay = (function ($, _) {
 			context.stroke();
 
 			// draw inner arcs
-			// red arc
+			// blue arc
 			context.beginPath();
 			context.arc(left + width / 2, top + height / 2, width / 12, 0, -Math.PI / 2, true);
 			context.lineWidth = lineWidthBold;
-			context.strokeStyle = "#f00";
+			context.strokeStyle = "#00f";
 			context.stroke();
 
-			// blue arc
+			// red arc
 			context.beginPath();
 			context.arc(left + width / 2, top + height / 2, width / 12, Math.PI, Math.PI / 2, true);
 			context.lineWidth = lineWidthBold;
-			context.strokeStyle = "#00f";
+			context.strokeStyle = "#f00";
 			context.stroke();
 
 			// draw Play-by-Play text
