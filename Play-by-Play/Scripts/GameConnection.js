@@ -45,9 +45,13 @@
 		PlayByPlay.addTacticCards(eval(cards));
 	};
 
+	connection.opponentSelectTacticCard = function (tactic) {
+		
+	};
+
 	connection.addPlayers = function (userteam, opponentteam) {
 		PlayByPlay.addPlayers(userteam, opponentteam);
-	}
+	};
 
 	connection.usernameExists = function () {
 		$('#username-exist').text('Another user is using that username.').slideDown(200);

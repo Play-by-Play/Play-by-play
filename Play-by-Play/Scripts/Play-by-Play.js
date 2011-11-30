@@ -1,3 +1,5 @@
+/// <reference path="jquery-1.7-vsdoc.js" />
+
 window.PlayByPlay = (function ($) {
 
 	var iceColor = "#FFF";
@@ -166,7 +168,7 @@ window.PlayByPlay = (function ($) {
 				var passes = _.map(card.Passes, function (pass) {
 					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
 				});
-				var movingPass = _.map(card.Movements, function(movement) {
+				var movingPass = _.map(card.Movements, function (movement) {
 					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
 				});
 				var shot = [card.Shot.X, card.Shot.Y];
@@ -231,6 +233,13 @@ window.PlayByPlay = (function ($) {
 					$(this).css({ opacity: 0.5 });
 				}
 			);
+
+			template.click(function () {
+				layout.drawPlayerPlacedTactic(tactic, template);
+			});
+
+			// set card to disable as default
+			template.disable(true);
 		},
 		/*placeOpponentPlayerCard: function (card, square) {
 		// Find card
@@ -558,7 +567,6 @@ window.PlayByPlay = (function ($) {
 
 
 
-
 	// Layout
 	var layout = {
 		init: function () {
@@ -743,8 +751,36 @@ window.PlayByPlay = (function ($) {
 														(a + height / 64) * Math.cos(Math.PI / 6) - (b + height / 40) * Math.sin(Math.PI / 6),
 														(a + height / 64) * Math.sin(Math.PI / 6) + (b + height / 40) * Math.cos(Math.PI / 6));
 
-			// restore context
+			// restore context rotation
 			context.rotate(30 * Math.PI / 180);
+		},
+
+		drawPlayerPlacedTactic: function (tactic, card) {
+			// remove placed tactic card
+			card.remove();
+
+			// inform server of selected tactical card
+
+			// lock tactic cards
+			$('.tacticCard').each(function () {
+				$(this).disable(true);
+			});
+
+			var canvas = document.getElementById("gameBoardCanvas");
+
+			layout.drawTactic(canvas, tactic);
+		},
+
+		drarwOpponentPlacedTactic: function (tactic) {
+			var canvas = document.getElementById("gameBoardCanvas");
+			var context = canvas.getContext("2d");
+
+			context.rotate(-Math.PI);
+
+			layou.drawTactic(canvas, tactic);
+
+			// restore context rotation
+			context.rotate(Math.PI);
 		},
 
 		drawTactic: function (canvas, tactic) {
@@ -990,6 +1026,7 @@ window.PlayByPlay = (function ($) {
 			});
 		}
 	};
+
 
 	$(window).bind('resize', function () {
 		layout.init();
