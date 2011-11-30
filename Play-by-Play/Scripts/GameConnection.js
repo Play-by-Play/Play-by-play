@@ -47,7 +47,11 @@
 
 	connection.addPlayers = function (userteam, opponentteam) {
 		PlayByPlay.addPlayers(userteam, opponentteam);
-	}
+	};
+
+	connection.placeOpponentPlayer = function (playerId, square) {
+		PlayByPlay.placePlayerCard(playerId, square);
+	};
 
 	connection.usernameExists = function () {
 		$('#username-exist').text('Another user is using that username.').slideDown(200);

@@ -1,12 +1,10 @@
-﻿using NUnit.Framework;
-using Play_by_Play.Models;
+﻿using Play_by_Play.Models;
 using Should;
 using Xunit;
 
 namespace Play_by_Play.Tests.UnitTests {
-	[TestFixture]
 	public class NodeTests {
-		[Test]
+		[Fact]
 		public void ToStringWorks() {
 			var node = new Node {
 				X = 1,
@@ -15,7 +13,7 @@ namespace Play_by_Play.Tests.UnitTests {
 
 			var result = node.ToString();
 
-			ObjectAssertExtensions.ShouldEqual(result, "{X: 1, Y: 2}");
+			result.ShouldEqual("{X: 1, Y: 2}");
 		} 
 	}
 }
