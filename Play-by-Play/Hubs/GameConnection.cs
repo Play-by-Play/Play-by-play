@@ -126,7 +126,8 @@ namespace Play_by_Play.Hubs {
 			}
 			game.Board.PlacePlayer(player, coords[0], coords[1], isHome);
 			string name = GameArea.GetAreaName(oppositeX, oppositeY);
-			if (!debugFlip) return;
+			if (Caller.DebugMode == true && !debugFlip) 
+				return;
 			Clients[opponentId].placeOpponentPlayer(playerId, name);
 		}
 
