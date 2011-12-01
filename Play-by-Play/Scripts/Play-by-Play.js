@@ -273,23 +273,42 @@ window.PlayByPlay = (function ($, _) {
 			} else if (mod < 10) {
 				var line = "line2";
 			}
-
-			// Get the card object
-			var playerCard = players.find(id);
-
-			playerCard.setLocation($('#' + square));
+			// Check which team player belongs to
+			if (cardDiv.hasClass("draggable")) { // player team
+				// Get the card object
+				var playerCard = players.user[line][pos];
+			} else { // opponent team
+				// Get the card object
+				var playerCard = players.opponent[line][pos];
+			}
+			// Transform coordinates to gameboard square ID
+			var squareID = "#gameBoard";
+			// X coord
+			if (x == 0) {
+				squareID += "L";
+			} else if (x == 1) {
+				squareID += "R";
+			}
+			// Y coord
+			switch (y) {
+				case 0: squareID += "W";
+				case 1: squareID += "CW";
+				case 2: squareID += "CD";
+				case 3: squareID += "D";
+			}
+			playerCard.setLocation($(squareID));
 		},
 		showBattleView: function (title, location) {
 			var viewDiv = $("#battle-view");
 			var cards = location.find(".card").each(function () {
-				//                var name = $(this).find(".playerName").text();
-				//                var span = $("<span>");
-				//                span.text(name);
-				//                var playerDiv = viewDiv.find("#userBattle")[0];
-				//                if (!$(this).hasClass("draggable")) {
-				//                    playerDiv = viewDiv.find("#oppBattle")[0];
-				//                }
-				//                playerDiv.append(span);
+				var name = $(this).find(".playerName").text();
+				var span = $("<span>");
+				span.text(name);
+				var playerDiv = viewDiv.find("#userBattle")[0];
+				if (!$(this).hasClass("draggable")) {
+					playerDiv = viewDiv.find("#oppBattle")[0];
+				}
+				playerDiv.append(span);
 			});
 			viewDiv.dialog({
 				title: title,
@@ -309,6 +328,8 @@ window.PlayByPlay = (function ($, _) {
 			$(".gameSquare").droppable("disable");
 		},
 		hideFaceoff: function () {
+			// Restore centers
+			play.restorePlayers();
 			// Hide faceoff squares
 			$(".gameSquareFaceOff").hide();
 			// Enable other squares
@@ -343,6 +364,9 @@ window.PlayByPlay = (function ($, _) {
 					}
 				}
 			});
+		},
+		opponentPlaceTacticCard: function (tactic) {
+			layout.drawOpponentPlacedTactic(tactic);
 		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
@@ -426,9 +450,9 @@ window.PlayByPlay = (function ($, _) {
 					var mod = id % 12;
 					var line = "goalies";
 					if (mod < 5) {
-						line = "line1";
+						var line = "line1";
 					} else if (mod < 10) {
-						line = "line2";
+						var line = "line2";
 					}
 					// Get the card object
 					var playerCard = players.user[line][pos];
@@ -752,18 +776,18 @@ window.PlayByPlay = (function ($, _) {
 			context.stroke();
 
 			// draw inner arcs
-			// red arc
+			// blue arc
 			context.beginPath();
 			context.arc(left + width / 2, top + height / 2, width / 12, 0, -Math.PI / 2, true);
 			context.lineWidth = lineWidthBold;
-			context.strokeStyle = "#f00";
+			context.strokeStyle = "#00f";
 			context.stroke();
 
-			// blue arc
+			// red arc
 			context.beginPath();
 			context.arc(left + width / 2, top + height / 2, width / 12, Math.PI, Math.PI / 2, true);
 			context.lineWidth = lineWidthBold;
-			context.strokeStyle = "#00f";
+			context.strokeStyle = "#f00";
 			context.stroke();
 
 			// draw Play-by-Play text
@@ -805,7 +829,7 @@ window.PlayByPlay = (function ($, _) {
 			layout.drawTactic(canvas, tactic);
 		},
 
-		drarwOpponentPlacedTactic: function (tactic) {
+		drawOpponentPlacedTactic: function (tactic) {
 			var canvas = document.getElementById("gameBoardCanvas");
 			var context = canvas.getContext("2d");
 
@@ -817,11 +841,11 @@ window.PlayByPlay = (function ($, _) {
 			context.rotate(Math.PI);
 		},
 
-        drawTactic: function (canvas, tactic) {
-            // seting up canvas
-            var context = canvas.getContext("2d");
-            var width = canvas.width;
-            var height = canvas.height;
+		drawTactic: function (canvas, tactic) {
+			// seting up canvas
+			var context = canvas.getContext("2d");
+			var width = canvas.width;
+			var height = canvas.height;
 
 			// editable values
 			var pointSize = 0.12; // radius of gameSquare height
