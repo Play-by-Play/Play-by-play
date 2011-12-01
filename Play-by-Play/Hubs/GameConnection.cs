@@ -45,20 +45,12 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void CreateGame() {
-			string name = Caller.Name;
 			if (!users.ContainsKey(Caller.Name)) return;
 			if (games.Values.Count(x => x.HomeUser.Name == Caller.Name || (x.AwayUser != null && x.AwayUser.Name == Caller.Name)) > 0) return;
 			var user = users[Caller.Name];
-			Game game;
-			try {
-				game = new Game {
-					HomeUser = user
-				};
-			}
-			catch (Exception e) {
-				Console.WriteLine(e);
-				throw;
-			}
+			Game game = new Game {
+				HomeUser = user
+			};
 			games[game.Id] = game;
 
 			Caller.gameId = game.Id;
@@ -111,7 +103,7 @@ namespace Play_by_Play.Hubs {
 		public void PlacePlayer(int playerId, string areaName) {
 			var username = Caller.Name;
 			var user = users[Caller.Name] as GameUser;
-			if(user == null)
+			if (user == null)
 				throw new Exception("User does not exist");
 			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
 			var coords = GameArea.GetCoords(areaName);
@@ -119,19 +111,22 @@ namespace Play_by_Play.Hubs {
 			var oppositeY = 3 - coords[1];
 			var isHome = user == game.HomeUser;
 			var opponentId = isHome
-			                 	? game.AwayUser.ClientId
-			                 	: game.HomeUser.ClientId;
+												? game.AwayUser.ClientId
+												: game.HomeUser.ClientId;
 
-			var player = user.Team.Players.Single(p => p.Id == playerId);
+			var player = user.Team.Players.FirstOrDefault(p => p.Id == playerId);
+
+			var debugFlip = false;
+			if (player == null && Caller.DebugMode) {
+				player = isHome
+				         	? game.AwayUser.Team.Players.First(p => p.Id == playerId)
+				         	: game.HomeUser.Team.Players.First(p => p.Id == playerId);
+
+				debugFlip = true;
+			}
 			game.Board.PlacePlayer(player, coords[0], coords[1], isHome);
-			string name;
-			try {
-				name = GameArea.GetAreaName(oppositeX, oppositeY);
-			}
-			catch (Exception e) {
-				Console.WriteLine(e.Message);
-				throw;
-			}
+			string name = GameArea.GetAreaName(oppositeX, oppositeY);
+			if (!debugFlip) return;
 			Clients[opponentId].placeOpponentPlayer(playerId, name);
 		}
 
@@ -169,5 +164,37 @@ namespace Play_by_Play.Hubs {
 				AbortGame(gamesToRemove[i]);
 			}
 		}
+
+		# region Debugging
+
+		public void FakeIt() {
+			var homeuser = new GameUser("HomeUser", GetMD5Hash("HomeUser")) {
+				ClientId = Context.ClientId
+			};
+			var awayuser = new GameUser("AwayUser", GetMD5Hash("AwayUser")) {
+				ClientId = Context.ClientId
+			};
+
+			Caller.Name = homeuser.Name;
+			Caller.Id = homeuser.Id;
+			Caller.Hash = homeuser.Hash;
+
+			users["Homeuser"] = homeuser;
+			users["AwayUser"] = awayuser;
+
+			Game game = new Game {
+				HomeUser = homeuser,
+				AwayUser = awayuser
+			};
+			games[game.Id] = game;
+
+			game.Start();
+
+			Caller.startGame(game);
+			Caller.addActionMessage("Fake match started");
+			Caller.DebugMode = true;
+		}
+
+		# endregion
 	}
 }
