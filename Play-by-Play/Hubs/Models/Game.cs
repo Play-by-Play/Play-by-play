@@ -414,7 +414,7 @@ namespace Play_by_Play.Hubs {
 
 		private static string[][] areaNames = new []{
 			new[]{"gameBoardLW", "gameBoardRW"},
- 			new[]{"gameBoardLCW", "gameBoardLCW"}, 
+ 			new[]{"gameBoardLCW", "gameBoardRCW"}, 
 			new[]{"gameBoardLCD", "gameBoardRCD"},
  			new[]{"gameBoardLD", "gameBoardRD"} 
 		};
