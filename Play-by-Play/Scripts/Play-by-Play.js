@@ -3,6 +3,8 @@
 
 
 window.PlayByPlay = (function ($, _) {
+    // Enable debug mode
+    var debug = true;
 
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -262,7 +264,7 @@ window.PlayByPlay = (function ($, _) {
 			//template.disable(true);
 		},
 		placePlayerCard: function (id, square) {
-			// Get the card object
+				// Get the card object
 			var playerCard = players.find(id);
 			// Set the new card location
 			playerCard.setLocation($('#' + square));
@@ -318,9 +320,9 @@ window.PlayByPlay = (function ($, _) {
 					var bar = ((id - (cardDiv.hasClass('draggable') ? 1 : 3)) % 5) + 1;
 					var newLocation = foo.children(':nth-child(' + bar + ')');
 					playerCard.setLocation(newLocation);
-					playerCard.setBonus(Bonus.NONE);
-					cardDiv.draggable("enable");
-				}
+						playerCard.setBonus(Bonus.NONE);
+						cardDiv.draggable("enable");
+					}
 			});
 		},
 		opponentPlaceTacticCard: function (tactic) {
@@ -332,9 +334,9 @@ window.PlayByPlay = (function ($, _) {
 
 			_.each({ "line1": "Line1", "line2": "Line2", "goalies": "Goalies" }, function (serverLine, formation) {
 				_.each(team[serverLine], function (player) {
-					player.team = team.Name;
-					players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.user);
-				});
+				player.team = team.Name;
+				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.user);
+			});
 			});
 		},
 		addOpponentPlayers: function (team) {
@@ -343,9 +345,9 @@ window.PlayByPlay = (function ($, _) {
 
 			_.each({ "oppLine1": "Line1", "oppLine2": "Line2", "oppGoalies": "Goalies" }, function (serverLine, formation) {
 				_.each(team[serverLine], function (player) {
-					player.team = team.Name;
-					players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.opponent);
-				});
+				player.team = team.Name;
+				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.opponent);
+			});
 			});
 		},
 		addPlayers: function (userteam, opponentteam) {
@@ -386,8 +388,7 @@ window.PlayByPlay = (function ($, _) {
 					playerCard.setLocation($($(this)));
 					window.connection.placePlayer(playerCard.id, $(this).attr('id'));
 					// Disable draggability
-					cardDiv.draggable("disable");
-					cardDiv.css({ opacity: 1 });
+                    cardDiv.draggable("disable").css({ opacity: 1 });
 					// Remove strong hover and active if in place
 					$(this).removeClass("gameSquareHoverStrong");
 				},
@@ -431,9 +432,9 @@ window.PlayByPlay = (function ($, _) {
 						// Get replaced goalie card
 						var replacedGoalie = $(this).find(".card");
 						// Check which placeholder to return to
-						var curPlaceHolder = ui.parent();
+                        var curPlaceHolder = ui.draggable.parent()[0];
 						var placeHolder = $("#goalies").find(".placeholder")[0];
-						if (curPlaceHolder == placeHolder) {
+                        if (curPlaceHolder === placeHolder) {
 							placeHolder = $("#goalies").find(".placeholder")[1];
 						}
 						// Move it back to bench
@@ -487,7 +488,8 @@ window.PlayByPlay = (function ($, _) {
 			});
 		},
 		players: players,
-		Bonus: Bonus
+        Bonus: Bonus,
+		debug: debug
 	};
 
 
@@ -508,8 +510,8 @@ window.PlayByPlay = (function ($, _) {
 		var setPosition = function (x, y) {
 			var position = getPixelPosition(x, y);
 			$('#gameBoardPuck').css('visibility', 'visible')
-				.css('top', (position.top - $('#gameBoardPuck').height / 2))
-				.css('left', (position.left - $('#gameBoardPuck').width / 2));
+								.css('top', (position.top - $('#gameBoardPuck').height / 2))
+								.css('left', (position.left - $('#gameBoardPuck').width / 2));
 		};
 
 		return {
@@ -1012,9 +1014,10 @@ window.PlayByPlay = (function ($, _) {
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
 
-		PlayByPlay.lobby = new window.Lobby();
-
+        PlayByPlay.lobby = new Lobby();
+        if (!debug) {
 		PlayByPlay.lobby.initialize();
+        }
 	});
 
 
