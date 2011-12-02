@@ -30,7 +30,8 @@ Lobby.prototype = {
 			draggable: false//,
 			//open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});
-		$('#add-user').click(function () {
+		$('#lobby-playerName').submit(function (e) {
+			e.preventDefault();
 			var username = $('#playerNameInput').val();
 			if (username) {
 				connection.createUser(username);

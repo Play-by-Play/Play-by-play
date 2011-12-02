@@ -73,6 +73,7 @@ window.PlayByPlay = (function ($, _) {
 		this.bonusAmount = 0;
 		this.location = $("#" + this.formation);
 	}
+
 	PlayerCard.prototype = {
 		getAttr1: function () {
 			return this.attr1;
@@ -96,6 +97,7 @@ window.PlayByPlay = (function ($, _) {
 			return this.userControlled;
 		},
 		setBonus: function (bonus) {
+			var off, def;
 			// Find card div
 			var cardDiv = $("#card" + this.id);
 			switch (bonus) {
@@ -110,7 +112,7 @@ window.PlayByPlay = (function ($, _) {
 				case Bonus.DEF:
 					this.bonusAmount++;
 					// Get defense value
-					var def = cardDiv.find(".attr2");
+					def = cardDiv.find(".attr2");
 					// Add bonus point
 					def.text(this.attr2 + 1);
 					def.css("color", "#0c0");
@@ -135,8 +137,6 @@ window.PlayByPlay = (function ($, _) {
 		setLocation: function (newLocation) {
 			// Find card div
 			var cardDiv = $("#card" + this.id);
-			// Find out offset depending on cards already put in the square
-			var i = 2 + cardDiv.width() * 0.2 * newLocation.children().length;
 			// Resize and move card
 			if (newLocation.parent()[0].id == "gameBoardBackgroundLayer") { // to gameboard
 				cardDiv.removeClass("benched");
@@ -144,11 +144,35 @@ window.PlayByPlay = (function ($, _) {
 				layout.setCardSizes();
 				cardDiv.appendTo(newLocation);
 				// Place the card correctly
+				if (!this.isUserControlled()) {
+					var align = "left top";
+					// Move each card currently in the square
+					var cards = newLocation.children().length - newLocation.find(".draggable").length - 1;
+					newLocation.children().each(function () {
+						if (!$(this).hasClass("draggable")) {
+							var i = 2 + cardDiv.width() * 0.2 * cards;
+							var offset = i + "px 2px";
+							$(this).position({
+								of: newLocation,
+								my: align,
+								at: align,
+								offset: offset
+							});
+							cards--;
+						}
+					});
+					var offset = '2px 2px';
+				} else {
+					var align = "right bottom";
+					// Find out offset depending on cards on the same team already put in the square
+					var i = -1 * (2 + cardDiv.width() * 0.2 * (newLocation.find(".draggable").length - 1));
+					var offset = i + 'px -2px';
+				}
 				cardDiv.position({
 					of: newLocation,
-					my: 'left top',
-					at: 'left top',
-					offset: i + 'px 2px'
+					my: align,
+					at: align,
+					offset: offset
 				});
 			} else {
 				cardDiv.removeClass("onBoard");
@@ -240,10 +264,8 @@ window.PlayByPlay = (function ($, _) {
 			template.hover(
 			// mouse over
 				function () {
-
 					// clear the canvas before proceding
 					layout.clearGameboardTactic();
-
 					layout.drawTactic(document.getElementById("gameBoardTacticalCanvas"), tactic);
 					$('.tacticCard').each(function () {
 						$(this).css({ opacity: 0.5 });
@@ -265,48 +287,14 @@ window.PlayByPlay = (function ($, _) {
 			//template.disable(true);
 		},
 		placePlayerCard: function (id, square) {
+			// Get the card object
 			var playerCard = players.find(id);
-			//            // Get hold of the card div
-			//            var cardDiv = $("#card" + id);
-			//            // Check player position
-			//            var pos = cardDiv.find(".playerPos").text();
-			//            // Find out which line player belongs to
-			//            id = cardDiv[0].id.substring(4);
-			//            var mod = id % 12;
-			//            var line = "goalies";
-			//            if (mod < 5) {
-			//                var line = "line1";
-			//            } else if (mod < 10) {
-			//                var line = "line2";
-			//            }
-			//            // Check which team player belongs to
-			//            if (cardDiv.hasClass("draggable")) { // player team
-			//                // Get the card object
-			//                var playerCard = players.user[line][pos];
-			//            } else { // opponent team
-			//                // Get the card object
-			//                var playerCard = players.opponent[line][pos];
-			//            }
-			//            // Transform coordinates to gameboard square ID
-			//            var squareID = "#gameBoard";
-			//            // X coord
-			//            if (x == 0) {
-			//                squareID += "L";
-			//            } else if (x == 1) {
-			//                squareID += "R";
-			//            }
-			//            // Y coord
-			//            switch (y) {
-			//                case 0: squareID += "W";
-			//                case 1: squareID += "CW";
-			//                case 2: squareID += "CD";
-			//                case 3: squareID += "D";
-			//            }
-			playerCard.setLocation(square);
+			// Set the new card location
+			playerCard.setLocation($('#' + square));
 		},
 		showBattleView: function (title, location) {
 			var viewDiv = $("#battle-view");
-			var cards = location.find(".card").each(function () {
+			location.find(".card").each(function () {
 				var name = $(this).find(".playerName").text();
 				var span = $("<span>");
 				span.text(name);
@@ -321,7 +309,7 @@ window.PlayByPlay = (function ($, _) {
 				modal: true,
 				draggable: false,
 				resizable: false,
-				open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+				open: function () { $(".ui-dialog-titlebar-close").hide(); }
 			});
 			viewDiv.delay(3000).queue(function () {
 				$(this).dialog('close');
@@ -344,40 +332,20 @@ window.PlayByPlay = (function ($, _) {
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
 				var cardDiv = $(this);
-				var id = cardDiv[0].id.substring(4);
-				var playerCard = players.find(id);
-				if (playerCard.getPos() != "G") {
-					if (!playerCard.isUserControlled())
-						id -= 2;
-					playerCard.setLocation($($("#" + playerCard.getLine()).children()[id % 5]));
+				var pos = cardDiv.find(".playerPos").text();
+				if (pos != "G") {
+					// Find out which line player belongs to
+					var id = cardDiv.attr('id').substring(4);
+					var playerCard = players.find(id);
+
+					// Check which team player belongs to
+					var foo = $("#" + playerCard.getLine());
+					var bar = ((id - (playerCard.isUserControlled() ? 1 : 3)) % 5) + 1;
+					var newLocation = foo.children(':nth-child(' + bar + ')');
+					playerCard.setLocation(newLocation);
 					playerCard.setBonus(Bonus.NONE);
 					cardDiv.draggable("enable");
 				}
-				//				var pos = cardDiv.find(".playerPos").text();
-				//				if (pos != "G") {
-				//					// Find out which line player belongs to
-				//					var id = cardDiv[0].id.substring(4);
-				//					var mod = id % 12;
-				//					var line = "goalies";
-				//					if (mod < 5) {
-				//						var line = "line1";
-				//					} else if (mod < 10) {
-				//						var line = "line2";
-				//					}
-				//					// check which team player belongs to
-				//					if (cardDiv.hasClass("draggable")) { // player team
-				//						var playerCard = players.user[line][pos];
-				//						playerCard.setLocation($($("#" + line).children()[id % 5]));
-				//						playerCard.setBonus(Bonus.NONE);
-				//						cardDiv.draggable("enable");
-				//					} else { // opponent team
-				//						line = "opp" + line.substring(0, 1).toUpperCase() + line.substring(1);
-				//						var playerCard = players.opponent[line][pos];
-				//						playerCard.setLocation($($("#" + line).children()[(id - 2) % 5]));
-				//						playerCard.setBonus(Bonus.NONE);
-				//						cardDiv.draggable("enable");
-				//					}
-				//				}
 			});
 		},
 		opponentPlaceTacticCard: function (tactic) {
@@ -387,44 +355,22 @@ window.PlayByPlay = (function ($, _) {
 			var color = team.Color;
 			var userControlled = true;
 
-			var formation = "line1";
-			_.each(team.Line1, function (player) {
-				player.team = team.Name;
-				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.user);
-			});
-
-			formation = "line2";
-			_.each(team.Line2, function (player) {
-				player.team = team.Name;
-				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.user);
-			});
-
-			formation = "goalies";
-			_.each(team.Goalies, function (player) {
-				player.team = team.Name;
-				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.user);
+			_.each({ "line1": "Line1", "line2": "Line2", "goalies": "Goalies" }, function (serverLine, formation) {
+				_.each(team[serverLine], function (player) {
+					player.team = team.Name;
+					players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.user);
+				});
 			});
 		},
 		addOpponentPlayers: function (team) {
 			var color = team.Color;
 			var userControlled = false;
 
-			var formation = "oppLine1";
-			_.each(team.Line1, function (player) {
-				player.team = team.Name;
-				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.opponent);
-			});
-
-			formation = "oppLine2";
-			_.each(team.Line2, function (player) {
-				player.team = team.Name;
-				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.opponent);
-			});
-
-			formation = "oppGoalies";
-			_.each(team.Goalies, function (player) {
-				player.team = team.Name;
-				players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.opponent);
+			_.each({ "oppLine1": "Line1", "oppLine2": "Line2", "oppGoalies": "Goalies" }, function (serverLine, formation) {
+				_.each(team[serverLine], function (player) {
+					player.team = team.Name;
+					players.add(new PlayerCard(player, color, formation, userControlled, player.Id), players.opponent);
+				});
 			});
 		},
 		addPlayers: function (userteam, opponentteam) {
@@ -432,7 +378,7 @@ window.PlayByPlay = (function ($, _) {
 			play.addUserPlayers(userteam);
 			play.addOpponentPlayers(opponentteam);
 
-			function draggableStartStop(event, ui) {
+			function draggableStartStop() {
 				var pos = $(this).find(".playerPos").text();
 				if (pos == "G") {
 					$("#gameBoardGoalkeeper").each(function () {
@@ -458,21 +404,11 @@ window.PlayByPlay = (function ($, _) {
 				drop: function (event, ui) {
 					// Get hold of the card div
 					var cardDiv = ui.draggable;
-					// Check player position
-					var pos = cardDiv.find(".playerPos").text();
-					// Find out which line player belongs to
-					var id = cardDiv[0].id.substring(4);
-					var mod = id % 12;
-					var line = "goalies";
-					if (mod < 5) {
-						var line = "line1";
-					} else if (mod < 10) {
-						var line = "line2";
-					}
 					// Get the card object
-					var playerCard = players.user[line][pos];
+					var id = cardDiv.attr('id').substring(4);
+					var playerCard = players.find(id);
 					playerCard.setLocation($($(this)));
-					connection.placePlayer(playerCard.id, $(this).attr('id'));
+					window.connection.placePlayer(playerCard.id, $(this).attr('id'));
 					// Disable draggability
 					cardDiv.draggable("disable").css({ opacity: 1 });
 					// Remove strong hover and active if in place
@@ -483,17 +419,9 @@ window.PlayByPlay = (function ($, _) {
 					var cardDiv = ui.draggable;
 					// Check player position
 					var pos = cardDiv.find(".playerPos").text();
-					// Find out which line player belongs to
-					var id = cardDiv[0].id.substring(4);
-					var mod = id % 12;
-					var line = "goalies";
-					if (mod < 5) {
-						var line = "line1";
-					} else if (mod < 10) {
-						var line = "line2";
-					}
 					// Get the card object
-					var playerCard = players.user[line][pos];
+					var id = cardDiv[0].id.substring(4);
+					var playerCard = players.find(id);
 					// Add strong hovering if hovering over special square
 					// and potentially add bonus point
 					if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos)) {
@@ -507,19 +435,10 @@ window.PlayByPlay = (function ($, _) {
 				out: function (event, ui) {
 					// Get hold of the card div
 					var cardDiv = ui.draggable;
-					// Check player position
-					var pos = cardDiv.find(".playerPos").text();
-					// Find out which line player belongs to
 					var id = cardDiv[0].id.substring(4);
-					var mod = id % 12;
-					var line = "goalies";
-					if (mod < 5) {
-						var line = "line1";
-					} else if (mod < 10) {
-						var line = "line2";
-					}
 					// Get the card object
-					var playerCard = players.user[line][pos];
+					var playerCard = players.find(id);
+					var pos = playerCard.getPos();
 					// Remove strong hovering and bonus point
 					if ((pos == "LW" || pos == "RW") && $(this).hasClass("gameSquare" + pos) || (pos == "LD" || pos == "RD") && $(this).hasClass("gameSquare" + pos)) {
 						playerCard.setBonus(Bonus.NONE);
@@ -567,10 +486,10 @@ window.PlayByPlay = (function ($, _) {
 					// Remove strong hover
 					$(this).removeClass("gameSquareHoverStrong");
 				},
-				over: function (event, ui) {
+				over: function () {
 					$(this).addClass("gameSquareHoverStrong");
 				},
-				out: function (event, ui) {
+				out: function () {
 					$(this).removeClass("gameSquareHoverStrong");
 				}
 			});
@@ -600,26 +519,23 @@ window.PlayByPlay = (function ($, _) {
 		debug: debug
 	};
 
-
-
-
 	// Puck
 	var puck = (function () {
-
-		getPixelPosition = function (x, y) {
+		var getPixelPosition = function (x, y) {
 			var left = layout.margin + layout.borderWidth + layout.borderWidth / 2 + $("#gameBoardLD").height() / 2;
 			var top = layout.margin + layout.borderWidth;
-			return { top: top + $("#gameBoardLD").height() * y,
+			return {
+				top: top + $("#gameBoardLD").height() * y,
 				left: left + $("#gameBoardLD").width() * x
 			};
-		}
+		};
 
-		setPosition = function (x, y) {
+		var setPosition = function (x, y) {
 			var position = getPixelPosition(x, y);
 			$('#gameBoardPuck').css('visibility', 'visible')
 								.css('top', (position.top - $('#gameBoardPuck').height / 2))
 								.css('left', (position.left - $('#gameBoardPuck').width / 2));
-		}
+		};
 
 		return {
 			init: function () {
@@ -661,6 +577,7 @@ window.PlayByPlay = (function ($, _) {
 
 			height = $(window).height() - margin * 2;
 			width = $(window).width() * 0.4 - margin * 2;
+			$('#center').width(width);
 
 			// correct proportions if neccessary
 			var heightProportions = height / 8;
@@ -677,8 +594,6 @@ window.PlayByPlay = (function ($, _) {
 
 			$('#gameBoardBackgroundLayer').height(height * 0.9739);
 			$('#gameBoardBackgroundLayer').width(width * 0.962);
-			$('#center').width = width + 'px';
-
 
 			// seting up canvas
 			var canvas = document.getElementById("gameBoardCanvas");
@@ -854,8 +769,7 @@ window.PlayByPlay = (function ($, _) {
 			var context = canvas.getContext("2d");
 
 			context.rotate(-Math.PI);
-
-			layou.drawTactic(canvas, tactic);
+			layout.drawTactic(canvas, tactic);
 
 			// restore context rotation
 			context.rotate(Math.PI);
@@ -1008,7 +922,7 @@ window.PlayByPlay = (function ($, _) {
 				'margin': cardPadding + 'px auto'
 			});
 
-			var baseFont = 14;
+			baseFont = 14;
 
 			$(".benched .playerName").css({
 				'left': (border) + 'px',
@@ -1017,7 +931,7 @@ window.PlayByPlay = (function ($, _) {
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
 
-			var baseFont = 18;
+			baseFont = 18;
 
 			$(".benched .attr1").css({
 				'right': (cardPadding + border) + 'px',
@@ -1032,7 +946,7 @@ window.PlayByPlay = (function ($, _) {
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
 
-			var baseFont = 16;
+			baseFont = 16;
 
 			$(".benched .playerPos").css({
 				'right': (cardPadding + border) + 'px',
@@ -1070,7 +984,7 @@ window.PlayByPlay = (function ($, _) {
 				'margin': cardPadding + 'px auto'
 			});
 
-			var baseFont = 14;
+			baseFont = 14;
 
 			$(".onBoard .playerName").css({
 				'left': (border) + 'px',
@@ -1079,7 +993,7 @@ window.PlayByPlay = (function ($, _) {
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
 
-			var baseFont = 18;
+			baseFont = 18;
 
 			$(".onBoard .attr1").css({
 				'right': (cardPadding + border) + 'px',
@@ -1094,7 +1008,7 @@ window.PlayByPlay = (function ($, _) {
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
 
-			var baseFont = 16;
+			baseFont = 16;
 
 			$(".onBoard .playerPos").css({
 				'right': (cardPadding + border) + 'px',
@@ -1127,25 +1041,12 @@ window.PlayByPlay = (function ($, _) {
 		}
 	});
 
-
-	$('#chatSubmit').live('click', function () {
-		connection.send($('#chatInput').val())
+	$('#chatMessage').submit(function () {
+		window.connection.send($('#chatInput').val())
 						.fail(function (e) {
 							alert(e);
 						});
 		$('#chatInput').val('');
-	});
-	$('#chatInput').live('keypress', function (e) {
-		var key = (e.keyCode || e.which);
-		if (key == 13) {
-			$('#chatSubmit').click();
-		}
-	});
-	$('#playerNameInput').live('keypress', function (e) {
-		var key = (e.keyCode || e.which);
-		if (key == 13) {
-			$('#add-user').click();
-		}
 	});
 
 	return play;
