@@ -5,6 +5,7 @@
 	$.connection.hub.start(function () {
 		window.user = connection.getUser();
 		connection.getGames();
+		//connection.fakeIt();
 	});
 
 	connection.addChatMessage = function (name, message) {
@@ -46,7 +47,7 @@
 	};
 
 	connection.opponentSelectTacticCard = function (tactic) {
-		
+
 	};
 
 	connection.addPlayers = function (userteam, opponentteam) {
