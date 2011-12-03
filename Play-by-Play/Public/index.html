@@ -29,7 +29,7 @@
 		<script type="text/template" id="playerCardTemplate">
             <div class="placeholder">
                 <span>${pos}</span>
-	            <div id="${id}" class="card ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
+	            <div id="${id}" class="card benched ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
 				    <div class="teamLogo">
 					    <img src="/Public/images/logobacks/${team}.png"/>
 					    <div class="playerBio">
@@ -88,21 +88,37 @@
 			<div id="gameboard">
 				<canvas id="gameBoardCanvas"></canvas>
 				<canvas id="gameBoardTacticalCanvas"></canvas>
-                <div id="gameBoardBackgroundLayer">
-                    <div id="gameBoardFaceOffOpponent" class="gameSquareFaceOff gameBoardPlaceholder">C</div>
-					<div id="gameBoardFaceOff" class="gameSquareFaceOff gameBoardPlaceholder">C</div>
-					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper gameBoardPlaceholder">G</div>
-					<div id="gameBoardLW" class="gameSquare gameSquareLeft gameSquareLW"></div>
-					<div id="gameBoardRW" class="gameSquare gameSquareRight gameSquareRW"></div>
-					<div id="gameBoardLCW" class="gameSquare gameSquareLeft gameSquareLW"></div>
-					<div id="gameBoardRCW" class="gameSquare gameSquareRight gameSquareRW"></div>
-					<div id="gameBoardLCD" class="gameSquare gameSquareLeft gameSquareLD"></div>
-					<div id="gameBoardRCD" class="gameSquare gameSquareRight gameSquareRD"></div>
-					<div id="gameBoardLD" class="gameSquare gameSquareLeft gameSquareLD"></div>
-					<div id="gameBoardRD" class="gameSquare gameSquareRight gameSquareRD"></div>
-					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper gameBoardPlaceholder">G</div>
-					<div id="gameBoardPuck"></div>
-                </div>
+				<div id="gameBoardBackgroundLayer">
+					<div id="gameBoardFaceOffOpponent" class="gameSquareFaceOff gameBoardPlaceholder">
+						<span>C</span>
+					</div>
+					<div id="gameBoardFaceOff" class="gameSquareFaceOff gameBoardPlaceholder">
+						<span>C</span>
+					</div>
+					<div id="gameBoardGoalkeeperOpponent" class="gameSquareGoalkeeper gameBoardPlaceholder">
+						<span>G</span>
+					</div>
+					<div id="gameBoardLW" class="gameSquare gameSquareLeft gameSquareLW">
+					</div>
+					<div id="gameBoardRW" class="gameSquare gameSquareRight gameSquareRW">
+					</div>
+					<div id="gameBoardLCW" class="gameSquare gameSquareLeft gameSquareLW">
+					</div>
+					<div id="gameBoardRCW" class="gameSquare gameSquareRight gameSquareRW">
+					</div>
+					<div id="gameBoardLCD" class="gameSquare gameSquareLeft gameSquareLD">
+					</div>
+					<div id="gameBoardRCD" class="gameSquare gameSquareRight gameSquareRD">
+					</div>
+					<div id="gameBoardLD" class="gameSquare gameSquareLeft gameSquareLD">
+					</div>
+					<div id="gameBoardRD" class="gameSquare gameSquareRight gameSquareRD">
+					</div>
+					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper gameBoardPlaceholder">
+						G</div>
+					<div id="gameBoardPuck">
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="right" class="column">
@@ -123,19 +139,18 @@
 			<div id="chat" class="panel">
 				<ul id="chatMessages">
 				</ul>
-				<div id="chatMessage">
+				<form id="chatMessage">
 					<input id="chatInput" type="text" />
-					<input id="chatSubmit" type="button" value="Post" />
-				</div>
+					<input id="chatSubmit" type="submit" value="Post" />
+				</form>
 			</div>
 		</div>
 		<div id="new-user">
-			<div id="lobby-playerName">
+			<form id="lobby-playerName">
 				<span class="label">Name</span>
 				<input id="playerNameInput" type="text" />
-				<button id="add-user">
-					Create user</button>
-			</div>
+				<input type="submit" id="add-user" value="Create user" />
+			</form>
 			<div id="username-exist">
 			</div>
 		</div>
@@ -155,17 +170,17 @@
 				</div>
 			</div>
 		</div>
-        <div id="battle-view">
-            <div id="userBattle" />
-            <span>VS.</span>
-            <div id="oppBattle" />
-        </div>
+		<div id="battle-view">
+			<div id="userBattle" />
+			<span>VS.</span>
+			<div id="oppBattle" />
+		</div>
 		<script type="text/javascript" src="/Scripts/modernizr-1.7.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-1.6.3.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.js"></script>
 		<script type="text/javascript" src="/Scripts/jQuery.tmpl.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery.signalR.js"></script>
-		<script src="../Scripts/underscore.js" type="text/javascript"></script>
+		<script type="text/javascript" src="/Scripts/underscore.js"></script>
 		<script type="text/javascript" src="/signalr/hubs"></script>
 		<script type="text/javascript" src="/Scripts/GameConnection.js"></script>
 		<script type="text/javascript" src="/Scripts/Play-by-play.jquery.js"></script>
