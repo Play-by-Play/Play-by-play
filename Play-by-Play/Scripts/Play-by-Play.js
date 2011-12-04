@@ -5,7 +5,7 @@
 
 window.PlayByPlay = (function ($, _) {
 	// Enable debug mode
-	var debug = true;
+	var debug = false;
 
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -16,16 +16,19 @@ window.PlayByPlay = (function ($, _) {
 		user: {
 			line1: {},
 			line2: {},
-			goalies: {}
+			goalies: []
 		},
 		opponent: {
 			oppLine1: {},
 			oppLine2: {},
-			oppGoalies: {}
+			oppGoalies: []
 		},
 
 		add: function (card, team) {
-			team[card.getLine()][card.getPos()] = card;
+			if (card.pos !== "G")
+				team[card.getLine()][card.getPos()] = card;
+			else
+				team[card.getLine()].push(card);
 		},
 
 		find: function (id) {
@@ -319,7 +322,7 @@ window.PlayByPlay = (function ($, _) {
 			// Show faceoff squares
 			$(".gameSquareFaceOff").show();
 			// Disable other squares
-			$(".gameSquare").droppable("disable");
+			$(".gameSquare").droppable({ disabled: true });
 		},
 		hideFaceoff: function () {
 			// Restore centers
@@ -327,7 +330,7 @@ window.PlayByPlay = (function ($, _) {
 			// Hide faceoff squares
 			$(".gameSquareFaceOff").hide();
 			// Enable other squares
-			$(".gameSquare").droppable("enable");
+			$(".gameSquare").droppable({ disabled: false });
 		},
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
@@ -470,19 +473,25 @@ window.PlayByPlay = (function ($, _) {
 						// Reconstruct draggable
 						replacedGoalie.draggable("enable");
 					}
+
+					// Get hold of the card div
+					var cardDiv = ui.draggable;
+					// Get the card object
+					var id = cardDiv[0].id.substring(4);
+					window.connection.placeGoalkeeper(id);
 					// Resize and move card
-					ui.draggable.removeClass("benched");
-					ui.draggable.addClass("onBoard");
+					cardDiv.removeClass("benched");
+					cardDiv.addClass("onBoard");
 					layout.setCardSizes();
-					ui.draggable.appendTo($(this));
+					cardDiv.appendTo($(this));
 					// Place the card correctly
-					ui.draggable.position({
+					cardDiv.position({
 						of: $(this),
 						my: 'center center',
 						at: 'center center'
 					});
-					ui.draggable.draggable("disable");
-					ui.draggable.css({ opacity: 1 });
+					cardDiv.draggable("disable");
+					cardDiv.css({ opacity: 1 });
 					// Remove strong hover
 					$(this).removeClass("gameSquareHoverStrong");
 				},
@@ -499,18 +508,23 @@ window.PlayByPlay = (function ($, _) {
 					return draggable.find(".playerPos").text() == "C";
 				},
 				drop: function (event, ui) {
+					// Get hold of the card div
+					var cardDiv = ui.draggable;
+					// Get the card object
+					var id = cardDiv[0].id.substring(4);
+					window.connection.placeFaceOffPlayer(id);
 					// Resize and move card
-					ui.draggable.removeClass("benched");
-					ui.draggable.addClass("onBoard");
+					cardDiv.removeClass("benched");
+					cardDiv.addClass("onBoard");
 					layout.setCardSizes();
-					ui.draggable.appendTo($(this));
+					cardDiv.appendTo($(this));
 					// Place the card correctly
-					ui.draggable.position({
+					cardDiv.position({
 						of: $(this),
 						my: 'center center',
 						at: 'center center'
 					});
-					ui.draggable.draggable("destroy");
+					cardDiv.draggable("destroy");
 				}
 			});
 		},

@@ -131,6 +131,54 @@ namespace Play_by_Play.Hubs {
 			Clients[opponentId].placeOpponentPlayer(playerId, name);
 		}
 
+		public void PlaceGoalkeeper(int playerId) {
+			var user = users[Caller.Name] as GameUser;
+			if (user == null)
+				throw new Exception("User does not exist");
+			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var isHome = user == game.HomeUser;
+			
+			var goalie = user.Team.Goalies.SingleOrDefault(g => g.Id == playerId);
+			if(goalie == null)
+				throw new Exception("No goalkeeper with that ID in the team");
+
+			if (isHome)
+				game.Board.HomeGoalie = goalie;
+			else
+				game.Board.AwayGoalie = goalie;
+
+			var opponentId = isHome
+												? game.AwayUser.ClientId
+												: game.HomeUser.ClientId;
+
+			Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardGoalkeeperOpponent");
+		}
+
+		public void PlaceFaceOffPlayer(int playerId) {
+			var user = users[Caller.Name] as GameUser;
+			if (user == null)
+				throw new Exception("User does not exist");
+			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var isHome = user == game.HomeUser;
+
+			var player = user.Team.Players.SingleOrDefault(g => g.Id == playerId);
+			if (player == null)
+				throw new Exception("No player with that ID in the team");
+
+			if (isHome)
+				game.Board.HomeFaceoff = player;
+			else
+				game.Board.AwayFaceoff = player;
+
+			var opponentId = isHome
+												? game.AwayUser.ClientId
+												: game.HomeUser.ClientId;
+
+			Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardFaceOffOpponent");
+		}
+
+		
+
 		public void AbortGame(Game game) {
 			if (game.HomeUser != null) {
 				Clients[game.HomeUser.ClientId].abortGame();

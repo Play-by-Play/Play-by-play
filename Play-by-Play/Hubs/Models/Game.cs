@@ -374,6 +374,12 @@ namespace Play_by_Play.Hubs {
 	public class GameBoard {
 		public List<GameArea> Areas { get; set; }
 
+		public Player HomeGoalie { get; set; }
+		public Player AwayGoalie { get; set; }
+
+		public Player HomeFaceoff { get; set; }
+		public Player AwayFaceoff { get; set; }
+
 		public GameBoard() {
 			Areas = new List<GameArea>();
 			for (int i = 0; i < 4; i++) {

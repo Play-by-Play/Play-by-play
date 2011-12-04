@@ -43,6 +43,7 @@
 		$('#lobby').dialog('close');
 		connection.getPlayers();
 		connection.getTacticCards(5);
+		PlayByPlay.showFaceoff();
 	};
 
 	connection.createTacticCards = function (cards) {
