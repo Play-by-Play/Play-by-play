@@ -9,6 +9,7 @@ namespace Play_by_Play.Hubs.Models {
 		public GameBoard Board { get; set; }
 		public GameUser HomeUser { get; set; }
 		public GameUser AwayUser { get; set; }
+		public bool IsHomeTurn { get; private set; }
 		private List<TacticCard> AvailableCards { get; set; }
 
 		public Game() {
@@ -29,7 +30,7 @@ namespace Play_by_Play.Hubs.Models {
 			nodes.Add(new Node { X = 1, Y = 1 });
 			nodes.Add(new Node { X = 1, Y = 2 });
 			nodes.Add(new Node { X = 1, Y = 3 });
-			
+
 			cards.Add(new TacticCard {
 				Name = "Give 'n Take",
 				Difficulty = 4,
@@ -370,16 +371,11 @@ namespace Play_by_Play.Hubs.Models {
 		}
 
 		public BattleResult ExecuteFaceOff() {
-			var rnd = new Random();
-			var homeModifier = rnd.Next(1, 6);
-			var awayModifier = rnd.Next(1, 6);
+			var battleResult = new BattleResult(new List<Player> {Board.HomeFaceoff}, new List<Player> {Board.AwayFaceoff});
 
-			return new BattleResult {
-				HomePlayers = new List<Player>{ Board.HomeFaceoff },
-				AwayPlayers = new List<Player> { Board.AwayFaceoff },
-				HomeModifier = homeModifier,
-				AwayModifier = awayModifier
-			};
+			IsHomeTurn = battleResult.HomeTotal > battleResult.AwayTotal;
+
+			return battleResult;
 		}
 	}
 }

@@ -63,8 +63,8 @@
 	};
 
 	connection.faceOffResult = function (result) {
-		PlayByPlay.showBattleView();
 		PlayByPlay.hideFaceoff();
+		PlayByPlay.showBattleView("Face Off", result);
 	};
 
 	connection.usernameExists = function () {

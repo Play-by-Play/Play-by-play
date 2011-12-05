@@ -5,7 +5,7 @@
 
 window.PlayByPlay = (function ($, _) {
 	// Enable debug mode
-	var debug = false;
+	var debug = true;
 
 	var iceColor = "#FFF";
 	var borderColor = "#000";

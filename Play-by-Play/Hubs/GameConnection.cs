@@ -140,8 +140,16 @@ namespace Play_by_Play.Hubs {
 			var isHome = user == game.HomeUser;
 			
 			var goalie = user.Team.Goalies.SingleOrDefault(g => g.Id == playerId);
-			if(goalie == null)
+			var debugFlip = false;
+			if (goalie == null && Caller.DebugMode) {
+				goalie = isHome
+									? game.AwayUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId)
+									: game.HomeUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId);
+
+				debugFlip = true;
+			} else if (goalie == null) {
 				throw new Exception("No goalkeeper with that ID in the team");
+			}
 
 			if (isHome)
 				game.Board.HomeGoalie = goalie;
@@ -151,8 +159,8 @@ namespace Play_by_Play.Hubs {
 			var opponentId = isHome
 												? game.AwayUser.ClientId
 												: game.HomeUser.ClientId;
-
-			Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardGoalkeeperOpponent");
+			if (Caller.DebugMode != true && !debugFlip)
+				Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardGoalkeeperOpponent");
 
 			ExecuteFaceOff(game);
 		}
@@ -165,8 +173,16 @@ namespace Play_by_Play.Hubs {
 			var isHome = user == game.HomeUser;
 
 			var player = user.Team.Players.SingleOrDefault(g => g.Id == playerId);
-			if (player == null)
+			var debugFlip = false;
+			if (player == null && Caller.DebugMode) {
+				player = isHome
+									? game.AwayUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId)
+									: game.HomeUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId);
+
+				debugFlip = true;
+			} else if (player == null) {
 				throw new Exception("No player with that ID in the team");
+			}
 
 			if (isHome)
 				game.Board.HomeFaceoff = player;
@@ -177,7 +193,8 @@ namespace Play_by_Play.Hubs {
 												? game.AwayUser.ClientId
 												: game.HomeUser.ClientId;
 
-			Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardFaceOffOpponent");
+			if (Caller.DebugMode != true && !debugFlip)
+				Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardFaceOffOpponent");
 
 			ExecuteFaceOff(game);
 		}
@@ -191,8 +208,6 @@ namespace Play_by_Play.Hubs {
 			Clients[game.HomeUser.ClientId].faceOffResult(faceoffResult);
 			Clients[game.AwayUser.ClientId].faceOffResult(faceoffResult);
 		}
-
-		
 
 		public void AbortGame(Game game) {
 			if (game.HomeUser != null) {
