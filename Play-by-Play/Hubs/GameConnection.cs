@@ -205,7 +205,9 @@ namespace Play_by_Play.Hubs {
 
 			var faceoffResult = game.ExecuteFaceOff();
 
+			faceoffResult.IsHomePlayer = true;
 			Clients[game.HomeUser.ClientId].faceOffResult(faceoffResult);
+			faceoffResult.IsHomePlayer = false;
 			Clients[game.AwayUser.ClientId].faceOffResult(faceoffResult);
 		}
 
