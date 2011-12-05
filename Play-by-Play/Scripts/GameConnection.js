@@ -3,8 +3,12 @@
 	// Server connectivity
 
 	$.connection.hub.start(function () {
-		window.user = connection.getUser();
-		connection.getGames();
+		if (PlayByPlay.debug) {
+			connection.fakeIt();
+		} else {
+			window.user = connection.getUser();
+			connection.getGames();
+		}
 	});
 
 	connection.addChatMessage = function (name, message) {
@@ -39,6 +43,7 @@
 		$('#lobby').dialog('close');
 		connection.getPlayers();
 		connection.getTacticCards(5);
+		PlayByPlay.showFaceoff();
 	};
 
 	connection.createTacticCards = function (cards) {
@@ -46,7 +51,7 @@
 	};
 
 	connection.opponentSelectTacticCard = function (tactic) {
-		
+
 	};
 
 	connection.addPlayers = function (userteam, opponentteam) {
@@ -55,6 +60,11 @@
 
 	connection.placeOpponentPlayer = function (playerId, square) {
 		PlayByPlay.placePlayerCard(playerId, square);
+	};
+
+	connection.faceOffResult = function (result) {
+		PlayByPlay.hideFaceoff();
+		PlayByPlay.showBattleView("Face Off", result);
 	};
 
 	connection.usernameExists = function () {

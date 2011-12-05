@@ -1,4 +1,5 @@
-﻿using SignalR.Hubs;
+﻿using Play_by_Play.Hubs.Models;
+using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -45,20 +46,12 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void CreateGame() {
-			string name = Caller.Name;
 			if (!users.ContainsKey(Caller.Name)) return;
 			if (games.Values.Count(x => x.HomeUser.Name == Caller.Name || (x.AwayUser != null && x.AwayUser.Name == Caller.Name)) > 0) return;
 			var user = users[Caller.Name];
-			Game game;
-			try {
-				game = new Game {
-					HomeUser = user
-				};
-			}
-			catch (Exception e) {
-				Console.WriteLine(e);
-				throw;
-			}
+			Game game = new Game {
+				HomeUser = user
+			};
 			games[game.Id] = game;
 
 			Caller.gameId = game.Id;
@@ -111,7 +104,7 @@ namespace Play_by_Play.Hubs {
 		public void PlacePlayer(int playerId, string areaName) {
 			var username = Caller.Name;
 			var user = users[Caller.Name] as GameUser;
-			if(user == null)
+			if (user == null)
 				throw new Exception("User does not exist");
 			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
 			var coords = GameArea.GetCoords(areaName);
@@ -119,20 +112,103 @@ namespace Play_by_Play.Hubs {
 			var oppositeY = 3 - coords[1];
 			var isHome = user == game.HomeUser;
 			var opponentId = isHome
-			                 	? game.AwayUser.ClientId
-			                 	: game.HomeUser.ClientId;
+												? game.AwayUser.ClientId
+												: game.HomeUser.ClientId;
 
-			var player = user.Team.Players.Single(p => p.Id == playerId);
+			var player = user.Team.Players.FirstOrDefault(p => p.Id == playerId);
+
+			var debugFlip = false;
+			if (player == null && Caller.DebugMode) {
+				player = isHome
+				         	? game.AwayUser.Team.Players.First(p => p.Id == playerId)
+				         	: game.HomeUser.Team.Players.First(p => p.Id == playerId);
+
+				debugFlip = true;
+			}
 			game.Board.PlacePlayer(player, coords[0], coords[1], isHome);
-			string name;
-			try {
-				name = GameArea.GetAreaName(oppositeX, oppositeY);
-			}
-			catch (Exception e) {
-				Console.WriteLine(e.Message);
-				throw;
-			}
+			string name = GameArea.GetAreaName(oppositeX, oppositeY);
+			if (Caller.DebugMode == true && !debugFlip) 
+				return;
 			Clients[opponentId].placeOpponentPlayer(playerId, name);
+		}
+
+		public void PlaceGoalkeeper(int playerId) {
+			var user = users[Caller.Name] as GameUser;
+			if (user == null)
+				throw new Exception("User does not exist");
+			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var isHome = user == game.HomeUser;
+			
+			var goalie = user.Team.Goalies.SingleOrDefault(g => g.Id == playerId);
+			var debugFlip = false;
+			if (goalie == null && Caller.DebugMode) {
+				goalie = isHome
+									? game.AwayUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId)
+									: game.HomeUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId);
+
+				debugFlip = true;
+			} else if (goalie == null) {
+				throw new Exception("No goalkeeper with that ID in the team");
+			}
+
+			if (isHome)
+				game.Board.HomeGoalie = goalie;
+			else
+				game.Board.AwayGoalie = goalie;
+
+			var opponentId = isHome
+												? game.AwayUser.ClientId
+												: game.HomeUser.ClientId;
+			if (Caller.DebugMode != true && !debugFlip)
+				Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardGoalkeeperOpponent");
+
+			ExecuteFaceOff(game);
+		}
+
+		public void PlaceFaceOffPlayer(int playerId) {
+			var user = users[Caller.Name] as GameUser;
+			if (user == null)
+				throw new Exception("User does not exist");
+			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var isHome = user == game.HomeUser;
+
+			var player = user.Team.Players.SingleOrDefault(g => g.Id == playerId);
+			var debugFlip = false;
+			if (player == null && Caller.DebugMode) {
+				player = isHome
+									? game.AwayUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId)
+									: game.HomeUser.Team.Goalies.FirstOrDefault(p => p.Id == playerId);
+
+				debugFlip = true;
+			} else if (player == null) {
+				throw new Exception("No player with that ID in the team");
+			}
+
+			if (isHome)
+				game.Board.HomeFaceoff = player;
+			else
+				game.Board.AwayFaceoff = player;
+
+			var opponentId = isHome
+												? game.AwayUser.ClientId
+												: game.HomeUser.ClientId;
+
+			if (Caller.DebugMode != true && !debugFlip)
+				Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardFaceOffOpponent");
+
+			ExecuteFaceOff(game);
+		}
+
+		private void ExecuteFaceOff(Game game) {
+			if (!game.Board.IsReadyForFaceoff())
+				return;
+
+			var faceoffResult = game.ExecuteFaceOff();
+
+			faceoffResult.IsHomePlayer = true;
+			Clients[game.HomeUser.ClientId].faceOffResult(faceoffResult);
+			faceoffResult.IsHomePlayer = false;
+			Clients[game.AwayUser.ClientId].faceOffResult(faceoffResult);
 		}
 
 		public void AbortGame(Game game) {
@@ -169,5 +245,37 @@ namespace Play_by_Play.Hubs {
 				AbortGame(gamesToRemove[i]);
 			}
 		}
+
+		# region Debugging
+
+		public void FakeIt() {
+			var homeuser = new GameUser("HomeUser", GetMD5Hash("HomeUser")) {
+				ClientId = Context.ClientId
+			};
+			var awayuser = new GameUser("AwayUser", GetMD5Hash("AwayUser")) {
+				ClientId = Context.ClientId
+			};
+
+			Caller.Name = homeuser.Name;
+			Caller.Id = homeuser.Id;
+			Caller.Hash = homeuser.Hash;
+
+			users["Homeuser"] = homeuser;
+			users["AwayUser"] = awayuser;
+
+			Game game = new Game {
+				HomeUser = homeuser,
+				AwayUser = awayuser
+			};
+			games[game.Id] = game;
+
+			game.Start();
+
+			Caller.startGame(game);
+			Caller.addActionMessage("Fake match started");
+			Caller.DebugMode = true;
+		}
+
+		# endregion
 	}
 }
