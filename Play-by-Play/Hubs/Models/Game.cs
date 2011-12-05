@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Play_by_Play.Models;
-using Play_by_Play.Models.StateMachine;
 
-namespace Play_by_Play.Hubs {
+namespace Play_by_Play.Hubs.Models {
 	public class Game {
 		public string Id { get; set; }
 		public GameBoard Board { get; set; }
@@ -369,72 +368,18 @@ namespace Play_by_Play.Hubs {
 
 
 		}
-	}
 
-	public class GameBoard {
-		public List<GameArea> Areas { get; set; }
+		public BattleResult ExecuteFaceOff() {
+			var rnd = new Random();
+			var homeModifier = rnd.Next(1, 6);
+			var awayModifier = rnd.Next(1, 6);
 
-		public Player HomeGoalie { get; set; }
-		public Player AwayGoalie { get; set; }
-
-		public Player HomeFaceoff { get; set; }
-		public Player AwayFaceoff { get; set; }
-
-		public GameBoard() {
-			Areas = new List<GameArea>();
-			for (int i = 0; i < 4; i++) {
-				for (int j = 0; j < 2; j++) {
-					Areas.Add(new GameArea {
-						X = j,
-						Y = i
-					});
-				}
-			}
-		}
-
-		public void PlacePlayer(Player player, int x, int y, bool isHome) {
-			var area = GetArea(x, y);
-			if(isHome)
-				area.HomePlayers.Add(player);
-			else
-				area.AwayPlayers.Add(player);
-		}
-
-		public GameArea GetArea(int x, int y) {
-			return Areas.Single(area => area.X == x && area.Y == y);
-		}
-	}
-
-	public class GameArea {
-		public int X { get; set; }
-		public int Y { get; set; }
-
-		public List<Player> HomePlayers { get; set; }
-		public List<Player> AwayPlayers { get; set; }
-
-		public GameArea() {
-			HomePlayers = new List<Player>();
-			AwayPlayers = new List<Player>();
-		}
-
-
-		private static string[][] areaNames = new []{
-			new[]{"gameBoardLW", "gameBoardRW"},
- 			new[]{"gameBoardLCW", "gameBoardRCW"}, 
-			new[]{"gameBoardLCD", "gameBoardRCD"},
- 			new[]{"gameBoardLD", "gameBoardRD"} 
-		};
-		public static string GetAreaName(int x, int y) {
-			return areaNames[y][x];
-		}
-		public static int[] GetCoords(string areaName) {
-			for (int y = 0; y < areaNames.Count(); y++) {
-				for (int x = 0; x < areaNames[y].Count(); x++) {
-					if (areaNames[y][x].Equals(areaName))
-						return new[] {x, y};
-				}
-			}
-			throw new Exception("No area with the specified name");
+			return new BattleResult {
+				HomePlayers = new List<Player>{ Board.HomeFaceoff },
+				AwayPlayers = new List<Player> { Board.AwayFaceoff },
+				HomeModifier = homeModifier,
+				AwayModifier = awayModifier
+			};
 		}
 	}
 }

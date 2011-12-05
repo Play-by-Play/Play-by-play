@@ -1,4 +1,5 @@
 ﻿using Play_by_Play.Hubs;
+using Play_by_Play.Hubs.Models;
 using Should;
 using Xunit;
 

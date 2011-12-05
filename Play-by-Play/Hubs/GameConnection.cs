@@ -1,4 +1,5 @@
-﻿using SignalR.Hubs;
+﻿using Play_by_Play.Hubs.Models;
+using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -152,6 +153,8 @@ namespace Play_by_Play.Hubs {
 												: game.HomeUser.ClientId;
 
 			Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardGoalkeeperOpponent");
+
+			ExecuteFaceOff(game);
 		}
 
 		public void PlaceFaceOffPlayer(int playerId) {
@@ -175,6 +178,18 @@ namespace Play_by_Play.Hubs {
 												: game.HomeUser.ClientId;
 
 			Clients[opponentId].placeOpponentPlayer(playerId, "gameBoardFaceOffOpponent");
+
+			ExecuteFaceOff(game);
+		}
+
+		private void ExecuteFaceOff(Game game) {
+			if (!game.Board.IsReadyForFaceoff())
+				return;
+
+			var faceoffResult = game.ExecuteFaceOff();
+
+			Clients[game.HomeUser.ClientId].faceOffResult(faceoffResult);
+			Clients[game.AwayUser.ClientId].faceOffResult(faceoffResult);
 		}
 
 		

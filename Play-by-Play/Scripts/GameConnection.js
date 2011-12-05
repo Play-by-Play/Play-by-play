@@ -62,6 +62,11 @@
 		PlayByPlay.placePlayerCard(playerId, square);
 	};
 
+	connection.faceOffResult = function (result) {
+		PlayByPlay.showBattleView();
+		PlayByPlay.hideFaceoff();
+	};
+
 	connection.usernameExists = function () {
 		$('#username-exist').text('Another user is using that username.').slideDown(200);
 	};

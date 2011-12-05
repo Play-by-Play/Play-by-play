@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Play_by_Play.Hubs {
+namespace Play_by_Play.Hubs.Models {
 	public class Team {
 		public string Name { get; set; }
 		public string Color { get; set; }

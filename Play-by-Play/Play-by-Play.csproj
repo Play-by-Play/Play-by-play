@@ -122,7 +122,10 @@
     <Compile Include="HomeController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\Models\BattleResult.cs" />
     <Compile Include="Hubs\Models\Formation.cs" />
+    <Compile Include="Hubs\Models\GameArea.cs" />
+    <Compile Include="Hubs\Models\GameBoard.cs" />
     <Compile Include="Hubs\Models\GameUser.cs" />
     <Compile Include="Hubs\Models\Game.cs" />
     <Compile Include="Hubs\GameConnection.cs" />
@@ -412,9 +415,10 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>
-<!--if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+      <!--if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
 xcopy /s /y "$(SolutionDir)packages\SqlServerCompact.4.0.8482.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
 if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
-xcopy /s /y "$(SolutionDir)packages\SqlServerCompact.4.0.8482.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"--></PostBuildEvent>
+xcopy /s /y "$(SolutionDir)packages\SqlServerCompact.4.0.8482.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"-->
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
