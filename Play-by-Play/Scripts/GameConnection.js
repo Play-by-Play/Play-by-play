@@ -43,6 +43,7 @@
 		$('#lobby').dialog('close');
 		connection.getPlayers();
 		connection.getTacticCards(5);
+		PlayByPlay.showFaceoff();
 	};
 
 	connection.createTacticCards = function (cards) {
@@ -59,6 +60,11 @@
 
 	connection.placeOpponentPlayer = function (playerId, square) {
 		PlayByPlay.placePlayerCard(playerId, square);
+	};
+
+	connection.faceOffResult = function (result) {
+		PlayByPlay.showBattleView();
+		PlayByPlay.hideFaceoff();
 	};
 
 	connection.usernameExists = function () {

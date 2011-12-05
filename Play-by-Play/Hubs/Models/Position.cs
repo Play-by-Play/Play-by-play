@@ -1,4 +1,4 @@
-namespace Play_by_Play.Hubs {
+namespace Play_by_Play.Hubs.Models {
 	public class Position {
 		public static readonly string C = "C",
 		                              LW = "LW",

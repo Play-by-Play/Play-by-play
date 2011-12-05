@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Play_by_Play.Models;
 
-namespace Play_by_Play.Hubs {
+namespace Play_by_Play.Hubs.Models {
 	[Serializable]
 	public class GameUser {
 		public string ClientId { get; set; }
