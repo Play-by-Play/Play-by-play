@@ -15,13 +15,14 @@ namespace Play_by_Play.Hubs.Models {
 		public List<Player> AwayPlayers { get; set; }
 		public int HomeModifier { get; set; }
 		public int AwayModifier { get; set; }
+		public bool IsHomePlayer { get; set; }
 
 		public int HomeTotal { 
 			get {
 				if (HomeModifier == 1)
 					return 0;
 
-				var playerSum = HomePlayers.Sum(x => x.Offence);
+				var playerSum = HomePlayers.Sum(x => x.Offense);
 				return playerSum + HomeModifier;
 			}
 		}
@@ -30,7 +31,7 @@ namespace Play_by_Play.Hubs.Models {
 				if (AwayModifier == 1)
 					return 0;
 
-				var playerSum = AwayPlayers.Sum(x => x.Offence);
+				var playerSum = AwayPlayers.Sum(x => x.Offense);
 				return playerSum + AwayModifier;
 			}
 		}
@@ -47,6 +48,16 @@ namespace Play_by_Play.Hubs.Models {
 
 			HomeModifier = homeModifier;
 			AwayModifier = awayModifier;
+		}
+
+		public BattleResult GetHomeResult() {
+			IsHomePlayer = true;
+			return this;
+		}
+
+		public BattleResult GetAwayResult() {
+			IsHomePlayer = false;
+			return this;
 		}
 	}
 }
