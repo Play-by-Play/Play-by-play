@@ -323,18 +323,64 @@ window.PlayByPlay = (function ($, _) {
 			// Set the new card location
 			playerCard.setLocation($('#' + square));
 		},
-		showBattleView: function (title, location) {
+		showBattleView: function (title, result) {
+			// Function for adding a row with player values
+			var addTableRow = function (table, total) {
+				var tr = $("<tr>");
+				table.append(tr);
+
+				var td = $("<td>");
+				td.text($(this).Name);
+				tr.append(td);
+
+				td = $("<td>");
+				var attr = $(this).Offense; // TODO: Dynamic choice
+				total += attr;
+				td.text(attr);
+				tr.append(td);
+			};
+			// Function for adding a row with total values
+			var addTotal = function (table, amount, total) {
+				var tr = $("<tr>");
+				tr.css({ "border-top": "2px solid #000" });
+				table.append(tr);
+
+				var td = $("<td>");
+				td.text(amount + " player" + (amount > 1 ? "s" : ""));
+				tr.append(td);
+
+				td = $("<td>");
+				td.text(total);
+				tr.append(td);
+			};
+
+			// Get battle view divs
 			var viewDiv = $("#battle-view");
-			location.find(".card").each(function () {
-				var name = $(this).find(".playerName").text();
-				var span = $("<span>");
-				span.text(name);
-				var playerDiv = viewDiv.find("#userBattle")[0];
-				if (!$(this).hasClass("draggable")) {
-					playerDiv = viewDiv.find("#oppBattle")[0];
-				}
-				playerDiv.append(span);
-			});
+			var userDiv = $("#userBattle");
+			var oppDiv = $("#oppBattle");
+			var resultDiv = $("#battleResult");
+
+			// Determine if current user is home or away team
+			if (result.IsHomePlayer) {
+				var homeDiv = userDiv;
+				var awayDiv = oppDiv;
+			} else {
+				var homeDiv = oppDiv;
+				var awayDiv = userDiv;
+			}
+			// Construct home team table
+			var table = $("<table>");
+			var total = 0;
+			$.each(result.HomePlayers, addTableInfo(table, total));
+			addTotal(table, result.HomePlayers.length, total);
+			homeDiv.append(table);
+			// Construct away team table
+			table = $("<table>");
+			$.each(result.AwayPlayers, addTableInfo(table, total));
+			addTotal(table, result.AwayPlayers.length, total);
+			awayDiv.append(table);
+
+			// Open battle view
 			viewDiv.dialog({
 				title: title,
 				modal: true,
@@ -342,7 +388,20 @@ window.PlayByPlay = (function ($, _) {
 				resizable: false,
 				open: function () { $(".ui-dialog-titlebar-close").hide(); }
 			});
-			viewDiv.delay(3000).queue(function () {
+
+			var delay = 3000; // delay in ms
+			// Show results
+			viewDiv.delay(delay).queue(function () {
+				var span = $("<span>");
+				// Check if current user won the battle
+				if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+					span.text("You won!");
+				} else {
+					span.text("Your opponent won...");
+				}
+			});
+			// Close battle view
+			viewDiv.delay(2 * delay).queue(function () {
 				$(this).dialog('close');
 			});
 		},
