@@ -2,3 +2,15 @@
     display: none;
     text-align: center;
 }
+
+#userBattle {
+	float: left;
+}
+
+#oppBattle {
+	float: right;
+}
+
+#battleResult {
+	vertical-align: bottom;
+}
