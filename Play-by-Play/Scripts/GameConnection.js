@@ -11,6 +11,10 @@
 		}
 	});
 
+	$.connection.hub.error(function (error) {
+		console.warn(error);
+	});
+
 	connection.addChatMessage = function (name, message) {
 		var data = { name: name, message: message };
 		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
@@ -25,7 +29,7 @@
 	};
 
 	connection.addUser = function (user) {
-		PlayByPlay.lobby.openLobby();
+		PlayByPlay.lobby.openLobby(user);
 	};
 
 	connection.addGame = function (game) {
@@ -40,7 +44,7 @@
 	};
 
 	connection.startGame = function (game) {
-		$('#lobby').dialog('close');
+		PlayByPlay.lobby.closeLobby();
 		connection.getPlayers();
 		connection.getTacticCards(5);
 		PlayByPlay.showFaceoff();

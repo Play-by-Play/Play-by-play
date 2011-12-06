@@ -52,6 +52,36 @@
 				<div class="diff">${diff}</div>
 			</div>
 		</script>
+		
+		<script id="userDialogTmpl" type="text/template">
+			<div id="new-user">
+				<form id="lobby-playerName">
+					<span class="label">Name</span>
+					<input id="playerNameInput" type="text" />
+					<input type="submit" id="add-user" value="Create user" />
+				</form>
+				<div id="username-exist">
+				</div>
+			</div>
+		</script>
+		<script id="lobbyTmpl" type="text/template">
+			<div id="lobby-dialog">
+				<div id="lobby">
+					<div id="lobby-team">
+					</div>
+					<div id="lobby-games">
+						<div id="active-games">
+						</div>
+						<button id="new-game">
+							Create new game</button>
+						<button id="join-game">
+							Join game</button>
+					</div>
+					<div id="lobby-chat">
+					</div>
+				</div>
+			</div>
+		</script>
 	</head>
 	<body>
 		<div id="left" class="column">
@@ -124,7 +154,7 @@
 		<div id="right" class="column">
 			<div id="score" class="panel">
 				<span id="playerGoals" class="goals">0</span> - <span id="opponentGoals" class="goals">
-					0</span>
+				                                                	0</span>
 			</div>
 			<div id="console" class="panel">
 				<ul>
@@ -143,31 +173,6 @@
 					<input id="chatInput" type="text" />
 					<input id="chatSubmit" type="submit" value="Post" />
 				</form>
-			</div>
-		</div>
-		<div id="new-user">
-			<form id="lobby-playerName">
-				<span class="label">Name</span>
-				<input id="playerNameInput" type="text" />
-				<input type="submit" id="add-user" value="Create user" />
-			</form>
-			<div id="username-exist">
-			</div>
-		</div>
-		<div id="lobby-dialog">
-			<div id="lobby">
-				<div id="lobby-team">
-				</div>
-				<div id="lobby-games">
-					<div id="active-games">
-					</div>
-					<button id="new-game">
-						Create new game</button>
-					<button id="join-game">
-						Join game</button>
-				</div>
-				<div id="lobby-chat">
-				</div>
 			</div>
 		</div>
 		<div id="battle-view">
