@@ -1,7 +1,6 @@
-﻿window.connection = (function () {
+﻿window.connection = window.conneection || (function () {
 	var connection = $.connection.game;
-	// Server connectivity
-
+	// Server connectivity    
 	$.connection.hub.start(function () {
 		if (PlayByPlay.debug) {
 			connection.fakeIt();
