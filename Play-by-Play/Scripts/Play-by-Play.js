@@ -5,7 +5,7 @@
 
 window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Enable debug mode
-	var debug = true;
+	var debug = false;
 
 	//#region PlayersAndBonus
 	var iceColor = "#FFF";
@@ -450,7 +450,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					$(this).parent().find(".ui-dialog-titlebar-close").hide();
 				}
 			});
-			layout.setBattleViewSize();
 
 			var delay = 3000; // delay in ms
 			// Show results
@@ -464,10 +463,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 				span.appendTo(resultDiv);
 			}, delay);
-			//			setTimeout(function () {
-			//				// Close battle view
-			//				viewDiv.dialog('close');
-			//			}, delay * 2);
+			setTimeout(function () {
+				// Close battle view
+				viewDiv.dialog('close');
+			}, delay * 2);
 		},
 		showFaceoff: function () {
 			// Show faceoff squares
@@ -625,6 +624,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					}
 					// Get the card object
 					var id = cardDiv[0].id.substring(4);
+					var playerCard = players.find(id);
 					playerCard.setLocation($($(this)));
 					window.connection.placeGoalkeeper(id);
 					// Disable draggability
@@ -1244,7 +1244,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		if (!debug) {
 			PlayByPlay.lobby.initialize();
 		} else {
-			play.showBattleView("", "");
+			//play.showBattleView("", "");
 		}
 	});
 
