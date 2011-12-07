@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Play_by_Play.Hubs.Models {
 	public class BattleResult {
+		private BattleResult() {}
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers ) {
 			HomePlayers = homePlayers;
 			AwayPlayers = awayPlayers;
@@ -51,13 +52,25 @@ namespace Play_by_Play.Hubs.Models {
 		}
 
 		public BattleResult GetHomeResult() {
-			IsHomePlayer = true;
-			return this;
+			var result = new BattleResult {
+				HomeModifier = HomeModifier,
+				HomePlayers = HomePlayers,
+				IsHomePlayer = true,
+				AwayModifier = AwayModifier,
+				AwayPlayers = AwayPlayers
+			};
+			return result;
 		}
 
 		public BattleResult GetAwayResult() {
-			IsHomePlayer = false;
-			return this;
+			var result = new BattleResult {
+				HomeModifier = HomeModifier,
+				HomePlayers = HomePlayers,
+				IsHomePlayer = false,
+				AwayModifier = AwayModifier,
+				AwayPlayers = AwayPlayers
+			};
+			return result;
 		}
 	}
 }
