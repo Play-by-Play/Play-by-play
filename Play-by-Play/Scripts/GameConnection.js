@@ -1,7 +1,6 @@
-﻿window.connection = (function () {
+﻿window.connection = window.conneection || (function () {
 	var connection = $.connection.game;
-	// Server connectivity
-
+	// Server connectivity    
 	$.connection.hub.start(function () {
 		if (PlayByPlay.debug) {
 			connection.fakeIt();
@@ -9,10 +8,6 @@
 			window.user = connection.getUser();
 			connection.getGames();
 		}
-	});
-
-	$.connection.hub.error(function (error) {
-		console.warn(error);
 	});
 
 	connection.addChatMessage = function (name, message) {
@@ -44,6 +39,7 @@
 	};
 
 	connection.startGame = function (game) {
+		window.Game = game;
 		PlayByPlay.lobby.closeLobby();
 		connection.getPlayers();
 		connection.getTacticCards(5);
