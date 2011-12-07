@@ -11,10 +11,6 @@
 		}
 	});
 
-	$.connection.hub.error(function (error) {
-		console.warn(error);
-	});
-
 	connection.addChatMessage = function (name, message) {
 		var data = { name: name, message: message };
 		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
@@ -44,6 +40,7 @@
 	};
 
 	connection.startGame = function (game) {
+		window.Game = game;
 		PlayByPlay.lobby.closeLobby();
 		connection.getPlayers();
 		connection.getTacticCards(5);

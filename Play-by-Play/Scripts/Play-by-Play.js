@@ -3,7 +3,7 @@
 /// <reference path="jquery-ui-1.8.16.js" />
 
 
-window.PlayByPlay = (function ($, _) {
+window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Enable debug mode
 	var debug = false;
 
@@ -155,7 +155,9 @@ window.PlayByPlay = (function ($, _) {
 			// Find card div
 			var cardDiv = $("#card" + this.id);
 			// Resize and move card
-			if (newLocation.parent()[0].id == "gameBoardBackgroundLayer") { // to gameboard
+			var parent = newLocation.parent().first();
+			var attr = parent.attr('id');
+			if (attr == "gameBoardBackgroundLayer") { // to gameboard
 				if (newLocation.has(".gameSquare").length === 0) {
 					//Goalie
 					var otherCard = newLocation.find('.card');
@@ -444,9 +446,9 @@ window.PlayByPlay = (function ($, _) {
 					var playerCard = players.find(id);
 
 					// Check which team player belongs to
-					var foo = $("#" + playerCard.getLine());
-					var bar = ((id - (playerCard.isUserControlled() ? 1 : 3)) % 5) + 1;
-					var newLocation = foo.children(':nth-child(' + bar + ')');
+					var element = $("#" + playerCard.getLine());
+					var order = _.indexOf(["LW", "C","RW","LD","RD"], pos) + 1;
+					var newLocation = element.children(':nth-child(' + order + ')');
 					playerCard.setLocation(newLocation);
 					playerCard.setBonus(Bonus.NONE);
 					cardDiv.draggable("enable");
