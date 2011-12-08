@@ -1,11 +1,13 @@
-﻿window.connection = window.conneection || (function () {
+﻿window.connection = window.connection || (function () {
+	var userInfo = { };
+
 	var connection = $.connection.game;
 	// Server connectivity    
 	$.connection.hub.start(function () {
 		if (PlayByPlay.debug) {
 			connection.fakeIt();
 		} else {
-			window.user = connection.getUser();
+			window.user = connection.getUser(userInfo.Name || "");
 			connection.getGames();
 		}
 	});
@@ -19,11 +21,12 @@
 		$('#actionTemplate').tmpl({ type: type, message: message }).appendTo('#actions');
 	};
 
-	connection.getUser = function (user) {
-		window.user = user;
+	connection.setUser = function (user) {
+		userInfo = user;
 	};
 
 	connection.addUser = function (user) {
+		connection.setUser(user);
 		PlayByPlay.lobby.openLobby(user);
 	};
 
