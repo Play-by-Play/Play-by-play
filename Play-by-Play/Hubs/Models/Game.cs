@@ -10,6 +10,7 @@ namespace Play_by_Play.Hubs.Models {
 		public GameUser HomeUser { get; set; }
 		public GameUser AwayUser { get; set; }
 		public bool IsHomeTurn { get; private set; }
+		public bool IsFaceOff { get; private set; }
 		private List<TacticCard> AvailableCards { get; set; }
 
 		public Game() {
@@ -367,13 +368,17 @@ namespace Play_by_Play.Hubs.Models {
 			};
 			# endregion
 
-
+			IsFaceOff = true;
 		}
 
 		public BattleResult ExecuteFaceOff() {
 			var battleResult = new BattleResult(new List<Player> {Board.HomeFaceoff}, new List<Player> {Board.AwayFaceoff});
 
 			IsHomeTurn = battleResult.HomeTotal > battleResult.AwayTotal;
+
+			IsFaceOff = false;
+			Board.HomeFaceoff = null;
+			Board.AwayFaceoff = null;
 
 			return battleResult;
 		}

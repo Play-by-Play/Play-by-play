@@ -20,19 +20,21 @@ namespace Play_by_Play.Hubs {
 			Clients.addChatMessage(user.Name, message);
 		}
 
-		public void GetUser() {
-
-			Caller.getUser(users.FirstOrDefault(x => x.Value.ClientId.Equals(Context.ClientId)).Value);
+		public void GetUser(string username) {
+			if(string.IsNullOrEmpty(username))
+				Caller.setUser(users.Where(x => x.Key.Equals(Context.ClientId)).Select(x => x.Value).FirstOrDefault());
+			else
+				Caller.setUser(users.Values.FirstOrDefault(x => x.Name.Equals(username)));
 		}
 
 		public void CreateUser(string username) {
-			var userExists = users.FirstOrDefault(x => x.Key.Equals(username)).Value != null;
+			var userExists = users.Values.FirstOrDefault(x => x.Name.Equals(username)) != null;
 			if (!userExists) {
 				var user = new GameUser(username, GetMD5Hash(username)) {
 					ClientId = Context.ClientId
 				};
 
-				users[username] = user;
+				users[Context.ClientId] = user;
 
 				Caller.Name = user.Name;
 				Caller.Id = user.Id;
@@ -46,10 +48,10 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void CreateGame() {
-			if (!users.ContainsKey(Caller.Name)) return;
+			if (!users.ContainsKey(Context.ClientId)) return;
 			if (games.Values.Count(x => x.HomeUser.Name == Caller.Name || (x.AwayUser != null && x.AwayUser.Name == Caller.Name)) > 0) return;
-			var user = users[Caller.Name];
-			Game game = new Game {
+			var user = users[Context.ClientId];
+			var game = new Game {
 				HomeUser = user
 			};
 			games[game.Id] = game;
@@ -69,7 +71,7 @@ namespace Play_by_Play.Hubs {
 
 			if (game == null) return;
 
-			var user = users.FirstOrDefault(x => x.Key.Equals(Caller.Name)).Value;
+			var user = users.FirstOrDefault(x => x.Key.Equals(Context.ClientId)).Value;
 
 			game.AwayUser = user;
 			game.Start();
@@ -102,8 +104,8 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void PlacePlayer(int playerId, string areaName) {
-			var username = Caller.Name;
-			var user = users[Caller.Name] as GameUser;
+			var userId = Context.ClientId;
+			var user = users.FirstOrDefault(x => x.Key == userId).Value;
 			if (user == null)
 				throw new Exception("User does not exist");
 			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
@@ -133,7 +135,7 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void PlaceGoalkeeper(int playerId) {
-			var user = users[Caller.Name] as GameUser;
+			var user = users[Context.ClientId];
 			if (user == null)
 				throw new Exception("User does not exist");
 			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
@@ -151,10 +153,14 @@ namespace Play_by_Play.Hubs {
 				throw new Exception("No goalkeeper with that ID in the team");
 			}
 
-			if (isHome)
-				game.Board.HomeGoalie = goalie;
-			else
-				game.Board.AwayGoalie = goalie;
+			if (game.IsFaceOff) {
+				if (isHome)
+					game.Board.HomeGoalie = goalie;
+				else
+					game.Board.AwayGoalie = goalie;
+			} else {
+				throw new Exception("Now is not the time for face-off");
+			}
 
 			var opponentId = isHome
 												? game.AwayUser.ClientId
@@ -166,7 +172,7 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void PlaceFaceOffPlayer(int playerId) {
-			var user = users[Caller.Name] as GameUser;
+			var user = users[Context.ClientId];
 			if (user == null)
 				throw new Exception("User does not exist");
 			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
@@ -184,10 +190,24 @@ namespace Play_by_Play.Hubs {
 				throw new Exception("No player with that ID in the team");
 			}
 
-			if (isHome)
-				game.Board.HomeFaceoff = player;
-			else
-				game.Board.AwayFaceoff = player;
+			if (game.IsFaceOff) {
+				if (isHome) {
+					if (game.Board.HomeFaceoff == null)
+						game.Board.HomeFaceoff = player;
+					else {
+						throw new Exception("Face-off player already assigned");
+					}
+				}
+				else {
+					if (game.Board.AwayFaceoff == null)
+						game.Board.AwayFaceoff = player;
+					else {
+						throw new Exception("Face-off player already assigned");
+					}
+				}
+			} else {
+				throw new Exception("Now is not the time for face-off");
+			}
 
 			var opponentId = isHome
 												? game.AwayUser.ClientId
@@ -231,11 +251,11 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void Disconnect() {
-			var user = users.Values.FirstOrDefault(x => x.ClientId == Context.ClientId);
+			var user = users.Where(x => x.Key == Context.ClientId).Select(x => x.Value).FirstOrDefault();
 
 			if (user == null) return;
 
-			users.Remove(user.Name);
+			users.Remove(user.ClientId);
 
 			var gamesToRemove = games.Values.Where(x => x.HomeUser == user || x.AwayUser == user).ToArray();
 
