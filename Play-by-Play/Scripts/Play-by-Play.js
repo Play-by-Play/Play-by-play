@@ -158,7 +158,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var parent = newLocation.parent().first();
 			var attr = parent.attr('id');
 			if (attr == "gameBoardBackgroundLayer") { // to gameboard
-				if (newLocation.has(".gameSquare").length === 0) {
+				if (newLocation.hasClass(".gameSquare").length === 0) {
 					//Goalie
 					var otherCard = newLocation.find('.card');
 					if (otherCard.length > 0)
@@ -447,7 +447,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 					// Check which team player belongs to
 					var element = $("#" + playerCard.getLine());
-					var order = _.indexOf(["LW", "C","RW","LD","RD"], pos) + 1;
+					var order = _.indexOf(["LW", "C", "RW", "LD", "RD"], pos) + 1;
 					var newLocation = element.children(':nth-child(' + order + ')');
 					playerCard.setLocation(newLocation);
 					playerCard.setBonus(Bonus.NONE);
@@ -554,37 +554,42 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 			});
 			$("#gameBoardGoalkeeper").droppable({
+				revert: 'invalid',
 				accept: ".goalie",
 				activeClass: "gameSquareActive",
 				hoverClass: "gameSquareHover",
 				drop: function (event, ui) {
-
 					// Get hold of the card div
 					var cardDiv = ui.draggable;
-					// Remove existing card
-					if ($(this).has(".card")) {
-						// Get replaced goalie card
-						var replacedGoalie = $(this).find(".card");
-						replaceGoalie(cardDiv, replacedGoalie, "#goalies");
-					}
 					// Get the card object
 					var id = cardDiv[0].id.substring(4);
-					window.connection.placeGoalkeeper(id);
-					// Resize and move card
-					cardDiv.removeClass("benched");
-					cardDiv.addClass("onBoard");
-					layout.setCardSizes();
-					cardDiv.appendTo($(this));
-					// Place the card correctly
-					cardDiv.position({
-						of: $(this),
-						my: 'center center',
-						at: 'center center'
+					var $this = $(this);
+					window.connection.placeGoalkeeper(id).done(function (result) {
+						// Remove existing card
+						if ($(this).has(".card")) {
+							// Get replaced goalie card
+							var replacedGoalie = $this.find(".card");
+							replaceGoalie(cardDiv, replacedGoalie, "#goalies");
+						}
+						// Resize and move card
+						cardDiv.removeClass("benched");
+						cardDiv.addClass("onBoard");
+						layout.setCardSizes();
+						cardDiv.appendTo($this);
+						// Place the card correctly
+						cardDiv.position({
+							of: $this,
+							my: 'center center',
+							at: 'center center'
+						});
+						cardDiv.draggable("disable");
+						cardDiv.css({ opacity: 1 });
+						// Remove strong hover
+						$this.removeClass("gameSquareHoverStrong");
+					}).fail(function (error) {
+						console.warn(error);
+						layout.setCardSizes();
 					});
-					cardDiv.draggable("disable");
-					cardDiv.css({ opacity: 1 });
-					// Remove strong hover
-					$(this).removeClass("gameSquareHoverStrong");
 				},
 				over: function () {
 					$(this).addClass("gameSquareHoverStrong");
@@ -603,15 +608,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					var cardDiv = ui.draggable;
 					// Get the card object
 					var id = cardDiv[0].id.substring(4);
-					window.connection.placeFaceOffPlayer(id);
+					var $this = $(this);
+					window.connection.placeFaceOffPlayer(id).done(function (result) {
+
+					}).fail(function (error) {
+						console.warn(error);
+						layout.rerender();
+					});
 					// Resize and move card
 					cardDiv.removeClass("benched");
 					cardDiv.addClass("onBoard");
 					layout.setCardSizes();
-					cardDiv.appendTo($(this));
+					cardDiv.appendTo($this);
 					// Place the card correctly
 					cardDiv.position({
-						of: $(this),
+						of: $this,
 						my: 'center center',
 						at: 'center center'
 					});
