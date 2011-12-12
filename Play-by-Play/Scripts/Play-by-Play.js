@@ -169,7 +169,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				layout.setCardSizes();
 				cardDiv.appendTo(newLocation);
 				// Place the card correctly
-				if (!this.isUserControlled()) {
+				if (this.getPos() == "G" || newLocation.attr('id') == "gameBoardFaceOffOpponent" || newLocation.attr('id') == "gameBoardFaceOff") {
+					align = "center center";
+					offset = 0;
+				} else if (!this.isUserControlled()) {
+					// Opponent cards
 					align = "left top";
 					// Move each card currently in the square
 					var cards = newLocation.children().length - newLocation.find(".draggable").length - 1;
@@ -393,6 +397,15 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 			addTotal(table, result.AwayPlayers.length, total);
 			awayDiv.append(table);
+
+			// Set size on dialog
+			var baseWidth = 836;
+			var baseHeight = 530;
+
+			var totalWidth = $(document).width();
+
+			var width = totalWidth * baseWidth / 1280;
+			var height = baseHeight * width / baseWidth;
 
 			// Open battle view
 			viewDiv.dialog({
@@ -751,6 +764,13 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			width -= outerLineWidth;
 
 			context.clearRect(0, 0, width, height);
+
+			// Set margin for the container of game squares
+			console.log("Width: " + outerLineWidth);
+			var squares = $('#gameBoardBackgroundLayer');
+			console.log("Margin before: " + squares.css('margin-left'));
+			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
+			console.log("Margin after: " + squares.css('margin-left'));
 
 			// draw ice rink
 			context.beginPath();
@@ -1190,7 +1210,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		}
 	});
 
-	$('#chatMessage').submit(function () {
+	$('#chatMessage').submit(function (evt) {
+		evt.preventDefault();
 		window.connection.send($('#chatInput').val())
 						.fail(function (e) {
 							alert(e);
