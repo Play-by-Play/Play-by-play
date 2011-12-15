@@ -1219,6 +1219,15 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				'font-size': (baseFont * width / baseWidth) + 'px',
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
+
+			// update tactic cards height
+			var tacticWidth = $(".tacticCard").width();
+			console.log("tacticWidth " + tacticWidth);
+			var tacticHeight = (tacticWidth / 5) * 8;
+			console.log("tacticWidth " + tacticHeight);
+			$(".tacticCard").each(function () {
+				$(this).height(tacticHeight);
+			});
 		},
 		setBattleViewSize: function () {
 			var baseWidth = 836;

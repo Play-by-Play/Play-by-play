@@ -22,6 +22,12 @@ div.tacticCard {
 	overflow: hidden;
 }
 
+div.tacticCard canvas 
+{
+	width: 100%;
+	height: auto;
+}
+
 div.teamLogo {
 	position: relative;
 }
