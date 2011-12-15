@@ -205,8 +205,8 @@ namespace Play_by_Play.Hubs {
 
 			var faceoffResult = game.ExecuteFaceOff();
 
-			Clients[game.HomeUser.ClientId].faceOffResult(faceoffResult);
-			Clients[game.AwayUser.ClientId].faceOffResult(faceoffResult);
+			Clients[game.HomeUser.ClientId].faceOffResult(faceoffResult.GetHomeResult());
+			Clients[game.AwayUser.ClientId].faceOffResult(faceoffResult.GetAwayResult());
 		}
 
 		public void AbortGame(Game game) {

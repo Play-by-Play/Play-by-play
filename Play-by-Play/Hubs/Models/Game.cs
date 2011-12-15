@@ -155,7 +155,7 @@ namespace Play_by_Play.Hubs.Models {
 			}
 
 			//return list;
-			return AvailableCards;
+			return AvailableCards.Take(amount).ToList();
 		}
 
 		public void Start() {
@@ -166,96 +166,96 @@ namespace Play_by_Play.Hubs.Models {
 				Players = new List<Player> {
 					new Player{
 						Name = "Zetterberg",
-						Offence = 5,
-						Defence = 3,
+						Offense = 5,
+						Defense = 3,
 						Position = Position.LW,
 						Formation = Formation.Line1,
 						Id = 1
 					},
 					new Player{
 						Name = "Datsyuk",
-						Offence = 4,
-						Defence = 4,
+						Offense = 4,
+						Defense = 4,
 						Position = Position.C,
 						Formation = Formation.Line1,
 						Id = 2
 					},
 					new Player{
 						Name = "Holmstrom",
-						Offence = 3,
-						Defence = 3,
+						Offense = 3,
+						Defense = 3,
 						Position = Position.RW,
 						Formation = Formation.Line1,
 						Id = 3
 					},
 					new Player{
 						Name = "Lidstrom",
-						Offence = 3,
-						Defence = 4,
+						Offense = 3,
+						Defense = 4,
 						Position = Position.LD,
 						Formation = Formation.Line1,
 						Id = 4
 					},
 					new Player{
 						Name = "Rafalski",
-						Offence = 2,
-						Defence = 4,
+						Offense = 2,
+						Defense = 4,
 						Position = Position.RD,
 						Formation = Formation.Line1,
 						Id = 5
 					},
 					new Player{
 						Name = "Cleary",
-						Offence = 4,
-						Defence = 2,
+						Offense = 4,
+						Defense = 2,
 						Position = Position.LW,
 						Formation = Formation.Line2,
 						Id = 6
 					},
 					new Player{
 						Name = "Filppula",
-						Offence = 4,
-						Defence = 2,
+						Offense = 4,
+						Defense = 2,
 						Position = Position.C,
 						Formation = Formation.Line2,
 						Id = 7
 					},
 					new Player{
 						Name = "Bertuzzi",
-						Offence = 4,
-						Defence = 3,
+						Offense = 4,
+						Defense = 3,
 						Position = Position.RW,
 						Formation = Formation.Line2,
 						Id = 8
 					},
 					new Player{
 						Name = "Kronwall",
-						Offence = 3,
-						Defence = 3,
+						Offense = 3,
+						Defense = 3,
 						Position = Position.LD,
 						Formation = Formation.Line2,
 						Id = 9
 					},
 					new Player{
 						Name = "Stuart",
-						Offence = 2,
-						Defence = 4,
+						Offense = 2,
+						Defense = 4,
 						Position = Position.RD,
 						Formation = Formation.Line2,
 						Id = 10
 					},
 					new Player{
 						Name = "Howard",
-						Offence = 3,
-						Defence = 5,
+						Offense = 3,
+						Defense = 5,
 						Position = Position.G,
 						Formation = Formation.Goalies,
 						Id = 11
 					},
 					new Player{
 						Name = "Osgood",
-						Offence = 3,
-						Defence = 4,
+						Offense = 3,
+						Defense = 4,
 						Position = Position.G,
 						Formation = Formation.Goalies,
 						Id = 12
@@ -269,96 +269,96 @@ namespace Play_by_Play.Hubs.Models {
 				Players = new List<Player> {
 					new Player{
 						Name = "Dubinsky",
-						Offence = 5,
-						Defence = 2,
+						Offense = 5,
+						Defense = 2,
 						Position = Position.LW,
 						Formation = Formation.Line1,
 						Id = 13
 					},
 					new Player{
 						Name = "Drury",
-						Offence = 5,
-						Defence = 3,
+						Offense = 5,
+						Defense = 3,
 						Position = Position.C,
 						Formation = Formation.Line1,
 						Id = 14
 					},
 					new Player{
 						Name = "Gaborik",
-						Offence = 6,
-						Defence = 1,
+						Offense = 6,
+						Defense = 1,
 						Position = Position.RW,
 						Formation = Formation.Line1,
 						Id = 15
 					},
 					new Player{
 						Name = "Girardi",
-						Offence = 1,
-						Defence = 4,
+						Offense = 1,
+						Defense = 4,
 						Position = Position.LD,
 						Formation = Formation.Line1,
 						Id = 16
 					},
 					new Player{
 						Name = "Staal",
-						Offence = 3,
-						Defence = 4,
+						Offense = 3,
+						Defense = 4,
 						Position = Position.RD,
 						Formation = Formation.Line1,
 						Id = 17
 					},
 					new Player{
 						Name = "Zuccarello",
-						Offence = 4,
-						Defence = 2,
+						Offense = 4,
+						Defense = 2,
 						Position = Position.LW,
 						Formation = Formation.Line2,
 						Id = 18
 					},
 					new Player{
 						Name = "Anisimov",
-						Offence = 4,
-						Defence = 2,
+						Offense = 4,
+						Defense = 2,
 						Position = Position.C,
 						Formation = Formation.Line2,
 						Id = 19
 					},
 					new Player{
 						Name = "Callahan",
-						Offence = 4,
-						Defence = 3,
+						Offense = 4,
+						Defense = 3,
 						Position = Position.RW,
 						Formation = Formation.Line2,
 						Id = 20
 					},
 					new Player{
 						Name = "McCabe",
-						Offence = 2,
-						Defence = 4,
+						Offense = 2,
+						Defense = 4,
 						Position = Position.LD,
 						Formation = Formation.Line2,
 						Id = 21
 					},
 					new Player{
 						Name = "Del Zotto",
-						Offence = 2,
-						Defence = 3,
+						Offense = 2,
+						Defense = 3,
 						Position = Position.RD,
 						Formation = Formation.Line2,
 						Id = 22
 					},
 					new Player{
 						Name = "Lundqvist",
-						Offence = 4,
-						Defence = 4,
+						Offense = 4,
+						Defense = 4,
 						Position = Position.G,
 						Formation = Formation.Goalies,
 						Id = 23
 					},
 					new Player{
 						Name = "Biron",
-						Offence = 2,
-						Defence = 3,
+						Offense = 2,
+						Defense = 3,
 						Position = Position.G,
 						Formation = Formation.Goalies,
 						Id = 24

@@ -1,7 +1,6 @@
-﻿window.connection = (function () {
+﻿window.connection = window.conneection || (function () {
 	var connection = $.connection.game;
-	// Server connectivity
-
+	// Server connectivity    
 	$.connection.hub.start(function () {
 		if (PlayByPlay.debug) {
 			connection.fakeIt();
@@ -25,7 +24,7 @@
 	};
 
 	connection.addUser = function (user) {
-		PlayByPlay.lobby.openLobby();
+		PlayByPlay.lobby.openLobby(user);
 	};
 
 	connection.addGame = function (game) {
@@ -40,7 +39,8 @@
 	};
 
 	connection.startGame = function (game) {
-		$('#lobby').dialog('close');
+		window.Game = game;
+		PlayByPlay.lobby.closeLobby();
 		connection.getPlayers();
 		connection.getTacticCards(5);
 		PlayByPlay.showFaceoff();

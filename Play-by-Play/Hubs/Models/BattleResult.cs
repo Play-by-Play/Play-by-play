@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Play_by_Play.Hubs.Models {
 	public class BattleResult {
+		private BattleResult() {}
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers ) {
 			HomePlayers = homePlayers;
 			AwayPlayers = awayPlayers;
@@ -15,13 +16,14 @@ namespace Play_by_Play.Hubs.Models {
 		public List<Player> AwayPlayers { get; set; }
 		public int HomeModifier { get; set; }
 		public int AwayModifier { get; set; }
+		public bool IsHomePlayer { get; set; }
 
 		public int HomeTotal { 
 			get {
 				if (HomeModifier == 1)
 					return 0;
 
-				var playerSum = HomePlayers.Sum(x => x.Offence);
+				var playerSum = HomePlayers.Sum(x => x.Offense);
 				return playerSum + HomeModifier;
 			}
 		}
@@ -30,7 +32,7 @@ namespace Play_by_Play.Hubs.Models {
 				if (AwayModifier == 1)
 					return 0;
 
-				var playerSum = AwayPlayers.Sum(x => x.Offence);
+				var playerSum = AwayPlayers.Sum(x => x.Offense);
 				return playerSum + AwayModifier;
 			}
 		}
@@ -47,6 +49,28 @@ namespace Play_by_Play.Hubs.Models {
 
 			HomeModifier = homeModifier;
 			AwayModifier = awayModifier;
+		}
+
+		public BattleResult GetHomeResult() {
+			var result = new BattleResult {
+				HomeModifier = HomeModifier,
+				HomePlayers = HomePlayers,
+				IsHomePlayer = true,
+				AwayModifier = AwayModifier,
+				AwayPlayers = AwayPlayers
+			};
+			return result;
+		}
+
+		public BattleResult GetAwayResult() {
+			var result = new BattleResult {
+				HomeModifier = HomeModifier,
+				HomePlayers = HomePlayers,
+				IsHomePlayer = false,
+				AwayModifier = AwayModifier,
+				AwayPlayers = AwayPlayers
+			};
+			return result;
 		}
 	}
 }
