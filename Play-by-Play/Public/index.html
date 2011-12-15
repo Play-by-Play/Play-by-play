@@ -27,21 +27,21 @@
 			</li>
 		</script>
 		<script type="text/template" id="playerCardTemplate">
-            <div class="placeholder">
-                <span>${pos}</span>
-	            <div id="${id}" class="card benched ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
-				    <div class="teamLogo">
-					    <img src="/Public/images/logobacks/${team}.png"/>
-					    <div class="playerBio">
-						    <img src="/Public/images/bios/${name}.png"/>
-					    </div>
-				    </div>
-				    <div class="playerName">${name}</div>
-				    <div class="attr1">${attr1}</div>
-				    <div class="attr2">${attr2}</div>
-				    <div class="playerPos">${pos}</div>
-			    </div>
-            </div>
+			<div class="placeholder">
+				<span>${pos}</span>
+				<div id="${id}" class="card benched ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
+					<div class="teamLogo">
+						<img src="/Public/images/logobacks/${team}.png"/>
+						<div class="playerBio">
+							<img src="/Public/images/bios/${name}.png"/>
+						</div>
+					</div>
+					<div class="playerName">${name}</div>
+					<div class="attr1">${attr1}</div>
+					<div class="attr2">${attr2}</div>
+					<div class="playerPos">${pos}</div>
+				</div>
+			</div>
 		</script>
 		<script type="text/template" id="tacticCardTemplate">
 			<div class="tacticCard">
