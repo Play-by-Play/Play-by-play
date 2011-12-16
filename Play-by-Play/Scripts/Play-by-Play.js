@@ -393,6 +393,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var userDiv = $("#userBattle");
 			var oppDiv = $("#oppBattle");
 			var resultDiv = $("#battleResult");
+			var animDiv = $("#battleAnim");
+			var puck = $("#battlePuck");
 
 			// Determine if current user is home or away team
 			if (result.IsHomePlayer) {
@@ -429,6 +431,17 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			awayDiv.append($("<h1>").text("Opponent"));
 			awayDiv.append(table);
 
+			// Add result text
+			var span = $("<span>");
+			// Check if current user won the battle
+			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+				span.text("You won!");
+			} else {
+				span.text("Your opponent won...");
+			}
+			span.css({ visibility: "hidden" });
+			span.prependTo(resultDiv);
+
 			// Set size on dialog
 			var baseWidth = 836;
 			var baseHeight = 530;
@@ -437,6 +450,14 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			var width = totalWidth * baseWidth / 1280;
 			var height = baseHeight * width / baseWidth;
+
+			// Set position on puck
+			puck.position({
+				of: $("#battleAnim"),
+				my: 'center center',
+				at: 'center center',
+				offset: '0'
+			});
 
 			// Open battle view
 			viewDiv.dialog({
@@ -452,20 +473,22 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 
 			var delay = 3000; // delay in ms
+			// Animate battle
+			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+				var anim = '-';
+			} else {
+				var anim = '+';
+			}
+			$("#battlePuck").animate({
+				left: anim + (width / 2 - 0.1 * width)
+			}, delay);
 			// Show results
 			setTimeout(function () {
-				var span = $("<span>");
-				// Check if current user won the battle
-				if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
-					span.text("You won the " + title + "!");
-				} else {
-					span.text("Your opponent won the " + title + "...");
-				}
-				span.appendTo(resultDiv);
+				span.css({ visibility: "visible" });
 			}, delay);
 			setTimeout(function () {
 				// Close battle view
-				viewDiv.dialog('close');
+				//viewDiv.dialog('close');
 			}, delay * 2);
 		},
 		showFaceoff: function () {
@@ -1185,11 +1208,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				'height': height,
 				'position': center
 			});
-
-			//			$("#battle-view").dialog("option", {
-			//				'width': width + 'px',
-			//				'height': height + 'px'
-			//			});
 		}
 	};
 
