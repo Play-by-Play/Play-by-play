@@ -14,7 +14,8 @@
 
 	connection.addChatMessage = function (name, message) {
 		var data = { name: name, message: message };
-		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
+		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages > .content');
+		$('#chatMessages').nanoScroller({scroll: 'bottom'});
 	};
 
 	connection.addActionMessage = function (message, type) {
