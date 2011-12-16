@@ -270,6 +270,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$("#tacticCards").hover(
 				function () {
 					// mouse over
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					$('.tacticCard').each(function () {
 						$(this).css({ opacity: 0.5 });
 					});
@@ -278,6 +282,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				},
 				function () {
 					// mouse out
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					$('.tacticCard').each(function () {
 						$(this).css({ opacity: 1.0 });
 					});
@@ -310,6 +318,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// mouse over
 				function () {
 					// clear the canvas before proceding
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					layout.clearGameboardTactic();
 					layout.drawTactic(document.getElementById("gameBoardTacticalCanvas"), tactic);
 					$('.tacticCard').each(function () {
@@ -319,12 +331,25 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				},
 			// mouse out
 				function () {
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					layout.clearGameboardTactic();
 					$(this).css({ opacity: 0.5 });
 				}
 			);
 
 			template.click(function () {
+				if (!layout.tacticCardsEnabled) {
+					return;
+				}
+
+				layout.tacticCardsEnabled = false;
+				$('.tacticCard').each(function () {
+					$(this).css({ opacity: 1.0 });
+				});
+
 				layout.drawPlayerPlacedTactic(tactic, template);
 			});
 
@@ -742,6 +767,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	//#region Layout
 	var layout = {
 		init: function () {
+			layout.tacticCardsEnabled = false;
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
@@ -928,17 +954,36 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		drawPlayerPlacedTactic: function (tactic, card) {
 			// remove placed tactic card
 			card.remove();
+			// lock the other cards
+			$('.tacticCard').each(function () {
+				$(this).attr('disabled', true);
+			});
+
+			layout.clearGameboardTactic();
+
+
+			//layout.disableTacticCards();
+			$('.tacticCard').css({ opacity: 0.1 });
+
 
 			// inform server of selected tactical card
 
 			// lock tactic cards
-			$('.tacticCard').each(function () {
-				//$(this).disable(true);
-			});
+			//			$('.tacticCard').each(function () {
+			//				//$(this).disable(true);
+			//			});
 
-			var canvas = document.getElementById("gameBoardCanvas");
+			var canvas = document.getElementById("gameBoardTacticalCanvas");
+			layout.placedTactic = tactic;
 
 			layout.drawTactic(canvas, tactic);
+		},
+
+		disableTacticCards: function () {
+			//			$('.tacticCard').each(function () {
+			//				$(this).css({ opacity: 0.1 });
+			//				//$(this);
+			//			});
 		},
 
 		drawOpponentPlacedTactic: function (tactic) {
@@ -1050,8 +1095,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 		clearGameboardTactic: function () {
 			// remove drawn tactic on gameboard
-
 			var elem = $("#gameBoardTacticalCanvas");
+			layout.clearTactic(elem);
+		},
+
+		clearTactic: function (elem) {
+			// remove drawn tactic on element
 			var canvas = elem.get(0);
 			var context = canvas.getContext("2d");
 
@@ -1193,6 +1242,15 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				'font-size': (baseFont * width / baseWidth) + 'px',
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
+
+			// update tactic cards height
+			var tacticWidth = $(".tacticCard").width();
+			console.log("tacticWidth " + tacticWidth);
+			var tacticHeight = (tacticWidth / 5) * 8;
+			console.log("tacticWidth " + tacticHeight);
+			$(".tacticCard").each(function () {
+				$(this).height(tacticHeight);
+			});
 		},
 		setBattleViewSize: function () {
 			var baseWidth = 836;
@@ -1214,6 +1272,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	$(window).bind('resize', function () {
 		layout.init();
 		layout.drawMainGameboard();
+		if (layout.placedTactic != null) {
+			var canvas = document.getElementById("gameBoardTacticalCanvas");
+			layout.drawTactic(canvas, layout.placedTactic);
+		}
 		layout.setCardSizes();
 		layout.setBattleViewSize();
 	});

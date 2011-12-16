@@ -4246,7 +4246,7 @@ Sizzle.error = function( msg ) {
  * @param {Array|Element} elem
  */
 var getText = Sizzle.getText = function( elem ) {
-    var i, node,
+	var i, node,
 		nodeType = elem.nodeType,
 		ret = "";
 

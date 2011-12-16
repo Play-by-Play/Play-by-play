@@ -1,7 +1,7 @@
 ﻿#gameboard{
 	height: 100%;
 	display: inline-block;
-		position: fixed;
+	position: fixed;
 }
 
 #gameBoardCanvas
@@ -20,7 +20,7 @@
 {
 	margin-left: 1.9%;
 	margin-top: 1.3029%;
-	position: absolute;
+	position: relative;
 	overflow: hidden;
 	z-index: 2;
 }
