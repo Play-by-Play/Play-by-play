@@ -1079,7 +1079,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			context.lineWidth = lineWidthBold;
 			context.strokeStyle = "#f00";
 			context.stroke();
-			context.closePath();
+			context.beginPath();
 
 			// draw Play-by-Play text
 			var a = (left + width / 2);
