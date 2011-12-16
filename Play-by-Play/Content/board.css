@@ -29,12 +29,23 @@
 {
 	background-color: #333;
 	clear: both;
-	position: relative;
 	overflow: hidden;
+	left: 41%;
+}
+
+#gameBoardGoalkeeperOpponent
+{
+	top: 3%;
+}
+
+#gameBoardGoalkeeper 
+{
+	top: 90.5%;
 }
 
 .gameSquare
 {
+	top: 12.5%;
 	height: 19.09%;
 	width: 50%;
 	position: relative;
@@ -78,25 +89,24 @@
 	overflow: hidden;
 	position: absolute;
 	display: none;
+	left: 41%;
 }
 
 #gameBoardFaceOffOpponent
 {
-  top: 35.12%;  
+	top: 38%;
 }
 
 #gameBoardFaceOff
 {
-  top: 53%;  
+	top: 55.5%;
 }
 
 .gameBoardPlaceholder 
 {
-	height: 11.82%;
-	width: 26.768%;
-	border: 0.03% solid #666;
-	background-color: #333;
-	margin-left: 36.616%;
+	position: absolute;
+	display: inline-block;
+	color: #666;
 	font-weight: bold;
 	text-align: center;
 }

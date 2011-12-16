@@ -293,12 +293,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
 				}
 			);
-
-			//			play.addTacticCard("Give 'n Take", 4, { startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
-			//			play.addTacticCard("Left On", 4, { startNode: [0, 3], nodes: [[0, 3], [0, 0]], movementNode: [], passes: [[[0, 3], [0, 0]]], movingPass: [], shot: [0, 0] });
-			//			play.addTacticCard("Longshot", 4, { startNode: [0, 3], nodes: [[0, 3]], movementNode: [], passes: [], movingPass: [], shot: [0, 3] });
-			//			play.addTacticCard("Straight", 4, { startNode: [0, 3], nodes: [[0, 3], [0, 2], [0, 0]], movementNode: [], passes: [[[0, 3], [0, 2]], [[0, 2], [0, 0]]], movingPass: [], shot: [0, 0] });
-			//			play.addTacticCard("Nailed", 3, { startNode: [0, 2], nodes: [[0, 2]], movementNode: [], passes: [], movingPass: [], shot: [0, 2] });
 		},
 		addTacticCard: function (name, diff, tactic) {
 			var data = { name: name, diff: diff };
@@ -391,7 +385,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				var attr = player.Offense + (player.Bonus == Bonus.OFF ? 1 : 0); // TODO: Dynamic choice
 				total += attr;
 				td.text(attr);
-				if (player.Bonus != Bonus.NONE)
+				if (player.Bonus == Bonus.OFF || player.Bonus == Bonus.DEF)
 					td.css({ 'color': '#0c0' });
 				td.addClass("attr");
 				tr.append(td);
@@ -440,6 +434,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				table.append(tr);
 			}
 			addTotal(table, result.HomePlayers.length, total);
+			homeDiv.empty();
 			homeDiv.append($("<h1>").text("You"));
 			homeDiv.append(table);
 			// Construct away team table
@@ -453,6 +448,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				table.append(tr);
 			}
 			addTotal(table, result.AwayPlayers.length, total);
+			awayDiv.empty();
 			awayDiv.append($("<h1>").text("Opponent"));
 			awayDiv.append(table);
 
@@ -465,6 +461,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				span.text("Your opponent won...");
 			}
 			span.css({ visibility: "hidden" });
+			resultDiv.find("span").remove();
 			span.prependTo(resultDiv);
 
 			// Set size on dialog
@@ -511,9 +508,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			setTimeout(function () {
 				span.css({ visibility: "visible" });
 			}, delay);
+			// Close battle view
 			setTimeout(function () {
-				// Close battle view
-				//viewDiv.dialog('close');
+				viewDiv.dialog('close');
 			}, delay * 2);
 		},
 		showFaceoff: function () {
@@ -605,6 +602,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".draggable").draggable({
 				revert: "invalid",
 				stack: ".draggable",
+				scroll: "false",
 				start: draggableStartStop,
 				stop: draggableStartStop
 			});
@@ -1243,11 +1241,38 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
 
+			// Black squares --------------------------------------------------------
+			baseWidth = 100;
+			baseHeight = 70;
+			baseFont = 36;
+			baseBorder = 2;
+			basePadding = 6;
+
+			totalWidth = $("#gameBoardLW").width();
+
+			width = totalWidth * baseWidth / 222;
+			height = baseHeight * width / baseWidth;
+			margin = (totalWidth - 3 * width) / 4;
+
+			font = baseFont * width / baseWidth;
+			border = baseBorder * width / baseWidth;
+			cardPadding = basePadding * width / baseWidth;
+
+			$(".gameBoardPlaceholder").css({
+				'width': width + 'px',
+				'height': height + 'px',
+				'font-size': font + 'px',
+				'line-height': height + 'px',
+				'margin': (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px',
+				'border': border + 'px solid #666',
+				'border-radius': (10 * width / baseWidth) + 'px'
+			});
+
 			// update tactic cards height
 			var tacticWidth = $(".tacticCard").width();
-			console.log("tacticWidth " + tacticWidth);
+			//console.log("tacticWidth " + tacticWidth);
 			var tacticHeight = (tacticWidth / 5) * 8;
-			console.log("tacticWidth " + tacticHeight);
+			//console.log("tacticWidth " + tacticHeight);
 			$(".tacticCard").each(function () {
 				$(this).height(tacticHeight);
 			});
@@ -1315,6 +1340,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	$(function () {
 		layout.init();
 		layout.drawMainGameboard();
+		layout.setCardSizes();
 		puck.placeAt(1, 3);
 		$('#console').tabs();
 		$('#oppBench').tabs();
