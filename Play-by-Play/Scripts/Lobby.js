@@ -45,6 +45,8 @@ Lobby.prototype = {
 	},
 
 	closeLobby: function () {
+		if (!this.lobbyDialog)
+			return;
 		this.lobbyDialog.dialog('close');
 		this.lobbyDialog.remove();
 	},

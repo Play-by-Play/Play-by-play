@@ -27,21 +27,21 @@
 			</li>
 		</script>
 		<script type="text/template" id="playerCardTemplate">
-            <div class="placeholder">
-                <span>${pos}</span>
-	            <div id="${id}" class="card benched ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
-				    <div class="teamLogo">
-					    <img src="/Public/images/logobacks/${team}.png"/>
-					    <div class="playerBio">
-						    <img src="/Public/images/bios/${name}.png"/>
-					    </div>
-				    </div>
-				    <div class="playerName">${name}</div>
-				    <div class="attr1">${attr1}</div>
-				    <div class="attr2">${attr2}</div>
-				    <div class="playerPos">${pos}</div>
-			    </div>
-            </div>
+			<div class="placeholder">
+				<span>${pos}</span>
+				<div id="${id}" class="card benched ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
+					<div class="teamLogo">
+						<img src="/Public/images/logobacks/${team}.png"/>
+						<div class="playerBio">
+							<img src="/Public/images/bios/${name}.png"/>
+						</div>
+					</div>
+					<div class="playerName">${name}</div>
+					<div class="attr1">${attr1}</div>
+					<div class="attr2">${attr2}</div>
+					<div class="playerPos">${pos}</div>
+				</div>
+			</div>
 		</script>
 		<script type="text/template" id="tacticCardTemplate">
 			<div class="tacticCard">
@@ -116,6 +116,7 @@
 		</div>
 		<div id="center" class="column">
 			<div id="gameboard">
+				<div id="gameBoardPuck"></div>
 				<canvas id="gameBoardCanvas"></canvas>
 				<canvas id="gameBoardTacticalCanvas"></canvas>
 				<div id="gameBoardBackgroundLayer">
@@ -146,8 +147,7 @@
 					</div>
 					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper gameBoardPlaceholder">
 						G</div>
-					<div id="gameBoardPuck">
-					</div>
+					
 				</div>
 			</div>
 		</div>
@@ -179,7 +179,11 @@
 			<div id="userBattle"></div>
 			<div id="vs"><span>VS</span></div>
 			<div id="oppBattle"></div>
-			<div id="battleResult"></div>
+			<div id="battleResult">
+				<div id="battleAnim">
+					<div id="battlePuck"></div>
+				</div>
+			</div>
 		</div>
 		<script type="text/javascript" src="/Scripts/modernizr-1.7.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-1.7.js"></script>

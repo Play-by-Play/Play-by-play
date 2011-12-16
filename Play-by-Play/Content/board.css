@@ -1,7 +1,7 @@
 ﻿#gameboard{
 	height: 100%;
 	display: inline-block;
-		position: fixed;
+	position: fixed;
 }
 
 #gameBoardCanvas
@@ -20,7 +20,7 @@
 {
 	margin-left: 1.9%;
 	margin-top: 1.3029%;
-	position: absolute;
+	position: relative;
 	overflow: hidden;
 	z-index: 2;
 }
@@ -29,12 +29,23 @@
 {
 	background-color: #333;
 	clear: both;
-	position: relative;
 	overflow: hidden;
+	left: 41%;
+}
+
+#gameBoardGoalkeeperOpponent
+{
+	top: 3%;
+}
+
+#gameBoardGoalkeeper 
+{
+	top: 90.5%;
 }
 
 .gameSquare
 {
+	top: 12.5%;
 	height: 19.09%;
 	width: 50%;
 	position: relative;
@@ -78,25 +89,24 @@
 	overflow: hidden;
 	position: absolute;
 	display: none;
+	left: 41%;
 }
 
 #gameBoardFaceOffOpponent
 {
-  top: 35.12%;  
+	top: 38%;
 }
 
 #gameBoardFaceOff
 {
-  top: 53%;  
+	top: 55.5%;
 }
 
 .gameBoardPlaceholder 
 {
-	height: 11.82%;
-	width: 26.768%;
-	border: 0.03% solid #666;
-	background-color: #333;
-	margin-left: 36.616%;
+	position: absolute;
+	display: inline-block;
+	color: #666;
 	font-weight: bold;
 	text-align: center;
 }
@@ -104,12 +114,12 @@
 #gameBoardPuck 
 {
 	background-color: #000;
-	height: 3%;
-	width: 4.8%;
+	height: 5%;
+	width: 8%;
 	position: absolute;
 	left: 47.5%;
 	top: 48.5%;
-	z-index: 100;
+	z-index: 10000;
 	border-radius: 10000px;
 	visibility: hidden;
 }
