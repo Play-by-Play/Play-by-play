@@ -577,15 +577,20 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 						}
 					}
-				}, (index != 0 ? 2 * delay : 0));
+				}, (index != 0 ? index * 2 * delay : 0));
 				setTimeout(function () {
 					// Show battle view
 					if (!(battle.IsHomeAttacking && battle.AwayPlayers.length == 0)) {
 						play.showBattleView(battle);
 					}
-				}, delay);
+				}, index * delay);
+				// Check if attack continues
+				if (battle.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !battle.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
+					layout.clearGameboardTactic();
+					return;
+				}
 			});
-
+			layout.clearGameboardTactic();
 		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
