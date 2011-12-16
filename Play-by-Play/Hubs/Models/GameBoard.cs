@@ -69,7 +69,7 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			var battles = new List<BattleResult>();
 			var area = Areas.Single(x => x.X == tacticCard.StartNode.X && x.Y == tacticCard.StartNode.Y);
-			battles.Add(new BattleResult(area.HomePlayers, area.AwayPlayers){Type = "Scramble"});
+			battles.Add(new BattleResult(area.HomePlayers, area.AwayPlayers){Type = "Scramble", Area = area});
 			
 
 			foreach (var pass in tacticCard.Passes) {

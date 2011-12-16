@@ -4,6 +4,7 @@
 		<title>Play-by-Play</title>
 		<link rel="stylesheet" href="/Content/reset.css" />
 		<link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css" />
+		<link href="../Content/nanoscroller.css" rel="stylesheet" type="text/css" />
 		<link rel="stylesheet" href="/Content/style.css" />
 		<link rel="stylesheet" href="/Content/card.css" />
 		<link rel="Stylesheet" href="/Content/board.css" />
@@ -21,10 +22,10 @@
 		</div>
 		</script>
 		<script type="text/template" id="chatMessageTemplate">
-			<li>
+			<div>
 				<span class="name">${name}</span>
 				<span class="message">${message}</span>
-			</li>
+			</div>
 		</script>
 		<script type="text/template" id="playerCardTemplate">
 			<div class="placeholder">
@@ -167,8 +168,9 @@
 					Stats</div>
 			</div>
 			<div id="chat" class="panel">
-				<ul id="chatMessages">
-				</ul>
+				<div id="chatMessages" class="nano">
+					<div class="content"></div>
+				</div>
 				<form id="chatMessage">
 					<input id="chatInput" type="text" />
 					<input id="chatSubmit" type="submit" value="Post" />
@@ -189,6 +191,7 @@
 		<script type="text/javascript" src="/Scripts/jquery-1.7.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.js"></script>
 		<script type="text/javascript" src="/Scripts/jQuery.tmpl.js"></script>
+		<script src="../Scripts/jquery.nanoscroller.js" type="text/javascript"></script>
 		<script type="text/javascript" src="/Scripts/jquery.signalR.js"></script>
 		<script type="text/javascript" src="/Scripts/underscore.js"></script>
 		<script type="text/javascript" src="/signalr/hubs"></script>

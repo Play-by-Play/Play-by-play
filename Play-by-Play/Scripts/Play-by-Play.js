@@ -365,20 +365,20 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		replacedGoalie.draggable("enable");
 	};
 	var convertTacticCard = function (card) {
-				var start = [card.StartNode.X, card.StartNode.Y];
-				var nodes = _.map(card.Nodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var movementNodes = _.map(card.MovementNodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var passes = _.map(card.Passes, function (pass) {
-					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
-				});
-				var movingPass = _.map(card.Movements, function (movement) {
-					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
-				});
-				var shot = [card.Shot.X, card.Shot.Y];
+		var start = [card.StartNode.X, card.StartNode.Y];
+		var nodes = _.map(card.Nodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var movementNodes = _.map(card.MovementNodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var passes = _.map(card.Passes, function (pass) {
+			return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
+		});
+		var movingPass = _.map(card.Movements, function (movement) {
+			return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
+		});
+		var shot = [card.Shot.X, card.Shot.Y];
 
 		return {
 			Id: card.Id,
@@ -634,11 +634,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 
 			// Animate battle
-				if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
 				var anim = '-';
-				} else {
+			} else {
 				var anim = '+';
-				}
+			}
 			$("#battlePuck").animate({
 				left: anim + (width / 2 - 0.1 * width)
 			}, delay);
@@ -646,7 +646,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			setTimeout(function () {
 				span.css({ visibility: "visible" });
 			}, delay);
-				// Close battle view
+			// Close battle view
 			setTimeout(function () {
 				viewDiv.dialog('close');
 			}, delay * 2);
@@ -704,12 +704,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
 		},
-		playTactic: function (tacticCard, battleResults) {
-			$.each(battleResults, function (index, battle) {
+		playTactic: function (result) {
+			$.each(result.Battles, function (index, battle) {
 				setTimeout(function () {
 					// Get puck to the battle
 					if (battle.Type == "Shot") {
-						if (battle.IsHomeAttacking && battle.IsHomePlayer || !battle.IsHomeAttacking && !battle.IsHomePlayer)
+						if (result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer)
 							puck.shoot("opponent");
 						else
 							puck.shoot("player");
@@ -728,7 +728,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					}
 				}, index * delay);
 				// Check if attack continues
-				if (battle.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !battle.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
+				if (result.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !result.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
 					layout.clearGameboardTactic();
 					return;
 				}
@@ -845,16 +845,16 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					var playerCard = players.find(id);
 					var $this = $(this);
 					window.connection.placeGoalkeeper(id).done(function (result) {
-					// Remove existing card
+						// Remove existing card
 						if ($this.has(".card")) {
-						// Get replaced goalie card
+							// Get replaced goalie card
 							var replacedGoalie = $this.find(".card");
-						replaceGoalie(cardDiv, replacedGoalie, "#goalies");
-					}
+							replaceGoalie(cardDiv, replacedGoalie, "#goalies");
+						}
 						playerCard.setLocation($($this));
 						cardDiv.draggable("disable");
 						cardDiv.css({ opacity: 1 });
-					// Remove strong hover
+						// Remove strong hover
 						$this.removeClass("gameSquareHoverStrong");
 					}).fail(function (error) {
 						console.warn(error);
@@ -1492,6 +1492,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		$('#console').tabs();
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
+		$('#chatMessages').nanoScroller();
 
 		PlayByPlay.lobby = new Lobby();
 		if (!debug) {
