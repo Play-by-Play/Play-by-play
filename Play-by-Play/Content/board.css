@@ -114,12 +114,12 @@
 #gameBoardPuck 
 {
 	background-color: #000;
-	height: 3%;
-	width: 4.8%;
+	height: 5%;
+	width: 8%;
 	position: absolute;
 	left: 47.5%;
 	top: 48.5%;
-	z-index: 100;
+	z-index: 10000;
 	border-radius: 10000px;
 	visibility: hidden;
 }
