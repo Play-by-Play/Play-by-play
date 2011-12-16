@@ -59,6 +59,15 @@ namespace Play_by_Play.Models {
 
 			return builder.ToString();
 		}
+
+		public TacticCard Reverse() {
+			return new TacticCard {
+				Id = Id,
+				Name = Name,
+				Difficulty = Difficulty,
+				StartNode = StartNode.Reverse()
+			};
+		}
 	}
 
 	public class Node {
@@ -69,6 +78,10 @@ namespace Play_by_Play.Models {
 
 		public override string ToString() {
 			return "{" + string.Format("X: {0}, Y: {1}", X, Y) + "}";
+		}
+
+		public Node Reverse() {
+			return new Node();
 		}
 	}
 

@@ -1,5 +1,5 @@
 ﻿window.connection = window.connection || (function () {
-	var userInfo = { };
+	var userInfo = {};
 
 	var connection = $.connection.game;
 	// Server connectivity    
@@ -50,7 +50,7 @@
 	};
 
 	connection.createTacticCards = function (cards) {
-		PlayByPlay.addTacticCards(eval(cards));
+		PlayByPlay.addTacticCards(cards);
 	};
 
 	connection.opponentSelectTacticCard = function (tactic) {
@@ -66,8 +66,24 @@
 	};
 
 	connection.faceOffResult = function (result) {
+		var activeLine;
+
+		if (result.IsHomePlayer === true) {
+			activeLine = window.PlayByPlay.players.find(result.HomePlayers[0].Id).getLine();
+		} else {
+			activeLine = window.PlayByPlay.players.find(result.AwayPlayers[0].Id).getLine();
+		}
+
+		window.PlayByPlay.disablePlayersExceptOn(activeLine);
+
 		PlayByPlay.hideFaceoff();
 		PlayByPlay.showBattleView("Face Off", result);
+	};
+
+	connection.tacticResult = function (result) {
+		console.log(result);
+
+		//window.PlayByPlay.playTactic(result.Card, result.Battles);
 	};
 
 	connection.usernameExists = function () {

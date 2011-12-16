@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Script.Serialization;
 
 namespace Play_by_Play.Hubs.Models {
 	public class GameArea {
 		public int X { get; set; }
 		public int Y { get; set; }
+		[ScriptIgnore]
+		public GameArea Opposite { get; set; }
 
 		public List<Player> HomePlayers { get; set; }
 		public List<Player> AwayPlayers { get; set; }
@@ -14,7 +17,6 @@ namespace Play_by_Play.Hubs.Models {
 			HomePlayers = new List<Player>();
 			AwayPlayers = new List<Player>();
 		}
-
 
 		private static string[][] areaNames = new []{
 			new[]{"gameBoardLW", "gameBoardRW"},

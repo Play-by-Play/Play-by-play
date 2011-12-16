@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Play_by_Play.Models;
 
 namespace Play_by_Play.Hubs.Models {
@@ -9,13 +10,9 @@ namespace Play_by_Play.Hubs.Models {
 		public string Id { get; set; }
 		public string Name { get; set; }
 		public string Hash { get; set; }
-		private List<TacticCard> CurrentCards { get; set; }
-		private List<TacticCard> UsedCards { get; set; }
+		public List<TacticCard> CurrentCards { get; private set; }
+		public List<TacticCard> UsedCards { get; private set; }
 		public Team Team { get; set; }
-
-		public GameUser() {
-
-		}
 
 		public GameUser(string name, string hash) {
 			Name = name;
@@ -27,6 +24,19 @@ namespace Play_by_Play.Hubs.Models {
 
 		public void AddTactic(TacticCard card) {
 			CurrentCards.Add(card);
+		}
+
+		public void AddTactics(List<TacticCard> tacticCards) {
+			CurrentCards.AddRange(tacticCards);
+		}
+
+		public bool UseTactic(int id) {
+			var tactic = CurrentCards.SingleOrDefault(x => x.Id == id);
+			if (tactic == null)
+				return false;
+
+			UsedCards.Add(tactic);
+			return true;
 		}
 	}
 }

@@ -17,6 +17,8 @@ namespace Play_by_Play.Hubs.Models {
 		public int HomeModifier { get; set; }
 		public int AwayModifier { get; set; }
 		public bool IsHomePlayer { get; set; }
+		public GameArea Area { get; set; }
+		public string Type { get; set; }
 
 		public int HomeTotal { 
 			get {
@@ -57,7 +59,8 @@ namespace Play_by_Play.Hubs.Models {
 				HomePlayers = HomePlayers,
 				IsHomePlayer = true,
 				AwayModifier = AwayModifier,
-				AwayPlayers = AwayPlayers
+				AwayPlayers = AwayPlayers,
+				Area = Area
 			};
 			return result;
 		}
@@ -68,7 +71,8 @@ namespace Play_by_Play.Hubs.Models {
 				HomePlayers = HomePlayers,
 				IsHomePlayer = false,
 				AwayModifier = AwayModifier,
-				AwayPlayers = AwayPlayers
+				AwayPlayers = AwayPlayers,
+				Area = Area != null ? Area.Opposite : null
 			};
 			return result;
 		}

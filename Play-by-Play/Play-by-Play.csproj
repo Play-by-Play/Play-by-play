@@ -131,6 +131,7 @@
     <Compile Include="Hubs\GameConnection.cs" />
     <Compile Include="Hubs\Models\Player.cs" />
     <Compile Include="Hubs\Models\Position.cs" />
+    <Compile Include="Hubs\Models\TacticResult.cs" />
     <Compile Include="Hubs\Models\Team.cs" />
     <Compile Include="Migrations\Settings.cs" />
     <Compile Include="Models\DB.cs" />
