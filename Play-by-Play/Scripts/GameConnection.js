@@ -84,7 +84,7 @@
 	connection.tacticResult = function (result) {
 		console.log(result);
 
-		window.PlayByPlay.playTactic(result.Card, result.Battles);
+		window.PlayByPlay.playTactic(result);
 	};
 
 	connection.usernameExists = function () {
