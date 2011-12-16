@@ -7,6 +7,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Enable debug mode
 	var debug = false;
 
+	// Delay times
+	var delay = 3000;
+
 	//#region PlayersAndBonus
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -476,7 +479,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Set the new card location
 			playerCard.setLocation($('#' + square));
 		},
-		showBattleView: function (title, result) {
+		showBattleView: function (result) {
 			if (debug) {
 				title = "Debug-battle";
 				result = {
@@ -603,7 +606,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			// Open battle view
 			viewDiv.dialog({
-				title: title,
+				title: result.Title,
 				modal: true,
 				draggable: false,
 				resizable: false,
@@ -614,7 +617,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 			});
 
-			var delay = 3000; // delay in ms
 			// Animate battle
 			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
 				var anim = '-';
@@ -679,6 +681,32 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
 		},
+		playTactic: function (tacticCard, battleResults) {
+			$.each(battleResults, function (index, battle) {
+				setTimeout(function () {
+					// Get puck to the battle
+					if (battle.Type == "Shot") {
+						if (battle.IsHomeAttacking && battle.IsHomePlayer || !battle.IsHomeAttacking && !battle.IsHomePlayer)
+							puck.shoot("opponent");
+						else
+							puck.shoot("player");
+					} else {
+						if (index == 0) {
+							puck.placeAt(battle.Area.X, battle.Area.Y);
+						} else {
+							puck.moveTo(battle.Area.X, battle.Area.Y);
+						}
+					}
+				}, (index != 0 ? 2 * delay : 0));
+				setTimeout(function () {
+					// Show battle view
+					if (!(battle.IsHomeAttacking && battle.AwayPlayers.length == 0)) {
+						play.showBattleView(battle);
+					}
+				}, delay);
+			});
+
+		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
 			var userControlled = true;
@@ -723,6 +751,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				revert: "invalid",
 				stack: ".draggable",
 				scroll: "false",
+				containment: "document",
 				start: draggableStartStop,
 				stop: draggableStartStop
 			});
