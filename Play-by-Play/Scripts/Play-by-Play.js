@@ -365,20 +365,20 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		replacedGoalie.draggable("enable");
 	};
 	var convertTacticCard = function (card) {
-				var start = [card.StartNode.X, card.StartNode.Y];
-				var nodes = _.map(card.Nodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var movementNodes = _.map(card.MovementNodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var passes = _.map(card.Passes, function (pass) {
-					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
-				});
-				var movingPass = _.map(card.Movements, function (movement) {
-					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
-				});
-				var shot = [card.Shot.X, card.Shot.Y];
+		var start = [card.StartNode.X, card.StartNode.Y];
+		var nodes = _.map(card.Nodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var movementNodes = _.map(card.MovementNodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var passes = _.map(card.Passes, function (pass) {
+			return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
+		});
+		var movingPass = _.map(card.Movements, function (movement) {
+			return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
+		});
+		var shot = [card.Shot.X, card.Shot.Y];
 
 		return {
 			Id: card.Id,
@@ -634,11 +634,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 
 			// Animate battle
-				if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
 				var anim = '-';
-				} else {
+			} else {
 				var anim = '+';
-				}
+			}
 			$("#battlePuck").animate({
 				left: anim + (width / 2 - 0.1 * width)
 			}, delay);
@@ -646,7 +646,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			setTimeout(function () {
 				span.css({ visibility: "visible" });
 			}, delay);
-				// Close battle view
+			// Close battle view
 			setTimeout(function () {
 				viewDiv.dialog('close');
 			}, delay * 2);
@@ -720,20 +720,24 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 						}
 					}
-				}, (index != 0 ? index * 2 * delay : 0));
+				}, (index * 3) * delay);
 				setTimeout(function () {
 					// Show battle view
 					if (!(battle.IsHomeAttacking && battle.AwayPlayers.length == 0)) {
 						play.showBattleView(battle);
 					}
-				}, index * delay);
+				}, (index * 3 + 1) * delay);
 				// Check if attack continues
 				if (battle.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !battle.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
-					layout.clearGameboardTactic();
+					setTimeout(function () {
+						layout.clearGameboardTactic();
+					}, ((index + 1) * 3) * delay);
 					return;
 				}
 			});
-			layout.clearGameboardTactic();
+			setTimeout(function () {
+				layout.clearGameboardTactic();
+			}, battleResults.length * 3 * delay);
 		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
@@ -845,16 +849,16 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					var playerCard = players.find(id);
 					var $this = $(this);
 					window.connection.placeGoalkeeper(id).done(function (result) {
-					// Remove existing card
+						// Remove existing card
 						if ($this.has(".card")) {
-						// Get replaced goalie card
+							// Get replaced goalie card
 							var replacedGoalie = $this.find(".card");
-						replaceGoalie(cardDiv, replacedGoalie, "#goalies");
-					}
+							replaceGoalie(cardDiv, replacedGoalie, "#goalies");
+						}
 						playerCard.setLocation($($this));
 						cardDiv.draggable("disable");
 						cardDiv.css({ opacity: 1 });
-					// Remove strong hover
+						// Remove strong hover
 						$this.removeClass("gameSquareHoverStrong");
 					}).fail(function (error) {
 						console.warn(error);
@@ -1488,7 +1492,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		layout.init();
 		layout.drawMainGameboard();
 		layout.setCardSizes();
-		puck.placeAt(1, 3);
 		$('#console').tabs();
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
