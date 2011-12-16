@@ -247,10 +247,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var gameSquareWidth = width * 0.48;
 			var gameSquareHeight = height * 0.186;
 
-//			var gameSquareWidth = $('#gameBoardLW').width();
-//			var gameSquareHeight = $('#gameBoardLW').height();
-//			var left = $('#gameBoardLW').position().left + gameSquareWidth / 2 - puckRadius;
-//			var top = $('#gameBoardLW').position().top + gameSquareHeight / 2 - puckRadius;
+			//			var gameSquareWidth = $('#gameBoardLW').width();
+			//			var gameSquareHeight = $('#gameBoardLW').height();
+			//			var left = $('#gameBoardLW').position().left + gameSquareWidth / 2 - puckRadius;
+			//			var top = $('#gameBoardLW').position().top + gameSquareHeight / 2 - puckRadius;
 
 
 			if (y < 0)
@@ -334,10 +334,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				// direction = opponent/player
 				var position;
 				if (direction == "opponent") {
-
+					position = getPixelPosition(0, -1);
 				}
 				else if (direction == "player") {
-
+					position = getPixelPosition(0, 4);
 				}
 				$('#gameBoardPuck').animate({
 					top: position.top,
