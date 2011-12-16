@@ -22,10 +22,9 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void GetUser(string username) {
-			if(string.IsNullOrEmpty(username))
-				Caller.setUser(users.Where(x => x.Key.Equals(Context.ClientId)).Select(x => x.Value).FirstOrDefault());
-			else
-				Caller.setUser(users.Values.FirstOrDefault(x => x.Name.Equals(username)));
+			Caller.setUser(string.IsNullOrEmpty(username)
+			               	? users.Where(x => x.Key.Equals(Context.ClientId)).Select(x => x.Value).FirstOrDefault()
+			               	: users.Values.FirstOrDefault(x => x.Name.Equals(username)));
 		}
 
 		public void CreateUser(string username) {
