@@ -13,12 +13,12 @@ div.card {
 div.draggable {}
 
 div.tacticCard {
-	width: 18.5%;
+	width: 17.1%;
 	display: inline-block;
 	position: relative;
-	padding: 2px;
+	padding: 1%;
 	margin: auto;
-	margin: 0 2px 2px 0;
+	margin: 0 1% 1% 0;
 	overflow: hidden;
 }
 
