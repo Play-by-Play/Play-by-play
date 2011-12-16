@@ -13,13 +13,19 @@ div.card {
 div.draggable {}
 
 div.tacticCard {
-    width: 18.5%;
+	width: 18.5%;
 	display: inline-block;
 	position: relative;
-    padding: 2px;
-    margin: auto;
+	padding: 2px;
+	margin: auto;
 	margin: 0 2px 2px 0;
 	overflow: hidden;
+}
+
+div.tacticCard canvas 
+{
+	width: 100%;
+	height: auto;
 }
 
 div.teamLogo {

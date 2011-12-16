@@ -77,7 +77,7 @@
 		window.PlayByPlay.disablePlayersExceptOn(activeLine);
 
 		PlayByPlay.hideFaceoff();
-		PlayByPlay.showBattleView("Face Off", result);
+		PlayByPlay.showBattleView(result);
 	};
 
 	connection.tacticResult = function (result) {

@@ -7,6 +7,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Enable debug mode
 	var debug = false;
 
+	// Delay times
+	var delay = 3000;
+
 	//#region PlayersAndBonus
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -230,8 +233,122 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 	//#endregion
 
-	//#region Game
+	//#region Puck
+	var puck = (function () {
+		var getPixelPosition = function (x, y) {
+			var puckRadius = $('#gameBoardPuck').height() / 2;
 
+			var canvas = document.getElementById("gameBoardCanvas");
+			var width = canvas.width;
+			var height = canvas.height;
+
+			var left = width * 0.26 - puckRadius;
+			var top = height * 0.2209 - puckRadius;
+			var gameSquareWidth = width * 0.48;
+			var gameSquareHeight = height * 0.186;
+
+			//			var gameSquareWidth = $('#gameBoardLW').width();
+			//			var gameSquareHeight = $('#gameBoardLW').height();
+			//			var left = $('#gameBoardLW').position().left + gameSquareWidth / 2 - puckRadius;
+			//			var top = $('#gameBoardLW').position().top + gameSquareHeight / 2 - puckRadius;
+
+
+			if (y < 0)
+			// shot at opponent goal
+				return {
+					top: top - gameSquareHeight / 2,
+					left: left + gameSquareWidth / 2
+				};
+			else if (y > 3)
+			// shot at players goal
+				return {
+					top: top + (gameSquareHeight * 4) - gameSquareHeight / 2,
+					left: left + (gameSquareWidth) - gameSquareWidth / 2
+				};
+			return {
+				// pass of puck
+				top: top + gameSquareHeight * y,
+				left: left + gameSquareWidth * x
+			};
+		};
+
+		//		var getSquare = function (x, y) {
+		//			var square = "#gameBoard";
+		//			if (x == 0) {
+		//				square += "L";
+		//			}
+		//			else {
+		//				square += "R";
+		//			}
+		//			switch (y) {
+		//				case 0:
+		//					square += "W";
+		//					break;
+		//				case 1:
+		//					square += "CW";
+		//					break;
+		//				case 2:
+		//					square += "CD";
+		//					break;
+		//				case 3:
+		//					square += "D";
+		//					break;
+		//			}
+
+		//			console.log($(square));
+
+		//			return $(square);
+		//		};
+
+		return {
+			placeAt: function (x, y) {
+				var position = getPixelPosition(x, y);
+				$('#gameBoardPuck').css({
+					'visibility': 'visible',
+					'top': position.top,
+					'left': position.left
+				});
+
+				//				$('#gameBoardPuck').animate({}, {
+				//					step: function () {
+				//						$(this).position({
+				//							of: square,
+				//							my: 'center center',
+				//							at: 'center center'
+				//						});
+				//					}
+				//				});
+			},
+			moveTo: function (x, y) {
+				if ($('#gameBoardPuck').css('visibility') == 'visible') {
+					var position = getPixelPosition(x, y);
+					$('#gameBoardPuck').animate({
+						top: position.top,
+						left: position.left
+					}, delay);
+				}
+				else
+					setPosition(x, y);
+			},
+			shoot: function (direction) {
+				// direction = opponent/player
+				var position;
+				if (direction == "opponent") {
+					position = getPixelPosition(0, -1);
+				}
+				else if (direction == "player") {
+					position = getPixelPosition(0, 4);
+				}
+				$('#gameBoardPuck').animate({
+					top: position.top,
+					left: position.left
+				}, delay);
+			}
+		};
+	})();
+	//#endregion
+
+	//#region Game
 	var replaceGoalie = function (cardDiv, replacedGoalie, bench) {
 		// Check which placeholder to return to
 		var curPlaceHolder = cardDiv.parent()[0];
@@ -248,20 +365,20 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		replacedGoalie.draggable("enable");
 	};
 	var convertTacticCard = function (card) {
-		var start = [card.StartNode.X, card.StartNode.Y];
-		var nodes = _.map(card.Nodes, function (node) {
-			return [node.X, node.Y];
-		});
-		var movementNodes = _.map(card.MovementNodes, function (node) {
-			return [node.X, node.Y];
-		});
-		var passes = _.map(card.Passes, function (pass) {
-			return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
-		});
-		var movingPass = _.map(card.Movements, function (movement) {
-			return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
-		});
-		var shot = [card.Shot.X, card.Shot.Y];
+				var start = [card.StartNode.X, card.StartNode.Y];
+				var nodes = _.map(card.Nodes, function (node) {
+					return [node.X, node.Y];
+				});
+				var movementNodes = _.map(card.MovementNodes, function (node) {
+					return [node.X, node.Y];
+				});
+				var passes = _.map(card.Passes, function (pass) {
+					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
+				});
+				var movingPass = _.map(card.Movements, function (movement) {
+					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
+				});
+				var shot = [card.Shot.X, card.Shot.Y];
 
 		return {
 			Id: card.Id,
@@ -285,6 +402,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$("#tacticCards").hover(
 				function () {
 					// mouse over
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					$('.tacticCard').each(function () {
 						$(this).css({ opacity: 0.5 });
 					});
@@ -293,6 +414,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				},
 				function () {
 					// mouse out
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					$('.tacticCard').each(function () {
 						$(this).css({ opacity: 1.0 });
 					});
@@ -300,12 +425,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
 				}
 			);
-
-			//			play.addTacticCard("Give 'n Take", 4, { startNode: [0, 2], nodes: [[0, 2], [1, 1], [0, 0]], movementNode: [[1, 0]], passes: [[[0, 2], [1, 1]], [[1, 1], [0, 0]], [[0, 0], [1, 0]]], movingPass: [[[1, 1], [1, 0]]], shot: [1, 0] });
-			//			play.addTacticCard("Left On", 4, { startNode: [0, 3], nodes: [[0, 3], [0, 0]], movementNode: [], passes: [[[0, 3], [0, 0]]], movingPass: [], shot: [0, 0] });
-			//			play.addTacticCard("Longshot", 4, { startNode: [0, 3], nodes: [[0, 3]], movementNode: [], passes: [], movingPass: [], shot: [0, 3] });
-			//			play.addTacticCard("Straight", 4, { startNode: [0, 3], nodes: [[0, 3], [0, 2], [0, 0]], movementNode: [], passes: [[[0, 3], [0, 2]], [[0, 2], [0, 0]]], movingPass: [], shot: [0, 0] });
-			//			play.addTacticCard("Nailed", 3, { startNode: [0, 2], nodes: [[0, 2]], movementNode: [], passes: [], movingPass: [], shot: [0, 2] });
 		},
 		addTacticCard: function (id, name, diff, tactic) {
 			var data = { name: name, diff: diff };
@@ -314,6 +433,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// set templates height depending on templates width, which is set in card.css
 			template.height(template.width() / 5 * 8);
 
+			jQuery.data(template, "tactic", tactic);
+
 			// draw card and tactic
 			var canvas = template.find('canvas')[0];
 			canvas.height = template.height();
@@ -321,10 +442,16 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			layout.drawGameboard(canvas);
 			layout.drawTactic(canvas, tactic);
 
+			// save tactic in relation with canva			
+
 			template.hover(
 			// mouse over
 				function () {
 					// clear the canvas before proceding
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					layout.clearGameboardTactic();
 					layout.drawTactic(document.getElementById("gameBoardTacticalCanvas"), tactic);
 					$('.tacticCard').each(function () {
@@ -334,12 +461,27 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				},
 			// mouse out
 				function () {
+					if (!layout.tacticCardsEnabled) {
+						return;
+					}
+
 					layout.clearGameboardTactic();
 					$(this).css({ opacity: 0.5 });
 				}
 			);
 
 			template.click(function () {
+				if (!layout.tacticCardsEnabled) {
+					return;
+				}
+
+				layout.tacticCardsEnabled = false;
+				$('.tacticCard').each(function () {
+					$(this).css({ opacity: 1.0 });
+				});
+				// reset opacity to the player cards
+				$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
+
 				layout.drawPlayerPlacedTactic(tactic, template);
 				window.connection.playTactic(id);
 			});
@@ -353,7 +495,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Set the new card location
 			playerCard.setLocation($('#' + square));
 		},
-		showBattleView: function (title, result) {
+		showBattleView: function (result) {
 			if (debug) {
 				title = "Debug-battle";
 				result = {
@@ -382,7 +524,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				var attr = player.Offense + (player.Bonus == Bonus.OFF ? 1 : 0); // TODO: Dynamic choice
 				total += attr;
 				td.text(attr);
-				if (player.Bonus != Bonus.NONE)
+				if (player.Bonus == Bonus.OFF || player.Bonus == Bonus.DEF)
 					td.css({ 'color': '#0c0' });
 				td.addClass("attr");
 				tr.append(td);
@@ -409,6 +551,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var userDiv = $("#userBattle");
 			var oppDiv = $("#oppBattle");
 			var resultDiv = $("#battleResult");
+			var animDiv = $("#battleAnim");
+			var puck = $("#battlePuck");
 
 			// Determine if current user is home or away team
 			if (result.IsHomePlayer) {
@@ -429,6 +573,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				table.append(tr);
 			}
 			addTotal(table, result.HomePlayers.length, total);
+			homeDiv.empty();
 			homeDiv.append($("<h1>").text("You"));
 			homeDiv.append(table);
 			// Construct away team table
@@ -442,8 +587,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				table.append(tr);
 			}
 			addTotal(table, result.AwayPlayers.length, total);
+			awayDiv.empty();
 			awayDiv.append($("<h1>").text("Opponent"));
 			awayDiv.append(table);
+
+			// Add result text
+			var span = $("<span>");
+			// Check if current user won the battle
+			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+				span.text("You won!");
+			} else {
+				span.text("Your opponent won...");
+			}
+			span.css({ visibility: "hidden" });
+			resultDiv.find("span").remove();
+			span.prependTo(resultDiv);
 
 			// Set size on dialog
 			var baseWidth = 836;
@@ -454,9 +612,17 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var width = totalWidth * baseWidth / 1280;
 			var height = baseHeight * width / baseWidth;
 
+			// Set position on puck
+			puck.position({
+				of: $("#battleAnim"),
+				my: 'center center',
+				at: 'center center',
+				offset: '0'
+			});
+
 			// Open battle view
 			viewDiv.dialog({
-				title: title,
+				title: result.Title,
 				modal: true,
 				draggable: false,
 				resizable: false,
@@ -467,20 +633,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 			});
 
-			var delay = 3000; // delay in ms
+			// Animate battle
+				if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+				var anim = '-';
+				} else {
+				var anim = '+';
+				}
+			$("#battlePuck").animate({
+				left: anim + (width / 2 - 0.1 * width)
+			}, delay);
 			// Show results
 			setTimeout(function () {
-				var span = $("<span>");
-				// Check if current user won the battle
-				if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
-					span.text("You won the " + title + "!");
-				} else {
-					span.text("Your opponent won the " + title + "...");
-				}
-				span.appendTo(resultDiv);
+				span.css({ visibility: "visible" });
 			}, delay);
-			setTimeout(function () {
 				// Close battle view
+			setTimeout(function () {
 				viewDiv.dialog('close');
 			}, delay * 2);
 		},
@@ -537,6 +704,37 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
 		},
+		playTactic: function (tacticCard, battleResults) {
+			$.each(battleResults, function (index, battle) {
+				setTimeout(function () {
+					// Get puck to the battle
+					if (battle.Type == "Shot") {
+						if (battle.IsHomeAttacking && battle.IsHomePlayer || !battle.IsHomeAttacking && !battle.IsHomePlayer)
+							puck.shoot("opponent");
+						else
+							puck.shoot("player");
+					} else {
+						if (index == 0) {
+							puck.placeAt(battle.Area.X, battle.Area.Y);
+						} else {
+							puck.moveTo(battle.Area.X, battle.Area.Y);
+						}
+					}
+				}, (index != 0 ? index * 2 * delay : 0));
+				setTimeout(function () {
+					// Show battle view
+					if (!(battle.IsHomeAttacking && battle.AwayPlayers.length == 0)) {
+						play.showBattleView(battle);
+					}
+				}, index * delay);
+				// Check if attack continues
+				if (battle.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !battle.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
+					layout.clearGameboardTactic();
+					return;
+				}
+			});
+			layout.clearGameboardTactic();
+		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
 			var userControlled = true;
@@ -580,6 +778,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".draggable").draggable({
 				revert: "invalid",
 				stack: ".draggable",
+				scroll: "false",
+				containment: "document",
 				start: draggableStartStop,
 				stop: draggableStartStop
 			});
@@ -645,16 +845,16 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					var playerCard = players.find(id);
 					var $this = $(this);
 					window.connection.placeGoalkeeper(id).done(function (result) {
-						// Remove existing card
+					// Remove existing card
 						if ($this.has(".card")) {
-							// Get replaced goalie card
+						// Get replaced goalie card
 							var replacedGoalie = $this.find(".card");
-							replaceGoalie(cardDiv, replacedGoalie, "#goalies");
-						}
+						replaceGoalie(cardDiv, replacedGoalie, "#goalies");
+					}
 						playerCard.setLocation($($this));
 						cardDiv.draggable("disable");
 						cardDiv.css({ opacity: 1 });
-						// Remove strong hover
+					// Remove strong hover
 						$this.removeClass("gameSquareHoverStrong");
 					}).fail(function (error) {
 						console.warn(error);
@@ -704,56 +904,15 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		},
 		players: players,
 		Bonus: Bonus,
-		debug: debug
+		debug: debug,
+		puck: puck
 	};
-
-	//#endregion
-
-	//#region Puck
-	var puck = (function () {
-		var getPixelPosition = function (x, y) {
-			var left = layout.margin + layout.borderWidth + layout.borderWidth / 2 + $("#gameBoardLD").height() / 2;
-			var top = layout.margin + layout.borderWidth;
-			return {
-				top: top + $("#gameBoardLD").height() * y,
-				left: left + $("#gameBoardLD").width() * x
-			};
-		};
-
-		var setPosition = function (x, y) {
-			var position = getPixelPosition(x, y);
-			$('#gameBoardPuck').css('visibility', 'visible')
-								.css('top', (position.top - $('#gameBoardPuck').height / 2))
-								.css('left', (position.left - $('#gameBoardPuck').width / 2));
-		};
-
-		return {
-			init: function () {
-			},
-
-			placeAt: function (x, y) {
-				//                setPosition(x, y);
-			},
-			moveTo: function (x, y) {
-				//                if ($('#gameBoardPuck').css('visibility') == 'visible') {
-				//                    var position = getPixelPosition(x, y)
-				//                    $("#gameBoardPuck").animate({
-				//                        top: position.top - $('#gameBoardPuck').height / 2,
-				//                        left: position.left - $('#gameBoardPuck').width / 2,
-				//                    }, 1500);
-				//                }
-				//                else
-				//                // place puck at position since it isn't visible at the moment
-				//                    setPosition(x, y);
-			}
-		};
-	})();
-
 	//#endregion
 
 	//#region Layout
 	var layout = {
 		init: function () {
+			layout.tacticCardsEnabled = true;
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
@@ -920,6 +1079,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			context.lineWidth = lineWidthBold;
 			context.strokeStyle = "#f00";
 			context.stroke();
+			context.closePath();
 
 			// draw Play-by-Play text
 			var a = (left + width / 2);
@@ -945,16 +1105,28 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		},
 
 		drawPlayerPlacedTactic: function (tactic, card) {
+			// lock the other cards
+			$('.tacticCard').each(function () {
+				$(this).attr('disabled', true);
+			});
+
+			layout.clearGameboardTactic();
+
+
+			//layout.disableTacticCards();
+			$('.tacticCard').css({ opacity: 0.1 });
+
 
 			// inform server of selected tactical card
 			window.connection.playTactic(card.data('cardId'));
 
 			// lock tactic cards
-			$('.tacticCard').each(function () {
-				//$(this).disable(true);
-			});
+			//			$('.tacticCard').each(function () {
+			//				//$(this).disable(true);
+			//			});
 
-			var canvas = document.getElementById("gameBoardCanvas");
+			var canvas = document.getElementById("gameBoardTacticalCanvas");
+			layout.placedTactic = tactic;
 
 			layout.drawTactic(canvas, tactic);
 		},
@@ -1068,9 +1240,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 		clearGameboardTactic: function () {
 			// remove drawn tactic on gameboard
+			var canvas = $("#gameBoardTacticalCanvas").get(0);
+			layout.clearTactic(canvas);
+		},
 
-			var elem = $("#gameBoardTacticalCanvas");
-			var canvas = elem.get(0);
+		clearTactic: function (canvas) {
+			// remove drawn tactic on element
 			var context = canvas.getContext("2d");
 
 			context.clearRect(0, 0, canvas.width, canvas.height);
@@ -1211,6 +1386,43 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				'font-size': (baseFont * width / baseWidth) + 'px',
 				'line-height': (baseFont * width / baseWidth) + 'px'
 			});
+
+			// Black squares --------------------------------------------------------
+			baseWidth = 100;
+			baseHeight = 70;
+			baseFont = 36;
+			baseBorder = 2;
+			basePadding = 6;
+
+			totalWidth = $("#gameBoardLW").width();
+
+			width = totalWidth * baseWidth / 222;
+			height = baseHeight * width / baseWidth;
+			margin = (totalWidth - 3 * width) / 4;
+
+			font = baseFont * width / baseWidth;
+			border = baseBorder * width / baseWidth;
+			cardPadding = basePadding * width / baseWidth;
+
+			$(".gameBoardPlaceholder").css({
+				'width': width + 'px',
+				'height': height + 'px',
+				'font-size': font + 'px',
+				'line-height': height + 'px',
+				'margin': (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px ' + (margin / 2) + 'px',
+				'border': border + 'px solid #666',
+				'border-radius': (10 * width / baseWidth) + 'px'
+			});
+
+			// update tactic cards height
+			var tacticWidth = $(".tacticCard").width();
+			var tacticHeight = (tacticWidth / 5) * 8;
+			$(".tacticCard").each(function () {
+				$(this).height(tacticHeight);
+				//				var elem = $(this).find("canvas");
+				//				layout.clearTactic(elem[0]);
+				//				layout.drawTactic(elem[0], jQuery.data($(this), "tactic"));
+			});
 		},
 		setBattleViewSize: function () {
 			var baseWidth = 836;
@@ -1226,17 +1438,16 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				'height': height,
 				'position': center
 			});
-
-			//			$("#battle-view").dialog("option", {
-			//				'width': width + 'px',
-			//				'height': height + 'px'
-			//			});
 		}
 	};
 
 	$(window).bind('resize', function () {
 		layout.init();
 		layout.drawMainGameboard();
+		if (layout.placedTactic != null) {
+			var canvas = document.getElementById("gameBoardTacticalCanvas");
+			layout.drawTactic(canvas, layout.placedTactic);
+		}
 		layout.setCardSizes();
 		layout.setBattleViewSize();
 	});
@@ -1276,6 +1487,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	$(function () {
 		layout.init();
 		layout.drawMainGameboard();
+		layout.setCardSizes();
 		puck.placeAt(1, 3);
 		$('#console').tabs();
 		$('#oppBench').tabs();
