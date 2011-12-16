@@ -11,6 +11,18 @@ namespace Play_by_Play.Hubs.Models {
 		public GameUser AwayUser { get; set; }
 		public bool IsHomeTurn { get; private set; }
 		public bool IsFaceOff { get; private set; }
+		private TacticCard _currentTactic;
+		public TacticCard CurrentTactic {
+			get { return _currentTactic; }
+			set {
+				var user = IsHomeTurn
+										? HomeUser
+										: AwayUser;
+				if (user.CurrentCards.Contains(value))
+					_currentTactic = value;
+			}
+		}
+
 		private List<TacticCard> AvailableCards { get; set; }
 
 		public Game() {
@@ -33,9 +45,10 @@ namespace Play_by_Play.Hubs.Models {
 			nodes.Add(new Node { X = 1, Y = 3 });
 
 			cards.Add(new TacticCard {
+				Id = 1,
 				Name = "Give 'n Take",
 				Difficulty = 4,
-				Nodes = new List<Node>() {
+				Nodes = new List<Node>{
 					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
 					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
@@ -70,6 +83,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 
 			cards.Add(new TacticCard {
+				Id = 2,
 				Name = "Left On",
 				Difficulty = 4,
 				Nodes = new List<Node>() {
@@ -89,6 +103,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 
 			cards.Add(new TacticCard {
+				Id = 3,
 				Name = "Longshot",
 				Difficulty = 4,
 				Nodes = new List<Node>() {
@@ -101,6 +116,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 
 			cards.Add(new TacticCard {
+				Id = 4,
 				Name = "Straight",
 				Difficulty = 4,
 				Nodes = new List<Node>() {
@@ -126,6 +142,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 
 			cards.Add(new TacticCard {
+				Id = 5,
 				Name = "Nailed",
 				Difficulty = 3,
 				Nodes = new List<Node>() {
@@ -142,21 +159,20 @@ namespace Play_by_Play.Hubs.Models {
 
 		public List<TacticCard> GenerateTactics(int amount) {
 			var list = new List<TacticCard>(amount);
+			var available = AvailableCards.ToList();
+
+			var rnd = new Random();
 
 			for (var i = 0; i < amount; i++) {
-				var nrAvailable = AvailableCards.Count;
-				var choosen = (int)Math.Floor(new Random(nrAvailable).NextDouble());
-				var card = AvailableCards.ElementAt(choosen);
-				HomeUser.AddTactic(card);
-
-				nrAvailable = AvailableCards.Count;
-				choosen = (int)Math.Floor(new Random(nrAvailable).NextDouble());
-				card = AvailableCards.ElementAt(choosen);
-				AwayUser.AddTactic(card);
+				var nrAvailable = available.Count;
+				var choosen = rnd.Next(nrAvailable);
+				var card = available.ElementAt(choosen);
+				list.Add(card);
+				available.Remove(card);
 			}
 
 			//return list;
-			return AvailableCards.Take(amount).ToList();
+			return list;
 		}
 
 		public void Start() {
@@ -368,11 +384,14 @@ namespace Play_by_Play.Hubs.Models {
 			};
 			# endregion
 
+			HomeUser.AddTactics(GenerateTactics(5));
+			AwayUser.AddTactics(GenerateTactics(5));
+
 			IsFaceOff = true;
 		}
 
 		public BattleResult ExecuteFaceOff() {
-			var battleResult = new BattleResult(new List<Player> {Board.HomeFaceoff}, new List<Player> {Board.AwayFaceoff});
+			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff });
 
 			IsHomeTurn = battleResult.HomeTotal > battleResult.AwayTotal;
 
@@ -381,6 +400,27 @@ namespace Play_by_Play.Hubs.Models {
 			Board.AwayFaceoff = null;
 
 			return battleResult;
+		}
+
+		public bool IsReadyForFaceoff() {
+			return Board.IsReadyForFaceoff();
+		}
+
+		public bool IsReadyForTactic() {
+			return Board.HomePlayers.Count() == 5 &&
+						 Board.AwayPlayers.Count() == 5 &&
+						 Board.HomeGoalie != null &&
+						 Board.AwayGoalie != null &&
+						 CurrentTactic != null;
+		}
+
+		public TacticResult ExecuteTactic() {
+			var tacticResult = new TacticResult {
+				Card = CurrentTactic, 
+				IsHomeAttacking = IsHomeTurn,
+				Battles = Board.ExecuteTactic(CurrentTactic, IsHomeTurn)
+			};
+			return tacticResult;
 		}
 	}
 }

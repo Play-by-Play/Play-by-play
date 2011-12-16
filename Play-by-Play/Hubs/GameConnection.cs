@@ -1,4 +1,5 @@
 ﻿using Play_by_Play.Hubs.Models;
+using Play_by_Play.Models;
 using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
@@ -86,12 +87,9 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void GetTacticCards(int amount) {
-			var game = games.Values.First(x => x.AwayUser.ClientId.Equals(Context.ClientId) || x.HomeUser.ClientId.Equals(Context.ClientId));
-			var tactics = game.GenerateTactics(amount);
-
-			var writer = new JavaScriptSerializer();
-			var result = writer.Serialize(tactics);
-			Caller.createTacticCards(result);
+			var user = GetUser();
+			var tactics = user.CurrentCards;
+			Caller.createTacticCards(tactics);
 		}
 
 		public void GetPlayers() {
@@ -132,6 +130,14 @@ namespace Play_by_Play.Hubs {
 			if (Caller.DebugMode == true && !debugFlip) 
 				return;
 			Clients[opponentId].placeOpponentPlayer(playerId, name);
+
+			if (!game.IsReadyForTactic())
+				return;
+
+			var tacticResult = game.ExecuteTactic();
+			Clients[game.HomeUser.ClientId].tacticResult(tacticResult.GetHomeResult());
+			Clients[game.AwayUser.ClientId].tacticResult(tacticResult.GetAwayResult());
+
 		}
 
 		public void PlaceGoalkeeper(int playerId) {
@@ -219,6 +225,29 @@ namespace Play_by_Play.Hubs {
 			ExecuteFaceOff(game);
 		}
 
+		public void PlayTactic(int id) {
+			var game = GetGame();
+			var isHomeUser = GetUser() == game.HomeUser;
+
+			var tacticList = isHomeUser
+			                 	? game.HomeUser.CurrentCards
+			                 	: game.AwayUser.CurrentCards;
+
+			var tacticCard = tacticList.SingleOrDefault(x => x.Id == id);
+
+			if (tacticCard == null)
+				throw new Exception("You don't have that tactic card!");
+
+			game.CurrentTactic = tacticCard;
+
+			if (!game.IsReadyForTactic())
+				return;
+
+			var tacticResult = game.ExecuteTactic();
+			Clients[game.HomeUser.ClientId].tacticResult(tacticResult.GetHomeResult());
+			Clients[game.AwayUser.ClientId].tacticResult(tacticResult.GetAwayResult());
+		}
+
 		private void ExecuteFaceOff(Game game) {
 			if (!game.Board.IsReadyForFaceoff())
 				return;
@@ -242,6 +271,16 @@ namespace Play_by_Play.Hubs {
 
 			Clients.removeGame(game.Id);
 			games.Remove(game.Id);
+		}
+
+		private GameUser GetUser() {
+			var userId = Context.ClientId;
+			return users.FirstOrDefault(x => x.Key == userId).Value;
+		}
+
+		private Game GetGame() {
+			var user = GetUser();
+			return games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
 		}
 
 		private string GetMD5Hash(string username) {

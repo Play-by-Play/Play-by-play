@@ -63,6 +63,7 @@
     <Compile Include="StateMachineTests\GameStateMachineTests.cs" />
     <Compile Include="UnitTests\ExpandoObjectConverterTests.cs" />
     <Compile Include="UnitTests\GameAreaTests.cs" />
+    <Compile Include="UnitTests\GameTests.cs" />
     <Compile Include="UnitTests\NodeTests.cs" />
   </ItemGroup>
   <ItemGroup>

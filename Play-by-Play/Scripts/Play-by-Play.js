@@ -247,24 +247,39 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		// Reconstruct draggable
 		replacedGoalie.draggable("enable");
 	};
+	var convertTacticCard = function (card) {
+		var start = [card.StartNode.X, card.StartNode.Y];
+		var nodes = _.map(card.Nodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var movementNodes = _.map(card.MovementNodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var passes = _.map(card.Passes, function (pass) {
+			return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
+		});
+		var movingPass = _.map(card.Movements, function (movement) {
+			return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
+		});
+		var shot = [card.Shot.X, card.Shot.Y];
+
+		return {
+			Id: card.Id,
+			Name: card.Name,
+			Difficulty: card.Difficulty,
+			startNode: start,
+			nodes: nodes,
+			movementNode: movementNodes,
+			passes: passes,
+			movingPass: movingPass,
+			shot: shot
+		};
+	};
 	var play = {
 		addTacticCards: function (cards) {
 			_.each(cards, function (card) {
-				var start = [card.StartNode.X, card.StartNode.Y];
-				var nodes = _.map(card.Nodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var movementNodes = _.map(card.MovementNodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var passes = _.map(card.Passes, function (pass) {
-					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
-				});
-				var movingPass = _.map(card.Movements, function (movement) {
-					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
-				});
-				var shot = [card.Shot.X, card.Shot.Y];
-				play.addTacticCard(card.Name, card.Difficulty, { startNode: start, nodes: nodes, movementNode: movementNodes, passes: passes, movingPass: movingPass, shot: shot });
+				card = convertTacticCard(card);
+				play.addTacticCard(card.Id, card.Name, card.Difficulty, { startNode: card.startNode, nodes: card.nodes, movementNode: card.movementNodes, passes: card.passes, movingPass: card.movingPass, shot: card.shot });
 			});
 
 			$("#tacticCards").hover(
@@ -292,10 +307,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			//			play.addTacticCard("Straight", 4, { startNode: [0, 3], nodes: [[0, 3], [0, 2], [0, 0]], movementNode: [], passes: [[[0, 3], [0, 2]], [[0, 2], [0, 0]]], movingPass: [], shot: [0, 0] });
 			//			play.addTacticCard("Nailed", 3, { startNode: [0, 2], nodes: [[0, 2]], movementNode: [], passes: [], movingPass: [], shot: [0, 2] });
 		},
-		addTacticCard: function (name, diff, tactic) {
+		addTacticCard: function (id, name, diff, tactic) {
 			var data = { name: name, diff: diff };
 			var template = $('#tacticCardTemplate').tmpl(data).css('background-color', '#' + data.color).appendTo('#tacticCards');
-
+			template.data('cardId', id);
 			// set templates height depending on templates width, which is set in card.css
 			template.height(template.width() / 5 * 8);
 
@@ -326,6 +341,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			template.click(function () {
 				layout.drawPlayerPlacedTactic(tactic, template);
+				window.connection.playTactic(id);
 			});
 
 			// set card to disable as default
@@ -483,14 +499,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".gameSquare").droppable({ disabled: false });
 		},
 		enablePlayers: function (tab) {
-			$(tab).find(".card").each(function () {
-				$(this).draggable("enable");
-			});
+			$(tab).find(".card").draggable("enable");
+		},
+		enableAllPlyers: function () {
+			$('#playerBench').find('.card').draggable("enable");
 		},
 		disablePlayers: function (tab) {
-			$(tab).find(".card").each(function () {
-				$(this).draggable("disable")/*.css({ opacity: 1 })*/;
-			});
+			$('#playerBench').find('#' + tab)
+											 .find(".card")
+											 .draggable("disable")/*.css({ opacity: 1 })*/;
+		},
+		disablePlayersExceptOn: function (tab) {
+			$('#playerBench').find('.tab')
+											 .not('#' + tab)
+											 .find(".card")
+											 .draggable("disable")/*.css({ opacity: 1 })*/;
 		},
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
@@ -922,10 +945,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		},
 
 		drawPlayerPlacedTactic: function (tactic, card) {
-			// remove placed tactic card
-			card.remove();
 
 			// inform server of selected tactical card
+			window.connection.playTactic(card.data('cardId'));
 
 			// lock tactic cards
 			$('.tacticCard').each(function () {

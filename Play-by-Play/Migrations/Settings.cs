@@ -3,6 +3,7 @@ using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Providers;
 using System.Data.SqlClient;
 using System.Linq;
+using Play_by_Play.Hubs.Models;
 using Play_by_Play.Models;
 
 namespace Play_by_Play.Migrations {
