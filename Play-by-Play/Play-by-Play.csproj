@@ -203,6 +203,7 @@
     <Content Include="Content\card.css" />
     <Content Include="Content\board.css" />
     <Content Include="Content\lobby.css" />
+    <Content Include="Content\nanoscroller.css" />
     <Content Include="Content\reset.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\battle.css" />
@@ -414,6 +415,7 @@
     <Content Include="Scripts\jquery-1.7.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.16.js" />
     <Content Include="Scripts\jquery-ui-1.8.16.min.js" />
+    <Content Include="Scripts\jquery.nanoscroller.min.js" />
     <Content Include="Scripts\jquery.signalR.js" />
     <Content Include="Scripts\jquery.signalR.min.js" />
     <Content Include="Scripts\jQuery.tmpl.js" />
