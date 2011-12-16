@@ -60,7 +60,8 @@ namespace Play_by_Play.Hubs.Models {
 				IsHomePlayer = true,
 				AwayModifier = AwayModifier,
 				AwayPlayers = AwayPlayers,
-				Area = Area
+				Area = Area,
+				Type = Type
 			};
 			return result;
 		}
@@ -72,7 +73,8 @@ namespace Play_by_Play.Hubs.Models {
 				IsHomePlayer = false,
 				AwayModifier = AwayModifier,
 				AwayPlayers = AwayPlayers,
-				Area = Area != null ? Area.Opposite : null
+				Area = Area != null ? Area.Opposite : null,
+				Type = Type
 			};
 			return result;
 		}

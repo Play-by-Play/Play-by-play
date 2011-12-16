@@ -140,6 +140,7 @@
     <Compile Include="Models\StateMachine\States\StartGameState.cs" />
     <Compile Include="Models\StateMachine\GameStateMachine.cs" />
     <Compile Include="Models\StateMachine\IGameState.cs" />
+    <Compile Include="Hubs\Models\TacticCard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedController.generated.cs">
       <DependentUpon>T4MVC.tt</DependentUpon>

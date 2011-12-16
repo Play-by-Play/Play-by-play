@@ -63,7 +63,7 @@ namespace Play_by_Play.Hubs.Models {
 		}
 
 		public List<BattleResult> ExecuteTactic(TacticCard tacticCard, bool homePlayerAttacks) {
-			if (homePlayerAttacks) {
+			if (!homePlayerAttacks) {
 				//Reverse tactic
 				tacticCard = tacticCard.Reverse();
 			}
@@ -79,32 +79,46 @@ namespace Play_by_Play.Hubs.Models {
 				var homePlayers = new List<Player>(area.HomePlayers);
 				var awayPlayers = new List<Player>(area.AwayPlayers);
 
-				// Is there any player movin to that area?
-				var movement = tacticCard.Movements.SingleOrDefault(x => x.End.X == node.X && x.End.Y == node.Y);
-				if (movement != null) {
-					var prevArea = Areas.Single(x => x.X == movement.Start.X && x.Y == movement.Start.Y);
-					if(homePlayerAttacks)
-						homePlayers.Add(prevArea.HomePlayers.First());
-					else
-						awayPlayers.Add(prevArea.AwayPlayers.First());
-				}
+				var result = new BattleResult(homePlayers, awayPlayers) {
+					Area = area,
+					Type = "Scramble"
+				};
 
-				battles.Add(new BattleResult(homePlayers, awayPlayers) {
-					Area = area
-				});
+				// Is there any player movin to that area?
+				var movement = tacticCard.Movements.SingleOrDefault(x => x.Start.X == node.X && x.Start.Y == node.Y);
+				if (movement != null) {
+					var nextArea = Areas.Single(x => x.X == movement.End.X && x.Y == movement.End.Y);
+					if(homePlayerAttacks) {
+						var player = area.HomePlayers.First();
+						area.HomePlayers.Remove(player);
+						nextArea.HomePlayers.Add(player);
+					}
+					else {
+						var player = area.AwayPlayers.First();
+						area.AwayPlayers.Remove(player);
+						nextArea.AwayPlayers.Add(player);
+					}
+				}
+				battles.Add(result);
 			}
 
 			//Shot
 			area = Areas.Single(x => x.X == tacticCard.Shot.X && x.Y == tacticCard.Shot.Y);
-			var shooter = homePlayerAttacks
-			              	? area.HomePlayers.First()
-			              	: area.AwayPlayers.First();
-			var goalie = homePlayerAttacks
-			             	? AwayGoalie
-			             	: HomeGoalie;
 
-			battles.Add(new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}){Type = "Shot"});
+			if (homePlayerAttacks) {
+				var shooter = area.HomePlayers.First();
+				var goalie = AwayGoalie;
 
+				var battleResult = new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}) {Type = "Shot"};
+				battles.Add(battleResult);
+
+			} else {
+				var shooter = area.AwayPlayers.First();
+				var goalie = HomeGoalie;
+
+				var battleResult = new BattleResult(new List<Player> {goalie}, new List<Player> {shooter}) {Type = "Shot"};
+				battles.Add(battleResult);
+			}
 			return battles;
 		}
 	}
