@@ -247,24 +247,39 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		// Reconstruct draggable
 		replacedGoalie.draggable("enable");
 	};
+	var convertTacticCard = function (card) {
+		var start = [card.StartNode.X, card.StartNode.Y];
+		var nodes = _.map(card.Nodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var movementNodes = _.map(card.MovementNodes, function (node) {
+			return [node.X, node.Y];
+		});
+		var passes = _.map(card.Passes, function (pass) {
+			return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
+		});
+		var movingPass = _.map(card.Movements, function (movement) {
+			return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
+		});
+		var shot = [card.Shot.X, card.Shot.Y];
+
+		return {
+			Id: card.Id,
+			Name: card.Name,
+			Difficulty: card.Difficulty,
+			startNode: start,
+			nodes: nodes,
+			movementNode: movementNodes,
+			passes: passes,
+			movingPass: movingPass,
+			shot: shot
+		};
+	};
 	var play = {
 		addTacticCards: function (cards) {
 			_.each(cards, function (card) {
-				var start = [card.StartNode.X, card.StartNode.Y];
-				var nodes = _.map(card.Nodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var movementNodes = _.map(card.MovementNodes, function (node) {
-					return [node.X, node.Y];
-				});
-				var passes = _.map(card.Passes, function (pass) {
-					return [[pass.Start.X, pass.Start.Y], [pass.End.X, pass.End.Y]];
-				});
-				var movingPass = _.map(card.Movements, function (movement) {
-					return [[movement.Start.X, movement.Start.Y], [movement.End.X, movement.End.Y]];
-				});
-				var shot = [card.Shot.X, card.Shot.Y];
-				play.addTacticCard(card.Id, card.Name, card.Difficulty, { startNode: start, nodes: nodes, movementNode: movementNodes, passes: passes, movingPass: movingPass, shot: shot });
+				card = convertTacticCard(card);
+				play.addTacticCard(card.Id, card.Name, card.Difficulty, { startNode: card.startNode, nodes: card.nodes, movementNode: card.movementNodes, passes: card.passes, movingPass: card.movingPass, shot: card.shot });
 			});
 
 			$("#tacticCards").hover(
