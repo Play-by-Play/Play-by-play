@@ -739,7 +739,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		disableTacticCards: function () {
 			layout.tacticCardsEnabled = false;
 			$('.tacticCard').each(function () {
-				$(this).css({ opacity: 1.0 });
+				$(this).css({ opacity: 0.3 });
 			});
 			// reset opacity to the player cards
 			$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
