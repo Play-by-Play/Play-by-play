@@ -756,7 +756,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		enableTacticCards: function () {
 			layout.clearGameboardTactic();
 			$('.tacticCard').each(function () {
-				$(this).css({ opacity: 0.5 });
+				$(this).css({ opacity: 1 });
 			});
 			layout.tacticCardsEnabled = true;
 		},
@@ -932,7 +932,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		debug: debug,
 		puck: puck,
 		setTacticsEnabled: function (isTurn) {
-			layout.tacticCardsEnabled = isTurn;
+			if (isTurn === true) {
+				play.enableTacticCards();
+			} else {
+				play.disableTacticCards();
+			}
 		}
 	};
 	//#endregion
@@ -940,7 +944,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	//#region Layout
 	var layout = {
 		init: function () {
-			layout.tacticCardsEnabled = false;
+			play.disableTacticCards();
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
