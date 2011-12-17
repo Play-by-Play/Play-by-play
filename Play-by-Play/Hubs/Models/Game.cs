@@ -11,6 +11,8 @@ namespace Play_by_Play.Hubs.Models {
 		public GameUser AwayUser { get; set; }
 		public bool IsHomeTurn { get; private set; }
 		public bool IsFaceOff { get; private set; }
+		public int Period { get; private set; }
+		private int Substitution { get; set; }
 		private TacticCard _currentTactic;
 		public TacticCard CurrentTactic {
 			get { return _currentTactic; }
@@ -28,6 +30,8 @@ namespace Play_by_Play.Hubs.Models {
 		public Game() {
 			Id = Guid.NewGuid().ToString("d");
 			Board = new GameBoard();
+			Period = 1;
+			Substitution = 1;
 			AvailableCards = GenerateTacticCards();
 		}
 
@@ -391,9 +395,9 @@ namespace Play_by_Play.Hubs.Models {
 		}
 
 		public BattleResult ExecuteFaceOff() {
-			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff });
+			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff }, BattleType.FaceOff, false);
 
-			IsHomeTurn = battleResult.HomeTotal > battleResult.AwayTotal;
+			IsHomeTurn = battleResult.IsHomeWinner;
 
 			IsFaceOff = false;
 			Board.HomeFaceoff = null;
@@ -420,7 +424,26 @@ namespace Play_by_Play.Hubs.Models {
 				IsHomeAttacking = IsHomeTurn,
 				Battles = Board.ExecuteTactic(CurrentTactic, IsHomeTurn)
 			};
+
+			var user = IsHomeTurn
+			           	? HomeUser
+			           	: AwayUser;
+			user.CurrentCards.Remove(CurrentTactic);
+
+			ChangeTurn();
+
 			return tacticResult;
+		}
+
+		private void ChangeTurn() {
+
+			if (Substitution % 2 != 0)
+				IsHomeTurn = !IsHomeTurn;
+
+			if (Substitution % 4 == 0)
+				IsFaceOff = true;
+
+			Substitution++;
 		}
 	}
 }

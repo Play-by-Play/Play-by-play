@@ -987,12 +987,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			context.clearRect(0, 0, width, height);
 
 			// Set margin for the container of game squares
-			console.log("Width: " + outerLineWidth);
-			var squares = $('#gameBoardBackgroundLayer');
-			console.log("Margin before: " + squares.css('margin-left'));
-			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
-			console.log("Margin after: " + squares.css('margin-left'));
-
+//			var squares = $('#gameBoardBackgroundLayer');
+//			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
+			
 			// draw ice rink
 			context.beginPath();
 			context.arc(left + width / 5, top + height / 8, width / 5, -Math.PI / 2, Math.PI, true);
