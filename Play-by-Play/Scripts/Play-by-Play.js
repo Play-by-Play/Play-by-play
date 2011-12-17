@@ -550,6 +550,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var animDiv = $("#battleAnim");
 			var puck = $("#battlePuck");
 
+			userDiv.empty();
+			userDiv.append($("<h1>").text("You"));
+			oppDiv.empty();
+			oppDiv.append($("<h1>").text("Opponent"));
+
 			// Determine if current user is home or away team
 			if (result.IsHomePlayer) {
 				var homeDiv = userDiv;
@@ -569,8 +574,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				table.append(tr);
 			}
 			addTotal(table, result.HomePlayers.length, total);
-			homeDiv.empty();
-			homeDiv.append($("<h1>").text("You"));
 			homeDiv.append(table);
 			// Construct away team table
 			table = $("<table>");
@@ -583,8 +586,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				table.append(tr);
 			}
 			addTotal(table, result.AwayPlayers.length, total);
-			awayDiv.empty();
-			awayDiv.append($("<h1>").text("Opponent"));
 			awayDiv.append(table);
 
 			// Add result text
@@ -716,20 +717,24 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 						}
 					}
-				}, (index != 0 ? index * 2 * delay : 0));
+				}, (index * 3) * delay);
 				setTimeout(function () {
 					// Show battle view
-					if (!(battle.IsHomeAttacking && battle.AwayPlayers.length == 0)) {
+					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0)) {
 						play.showBattleView(battle);
 					}
-				}, index * delay);
+				}, (index * 3 + (index == 0 ? 0 : 1)) * delay);
 				// Check if attack continues
 				if (result.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !result.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
-					layout.clearGameboardTactic();
+					setTimeout(function () {
+						layout.clearGameboardTactic();
+					}, ((index + 1) * 3) * delay);
 					return;
 				}
 			});
-			layout.clearGameboardTactic();
+			setTimeout(function () {
+				layout.clearGameboardTactic();
+			}, result.Battles.length * 3 * delay);
 		},
 		disableTacticCards: function () {
 			layout.tacticCardsEnabled = false;
@@ -1504,7 +1509,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		layout.init();
 		layout.drawMainGameboard();
 		layout.setCardSizes();
-		puck.placeAt(1, 3);
 		$('#console').tabs();
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
