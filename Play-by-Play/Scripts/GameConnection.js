@@ -14,7 +14,8 @@
 
 	connection.addChatMessage = function (name, message) {
 		var data = { name: name, message: message };
-		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages');
+		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages > .content');
+		$('#chatMessages').nanoScroller({scroll: 'bottom'});
 	};
 
 	connection.addActionMessage = function (message, type) {
@@ -83,7 +84,7 @@
 	connection.tacticResult = function (result) {
 		console.log(result);
 
-		window.PlayByPlay.playTactic(result.Card, result.Battles);
+		window.PlayByPlay.playTactic(result);
 	};
 
 	connection.usernameExists = function () {

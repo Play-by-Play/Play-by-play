@@ -704,12 +704,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
 		},
-		playTactic: function (tacticCard, battleResults) {
-			$.each(battleResults, function (index, battle) {
+		playTactic: function (result) {
+			$.each(result.Battles, function (index, battle) {
 				setTimeout(function () {
 					// Get puck to the battle
 					if (battle.Type == "Shot") {
-						if (battle.IsHomeAttacking && battle.IsHomePlayer || !battle.IsHomeAttacking && !battle.IsHomePlayer)
+						if (result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer)
 							puck.shoot("opponent");
 						else
 							puck.shoot("player");
@@ -728,7 +728,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					}
 				}, (index * 3 + 1) * delay);
 				// Check if attack continues
-				if (battle.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !battle.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
+				if (result.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !result.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
 					setTimeout(function () {
 						layout.clearGameboardTactic();
 					}, ((index + 1) * 3) * delay);
@@ -1495,6 +1495,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		$('#console').tabs();
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
+		$('#chatMessages').nanoScroller();
 
 		PlayByPlay.lobby = new Lobby();
 		if (!debug) {
