@@ -74,6 +74,10 @@ namespace Play_by_Play.Hubs {
 			var user = users.FirstOrDefault(x => x.Key.Equals(Context.ClientId)).Value;
 
 			game.AwayUser = user;
+
+			user.Oppenent = game.HomeUser;
+			game.HomeUser.Oppenent = user;
+
 			game.Start();
 
 			Caller.gameId = game.Id;

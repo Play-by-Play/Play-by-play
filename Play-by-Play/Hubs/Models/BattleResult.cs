@@ -40,6 +40,10 @@ namespace Play_by_Play.Hubs.Models {
 			}
 		}
 
+		public bool Success {
+			get { return (IsHomePlayer && IsHomeWinner) || (!IsHomePlayer && !IsHomeWinner); }
+		}
+
 		private int TotalAttributes(IEnumerable<Player> players) {
 			var sum = 0;
 			if (Type.Equals(BattleType.FaceOff)) {

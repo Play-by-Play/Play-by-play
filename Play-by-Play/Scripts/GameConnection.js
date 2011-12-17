@@ -15,7 +15,7 @@
 	connection.addChatMessage = function (name, message) {
 		var data = { name: name, message: message };
 		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages > .content');
-		$('#chatMessages').nanoScroller({scroll: 'bottom'});
+		$('#chatMessages').nanoScroller({ scroll: 'bottom' });
 	};
 
 	connection.addActionMessage = function (message, type) {
@@ -93,6 +93,10 @@
 
 	connection.removeGame = function (gameId) {
 		$('.lobby-game[data-game-id=' + gameId + ']').remove();
+	};
+
+	connection.setTurn = function (isTurn) {
+		window.PlayByPlay.setTacticsEnabled(isTurn);
 	};
 
 	return connection;

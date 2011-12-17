@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Play_by_Play.Models;
+using SignalR.Hubs;
 
 namespace Play_by_Play.Hubs.Models {
 	public class Game {
 		public string Id { get; set; }
 		public GameBoard Board { get; set; }
+		public GameScore Score { get; private set; }
 		public GameUser HomeUser { get; set; }
 		public GameUser AwayUser { get; set; }
 		public bool IsHomeTurn { get; private set; }
@@ -24,12 +26,12 @@ namespace Play_by_Play.Hubs.Models {
 					_currentTactic = value;
 			}
 		}
-
 		private List<TacticCard> AvailableCards { get; set; }
 
 		public Game() {
 			Id = Guid.NewGuid().ToString("d");
 			Board = new GameBoard();
+			Score = new GameScore();
 			Period = 1;
 			Substitution = 1;
 			AvailableCards = GenerateTacticCards();
@@ -403,6 +405,10 @@ namespace Play_by_Play.Hubs.Models {
 			Board.HomeFaceoff = null;
 			Board.AwayFaceoff = null;
 
+			var result = battleResult.IsHomeWinner;
+			HomeUser.SetTurn(result);
+			AwayUser.SetTurn(!result);
+
 			return battleResult;
 		}
 
@@ -428,22 +434,34 @@ namespace Play_by_Play.Hubs.Models {
 			var user = IsHomeTurn
 			           	? HomeUser
 			           	: AwayUser;
-			user.CurrentCards.Remove(CurrentTactic);
+			user.UseTactic(CurrentTactic);
 
 			ChangeTurn();
 
 			return tacticResult;
 		}
 
-		private void ChangeTurn() {
+		public void SendHomeActionMessage(string message, string type) {
+			Hub.GetClients<GameConnection>()[HomeUser.ClientId].addActionMessage(message, type);
+		}
 
-			if (Substitution % 2 != 0)
+		public void SendAwayActionMessage(string message, string type) {
+			Hub.GetClients<GameConnection>()[AwayUser.ClientId].addActionMessage(message, type);
+		}
+
+		private void ChangeTurn() {
+			Substitution++;
+
+			if (Substitution % 4 == 0) {
+				IsFaceOff = true;
+				return;
+			}
+
+			if (Substitution % 2 == 0)
 				IsHomeTurn = !IsHomeTurn;
 
-			if (Substitution % 4 == 0)
-				IsFaceOff = true;
-
-			Substitution++;
+			HomeUser.SetTurn(IsHomeTurn);
+			AwayUser.SetTurn(!IsHomeTurn);
 		}
 	}
 }

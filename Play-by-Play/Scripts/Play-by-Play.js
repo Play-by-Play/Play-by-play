@@ -475,7 +475,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					return;
 				}
 
-				layout.tacticCardsEnabled = false;
 				$('.tacticCard').each(function () {
 					$(this).css({ opacity: 1.0 });
 				});
@@ -910,14 +909,17 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		players: players,
 		Bonus: Bonus,
 		debug: debug,
-		puck: puck
+		puck: puck,
+		setTacticsEnabled: function (isTurn) {
+			layout.tacticCardsEnabled = isTurn;
+		}
 	};
 	//#endregion
 
 	//#region Layout
 	var layout = {
 		init: function () {
-			layout.tacticCardsEnabled = true;
+			layout.tacticCardsEnabled = false;
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
@@ -987,9 +989,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			context.clearRect(0, 0, width, height);
 
 			// Set margin for the container of game squares
-//			var squares = $('#gameBoardBackgroundLayer');
-//			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
-			
+			//			var squares = $('#gameBoardBackgroundLayer');
+			//			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
+
 			// draw ice rink
 			context.beginPath();
 			context.arc(left + width / 5, top + height / 8, width / 5, -Math.PI / 2, Math.PI, true);
