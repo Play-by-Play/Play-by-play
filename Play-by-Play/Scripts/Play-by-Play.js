@@ -702,6 +702,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			layout.drawOpponentPlacedTactic(tactic);
 		},
 		playTactic: function (result) {
+			var cont = true;
 			$.each(result.Battles, function (index, battle) {
 				setTimeout(function () {
 					// Get puck to the battle
@@ -720,26 +721,34 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}, (index * 3) * delay);
 				setTimeout(function () {
 					// Show battle view
-					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0)) {
+					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0 || !result.IsHomeAttacking && battle.HomePlayers.length == 0)) {
 						play.showBattleView(battle);
 					}
 				}, (index * 3 + (index == 0 ? 0 : 1)) * delay);
 				// Check if attack continues
-				if (result.IsHomeAttacking && battle.HomeTotal < battle.AwayTotal || !result.IsHomeAttacking && battle.HomeTotal > battle.AwayTotal) {// attacker lost
+				if (result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal)) {// attacker lost
 					setTimeout(function () {
 						layout.clearGameboardTactic();
 					}, ((index + 1) * 3) * delay);
-					return;
+					cont = false;
+					return cont;
 				}
+				// TODO: player movement...
 			});
+			if (!cont)
+				return false;
 			setTimeout(function () {
 				layout.clearGameboardTactic();
 			}, result.Battles.length * 3 * delay);
 		},
+		addGoal: function (user) {
+			var scoreDiv = $("#" + user + "Goals");
+			scoreDiv.text(parseInt(scoreDiv.text()) + 1);
+		},
 		disableTacticCards: function () {
 			layout.tacticCardsEnabled = false;
 			$('.tacticCard').each(function () {
-				$(this).css({ opacity: 1.0 });
+				$(this).css({ opacity: 0.3 });
 			});
 			// reset opacity to the player cards
 			$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
