@@ -475,12 +475,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					return;
 				}
 
-				layout.tacticCardsEnabled = false;
-				$('.tacticCard').each(function () {
-					$(this).css({ opacity: 1.0 });
-				});
-				// reset opacity to the player cards
-				$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
+				play.disableTacticCards();
+				$(this).remove();
 
 				layout.drawPlayerPlacedTactic(tactic, template);
 				window.connection.playTactic(id);
@@ -739,6 +735,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			setTimeout(function () {
 				layout.clearGameboardTactic();
 			}, result.Battles.length * 3 * delay);
+		},
+		disableTacticCards: function () {
+			layout.tacticCardsEnabled = false;
+			$('.tacticCard').each(function () {
+				$(this).css({ opacity: 1.0 });
+			});
+			// reset opacity to the player cards
+			$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
+		},
+		enableTacticCards: function () {
+			layout.clearGameboardTactic();
+			$('.tacticCard').each(function () {
+				$(this).css({ opacity: 0.5 });
+			});
+			layout.tacticCardsEnabled = true;
 		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
@@ -1157,14 +1168,19 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			// don't edit below
 
+			// remove any pass node which also is a movment node
+			//			for (index in tactic.nodes) {
+			//				console.log(passNode);
+			//				console.log(jQuery.inArray(index, tactic.movementNode));
+			//				if (jQuery.inArray(index, tactic.movementNode))
+			//					tactic.nodes.remove(index);
+			//			};
+
 			// calculate position
 			var left = width * 0.26;
 			var top = height * 0.2209;
 			var gameSquareWidth = width * 0.48;
 			var gameSquareHeight = height * 0.186;
-
-			//            alert(width);
-			//            alert(height);
 
 			var lineWidthNormal = gameSquareWidth * relationWidth;
 			var lineWidthThin = lineWidthNormal / 2;
