@@ -124,5 +124,14 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			return battles;
 		}
+
+		public void ClearBoard() {
+			foreach (var area in Areas) {
+				area.HomePlayers.Clear();
+				area.AwayPlayers.Clear();
+			}
+
+			
+		}
 	}
 }

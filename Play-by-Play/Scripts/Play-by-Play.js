@@ -663,7 +663,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".gameSquare").droppable({ disabled: false });
 		},
 		enablePlayers: function (tab) {
-			$(tab).find(".card").draggable("enable");
+			$('#' + tab).find(".card").draggable("enable");
 		},
 		enableAllPlyers: function () {
 			$('#playerBench').find('.card').draggable("enable");
@@ -908,7 +908,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 					}).fail(function (error) {
 						console.warn(error);
-						layout.rerender();
 					});
 					// Resize and move card
 					cardDiv.removeClass("benched");

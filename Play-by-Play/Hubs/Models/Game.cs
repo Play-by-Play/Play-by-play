@@ -11,10 +11,10 @@ namespace Play_by_Play.Hubs.Models {
 		public GameScore Score { get; private set; }
 		public GameUser HomeUser { get; set; }
 		public GameUser AwayUser { get; set; }
-		public bool IsHomeTurn { get; private set; }
+		public bool IsHomeTurn { get; /*private*/ set; }
 		public bool IsFaceOff { get; private set; }
 		public int Period { get; private set; }
-		private int Substitution { get; set; }
+		public int Turn { get; private set; }
 		private TacticCard _currentTactic;
 		public TacticCard CurrentTactic {
 			get { return _currentTactic; }
@@ -28,12 +28,14 @@ namespace Play_by_Play.Hubs.Models {
 		}
 		private List<TacticCard> AvailableCards { get; set; }
 
+		public bool IsFinished { get; set; }
+
 		public Game() {
+			IsFinished = false;
 			Id = Guid.NewGuid().ToString("d");
 			Board = new GameBoard();
 			Score = new GameScore();
-			Period = 1;
-			Substitution = 1;
+			Period = 0;
 			AvailableCards = GenerateTacticCards();
 		}
 
@@ -390,10 +392,7 @@ namespace Play_by_Play.Hubs.Models {
 			};
 			# endregion
 
-			HomeUser.AddTactics(GenerateTactics(5));
-			AwayUser.AddTactics(GenerateTactics(5));
-
-			IsFaceOff = true;
+			NewPeriod();
 		}
 
 		public BattleResult ExecuteFaceOff() {
@@ -405,9 +404,8 @@ namespace Play_by_Play.Hubs.Models {
 			Board.HomeFaceoff = null;
 			Board.AwayFaceoff = null;
 
-			var result = battleResult.IsHomeWinner;
-			HomeUser.SetTurn(result);
-			AwayUser.SetTurn(!result);
+			HomeUser.SetTurn(IsHomeTurn);
+			AwayUser.SetTurn(!IsHomeTurn);
 
 			return battleResult;
 		}
@@ -426,14 +424,14 @@ namespace Play_by_Play.Hubs.Models {
 
 		public TacticResult ExecuteTactic() {
 			var tacticResult = new TacticResult {
-				Card = CurrentTactic, 
+				Card = CurrentTactic,
 				IsHomeAttacking = IsHomeTurn,
 				Battles = Board.ExecuteTactic(CurrentTactic, IsHomeTurn)
 			};
 
 			var user = IsHomeTurn
-			           	? HomeUser
-			           	: AwayUser;
+									? HomeUser
+									: AwayUser;
 			user.UseTactic(CurrentTactic);
 
 			ChangeTurn();
@@ -449,19 +447,42 @@ namespace Play_by_Play.Hubs.Models {
 			Hub.GetClients<GameConnection>()[AwayUser.ClientId].addActionMessage(message, type);
 		}
 
-		private void ChangeTurn() {
-			Substitution++;
-
-			if (Substitution % 4 == 0) {
-				IsFaceOff = true;
+		/*private*/
+		public void ChangeTurn() {
+			if (Turn % 4 == 0) {
+				NewPeriod();
+				if (Period == 4)
+					IsFinished = true;
 				return;
 			}
 
-			if (Substitution % 2 == 0)
+			Turn++;
+
+			if (Turn % 2 == 0)
 				IsHomeTurn = !IsHomeTurn;
+			else {
+				Board.ClearBoard();
+				Hub.GetClients<GameConnection>()[HomeUser.ClientId].substitution();
+				Hub.GetClients<GameConnection>()[AwayUser.ClientId].substitution();
+			}
 
 			HomeUser.SetTurn(IsHomeTurn);
 			AwayUser.SetTurn(!IsHomeTurn);
+		}
+
+		private void NewPeriod() {
+			IsFaceOff = true;
+			Period++;
+			Turn = 1;
+
+			// Send new cards
+			HomeUser.AddTactics(GenerateTactics(5 - HomeUser.CurrentCards.Count));
+			AwayUser.AddTactics(GenerateTactics(5 - AwayUser.CurrentCards.Count));
+
+			// Call clients
+			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod();
+			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod();
+
 		}
 	}
 }

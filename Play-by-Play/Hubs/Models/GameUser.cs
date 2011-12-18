@@ -43,6 +43,7 @@ namespace Play_by_Play.Hubs.Models {
 			if (tactic == null)
 				return false;
 
+			CurrentCards.Remove(tactic);
 			UsedCards.Add(tactic);
 			return true;
 		}

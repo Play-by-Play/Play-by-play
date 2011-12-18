@@ -15,9 +15,15 @@ namespace Play_by_Play.Hubs.Models {
 			Type = type;
 			IsHomeAttacking = homeAttack;
 			_generator = generator;
-
-			Execute();
-			IsHomeWinner = IsHomeWinning();
+			var succeeded = true;
+			do {
+				Execute();
+				try {
+					IsHomeWinner = IsHomeWinning();
+				} catch(Exception) {
+					succeeded = false;
+				}
+			} while (!succeeded);
 		}
 
 		public List<Player> HomePlayers { get; set; }
@@ -29,6 +35,8 @@ namespace Play_by_Play.Hubs.Models {
 		public bool IsHomeWinner { get; private set; }
 		public GameArea Area { get; set; }
 		public string Type { get; set; }
+		public int HomePlayersTotal { get { return TotalAttributes(HomePlayers, IsHomeAttacking); } }
+		public int AwayPlayersTotal { get { return TotalAttributes(AwayPlayers, !IsHomeAttacking); } }
 
 		public int HomeTotal { 
 			get {
@@ -113,17 +121,16 @@ namespace Play_by_Play.Hubs.Models {
 			var awayAttributes = TotalAttributes(AwayPlayers, !IsHomeAttacking);
 			if (homeAttributes == awayAttributes) {
 				// Same attribute total, execute faceoff again
-				Execute();
-				return IsHomeWinning();
+				throw new Exception();
 			}
 			return homeAttributes > awayAttributes;
 		}
 	}
 
 	public class RandomGenerator {
-		private static Random rnd = new Random();
+		private static readonly Random Rnd = new Random();
 		public int Next(int min, int max) {
-			return rnd.Next(min, max);
+			return Rnd.Next(min, max);
 		}
 	}
 }

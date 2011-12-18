@@ -34,7 +34,7 @@ namespace Play_by_Play.Hubs {
 					ClientId = Context.ClientId
 				};
 
-				users[Context.ClientId] = user;
+				users.Add(Context.ClientId, user);
 
 				Caller.Name = user.Name;
 				Caller.Id = user.Id;
@@ -89,7 +89,7 @@ namespace Play_by_Play.Hubs {
 			Clients.removeGame(game.Id);
 		}
 
-		public void GetTacticCards(int amount) {
+		public void GetTacticCards() {
 			var user = GetUser();
 			var tactics = user.CurrentCards;
 			Caller.createTacticCards(tactics);

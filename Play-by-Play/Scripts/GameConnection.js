@@ -46,8 +46,27 @@
 		window.Game = game;
 		PlayByPlay.lobby.closeLobby();
 		connection.getPlayers();
-		connection.getTacticCards(5);
+	};
+
+	connection.newPeriod = function () {
+		PlayByPlay.restorePlayers();
+		connection.getTacticCards();
 		PlayByPlay.showFaceoff();
+	};
+
+	connection.substitution = function () {
+		PlayByPlay.restorePlayers();
+
+		var activeLine = $('#playerBench').data('active-line');
+		var nextLine = 'line' + (1 + (+activeLine.substr(4, 1) % 2));
+		var tabIds = [];
+		$('#playerBench').children('div').each(function () { tabIds.push(this.id); });
+
+		var lineIndex = $.inArray(nextLine, tabIds);
+		$('#playerBench').tabs('select', lineIndex);
+
+		window.PlayByPlay.disablePlayers(activeLine);
+		window.PlayByPlay.enablePlayers(nextLine);
 	};
 
 	connection.createTacticCards = function (cards) {
@@ -77,9 +96,11 @@
 
 		var tabIds = [];
 		$('#playerBench').children('div').each(function () { tabIds.push(this.id); });
-		
+
 		var lineIndex = $.inArray(activeLine, tabIds);
 		$('#playerBench').tabs('select', lineIndex);
+
+		$('#playerBench').data('active-line', activeLine);
 
 		window.PlayByPlay.disablePlayersExceptOn(activeLine);
 
