@@ -75,6 +75,12 @@
 			activeLine = window.PlayByPlay.players.find(result.AwayPlayers[0].Id).getLine();
 		}
 
+		var tabIds = [];
+		$('#playerBench').children('div').each(function () { tabIds.push(this.id); });
+		
+		var lineIndex = $.inArray(activeLine, tabIds);
+		$('#playerBench').tabs('select', lineIndex);
+
 		window.PlayByPlay.disablePlayersExceptOn(activeLine);
 
 		PlayByPlay.hideFaceoff();

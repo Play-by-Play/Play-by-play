@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Play_by_Play.Hubs.Models;
 using Should;
 using Xunit;
@@ -34,6 +35,11 @@ namespace Play_by_Play.Tests.UnitTests {
 			result.ShouldBeFalse();
 		}
 
+		[Fact]
+		public void OffenseEqualsSumOfOffensivePlayers() {
+
+		}
+
 		private static Game SetupGame() {
 			var game = new Game {
 				Board = new GameBoard(),
@@ -47,6 +53,10 @@ namespace Play_by_Play.Tests.UnitTests {
 			game.Board.AwayGoalie = game.AwayUser.Team.Goalies.First();
 			game.CurrentTactic = game.HomeUser.CurrentCards.First();
 			return game;
+		}
+
+		private static void PlaceLine(List<Player> line, GameBoard board) {
+			
 		}
 	}
 }
