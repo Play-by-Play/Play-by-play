@@ -31,7 +31,7 @@ namespace Play_by_Play.Hubs.Models {
 		public int HomeModifier { get; set; }
 		public int AwayModifier { get; set; }
 		public bool IsHomePlayer { get; set; }
-		public bool IsHomeAttacking { private get; set; }
+		public bool IsHomeAttacking { get; set; }
 		public bool IsHomeWinner { get; private set; }
 		public GameArea Area { get; set; }
 		public string Type { get; set; }
@@ -66,11 +66,11 @@ namespace Play_by_Play.Hubs.Models {
 			} else if (Type.Equals(BattleType.Scramble) || Type.Equals(BattleType.Pass)) {
 				sum = players.Sum(x => isAttacking ? x.Offense : x.Defense);
 			} else if (Type.Equals(BattleType.Shot)) {
-				sum = isAttacking
-				      	? (IsHomeAttacking
+				sum = IsHomeAttacking
+								? (isAttacking
 				      	   	? players.Sum(x => x.Offense)
 				      	   	: players.Sum(x => x.Defense))
-				      	: (IsHomeAttacking
+								: (isAttacking
 				      	   	? players.Sum(x => x.Defense)
 				      	   	: players.Sum(x => x.Offense));
 			}
@@ -93,6 +93,7 @@ namespace Play_by_Play.Hubs.Models {
 				IsHomePlayer = true,
 				AwayModifier = AwayModifier,
 				AwayPlayers = AwayPlayers,
+				IsHomeAttacking = IsHomeAttacking,
 				Area = Area,
 				Type = Type
 			};
@@ -106,6 +107,7 @@ namespace Play_by_Play.Hubs.Models {
 				IsHomePlayer = false,
 				AwayModifier = AwayModifier,
 				AwayPlayers = AwayPlayers,
+				IsHomeAttacking = IsHomeAttacking,
 				Area = Area != null ? Area.Opposite : null,
 				Type = Type
 			};

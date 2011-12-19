@@ -678,7 +678,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		enablePlayers: function (tab) {
 			$('#' + tab).find(".card").draggable("enable");
 		},
-		enableAllPlyers: function () {
+		enableAllPlayers: function () {
 			$('#playerBench').find('.card').draggable("enable");
 		},
 		disablePlayers: function (tab) {

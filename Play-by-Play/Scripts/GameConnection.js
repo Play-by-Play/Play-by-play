@@ -52,6 +52,7 @@
 	connection.newPeriod = function () {
 		nextTurnActions.push(function () {
 			PlayByPlay.restorePlayers();
+			PlayByPlay.enableAllPlayers();
 			connection.getTacticCards();
 			PlayByPlay.showFaceoff();
 		});
@@ -64,14 +65,15 @@
 		$('#playerBench').children('div').each(function () { tabIds.push(this.id); });
 
 		var lineIndex = $.inArray(nextLine, tabIds);
-		$('#playerBench').tabs('select', lineIndex);
 
 		nextTurnActions.push(function () {
 			PlayByPlay.restorePlayers();
-		});
 
-		window.PlayByPlay.disablePlayers(activeLine);
-		window.PlayByPlay.enablePlayers(nextLine);
+			$('#playerBench').tabs('select', lineIndex);
+
+			window.PlayByPlay.disablePlayers(activeLine);
+			window.PlayByPlay.enablePlayers(nextLine);
+		});
 	};
 
 	connection.createTacticCards = function (cards) {
