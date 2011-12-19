@@ -566,7 +566,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 			cards.Add(new TacticCard{
 				Id = 16,
-				Name = "Sidechange",
+				Name = "Side change",
 				Difficulty = 5,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
