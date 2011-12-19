@@ -568,6 +568,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			oppDiv.empty();
 			oppDiv.append($("<h1>").text("Opponent"));
 
+			var hasUserWon = result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal;
+
 			// Determine if current user is home or away team
 			if (result.IsHomePlayer) {
 				var homeDiv = userDiv;
@@ -604,7 +606,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Add result text
 			var span = $("<span>");
 			// Check if current user won the battle
-			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (hasUserWon) {
 				span.text("You won!");
 			} else {
 				span.text("Your opponent won...");
@@ -623,11 +625,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var height = baseHeight * width / baseWidth;
 
 			// Set position on puck
+			puck.removeAttr('style');
 			puck.position({
 				of: $("#battleAnim"),
 				my: 'center center',
-				at: 'center center',
-				offset: '0'
+				at: 'center center'
 			});
 
 			// Open battle view
@@ -644,12 +646,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 
 			// Animate battle
-			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (hasUserWon) {
 				var anim = '-';
 			} else {
 				var anim = '+';
 			}
-			$("#battlePuck").animate({
+			puck.animate({
 				left: anim + (width / 2 - 0.1 * width)
 			}, delay);
 			// Show results
@@ -684,13 +686,13 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
 											 .find(".card")
-											 .draggable("disable")/*.css({ opacity: 1 })*/;
+											 .draggable("disable").css({ opacity: 0.75 });
 		},
 		disablePlayersExceptOn: function (tab) {
 			$('#playerBench').find('.tab')
 											 .not('#' + tab)
 											 .find(".card")
-											 .draggable("disable")/*.css({ opacity: 1 })*/;
+											 .draggable("disable").css({ opacity: 0.75 });
 		},
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
@@ -718,12 +720,14 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var cont = true;
 			var userScore = false;
 			var oppScore = false;
+			var skippedDelays = 0;
 			$.each(result.Battles, function (index, battle) {
 				var attackerWon = (result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal));
+				var isUserAttacking = result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer;
+				// Get puck to the battle
 				setTimeout(function () {
-					// Get puck to the battle
 					if (battle.Type == "Shot") {
-						if (result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer) {
+						if (isUserAttacking) {
 							puck.shoot("opponent");
 							if (attackerWon)
 								userScore = true;
@@ -738,22 +742,24 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 						else
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 					}
-				}, (index * 3) * delay);
+				}, (index * 2 + (index == 0 ? 0 : (index - 1)) - skippedDelays) * delay);
+				// Show battle view
 				setTimeout(function () {
-					// Show battle view
 					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0 || !result.IsHomeAttacking && battle.HomePlayers.length == 0)) {
 						play.showBattleView(battle);
+					} else {
+						skippedDelays += 2;
 					}
-				}, (index * 3 + (index == 0 ? 0 : 1)) * delay);
+				}, (index * 3 - skippedDelays) * delay);
 				// Check if attack continues
-				if (result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal)) {// attacker lost
+				if (!attackerWon) {
 					setTimeout(function () {
 						layout.clearGameboardTactic();
-					}, ((index + 1) * 3) * delay);
+					}, ((index + 1) * 3 - skippedDelays) * delay);
 					cont = false;
 					return cont;
 				}
-				// Player movement... TODO: Fix rotated view!
+				// Player movement
 				setTimeout(function () {
 					$.each(result.Card.Movements, function (index, movement) {
 						if (index != (result.Battles.length - 1) && battle.Area.X == movement.Start.X && battle.Area.Y == movement.Start.Y) {
@@ -781,17 +787,31 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 									square += "D";
 									break;
 							}
+							var playerCard = null;
 							if (result.isHomeAttacking) {
-								var playerCard = players.find(battle.HomePlayers[0].Id);
-								playerCard.setLocation($(square));
+								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
-								var playerCard = players.find(battle.AwayPlayers[0].Id);
-								playerCard.setLocation($(square));
+								playerCard = players.find(battle.AwayPlayers[0].Id);
+							}
+							if (playerCard != null) {
+								var squarePos = $(square).position();
+								var left = 'left';
+								var top = 'top';
+								if (isUserAttacking) {
+									left = 'right';
+									top = 'bottom';
+								}
+
+								var obj = {};
+								obj[left] = squarePos.left + $(square).width();
+								obj[top] = squarePos.top + $(square).height();
+
+								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });
 							}
 							return false;
 						}
 					});
-				}, ((index + 1) * 3) * delay);
+				}, (index * 3 + 2 - skippedDelays) * delay);
 			});
 			//			if (!cont)
 			//				return false;
@@ -802,7 +822,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					play.addGoal("opponent");
 				else if (userScore)
 					play.addGoal("player");
-			}, result.Battles.length * 3 * delay);
+			}, ((result.Battles.length - 1) * 3 + 2 - skippedDelays) * delay);
 		},
 		addGoal: function (user) {
 			var scoreDiv = $("#" + user + "Goals");
@@ -958,6 +978,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 			layout.setCardSizes();
 			$("#gameBoardFaceOff").droppable({
+				activeClass: "gameSquareActive",
+				hoverClass: "gameSquareHover",
 				accept: function (draggable) {
 					return draggable.find(".playerPos").text() == "C";
 				},

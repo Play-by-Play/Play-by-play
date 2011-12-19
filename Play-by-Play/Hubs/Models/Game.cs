@@ -152,6 +152,493 @@ namespace Play_by_Play.Hubs.Models {
 				Shot = nodes.Where(x => x.X == 0 && x.Y == 2).First()
 			});
 
+			cards.Add(new TacticCard{
+				Id = 6,
+				Name = "Forward",
+				Difficulty = 3,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+				Movements = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 1
+					},
+				},
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 2
+					},
+				},
+				Shot = nodes.Where(x => x.X == 1 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 7,
+				Name = "2-on-1",
+				Difficulty = 6,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+				Movements = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 2
+					},
+				},
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 1
+					},
+				},
+				Shot = nodes.Where(x => x.X == 0 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 8,
+				Name = "Right on",
+				Difficulty = 4,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+				Movements = new List<Movement> (),
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 1
+					},
+				},
+				Shot = nodes.Where(x => x.X == 1 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 9,
+				Name = "Zig Zag",
+				Difficulty = 4,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+				Movements = new List<Movement> (),
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 3
+					},
+				},
+				Shot = nodes.Where(x => x.X == 1 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 10,
+				Name = "Give 'n go",
+				Difficulty = 6,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+				Movements = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 2
+					},
+				},
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 3
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 4
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 5
+					},
+				},
+				Shot = nodes.Where(x => x.X == 1 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 11,
+				Name = "Forsberg",
+				Difficulty = 4,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+				Movements = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 2
+					},
+				},
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 2
+					},
+				},
+				Shot = nodes.Where(x => x.X == 0 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 12,
+				Name = "Mixture",
+				Difficulty = 7,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+				Movements = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 2
+					},
+				},
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						Order = 3
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 4
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 5
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 6
+					},
+				},
+				Shot = nodes.Where(x => x.X == 0 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 13,
+				Name = "In the zone",
+				Difficulty = 6,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+				Movements = new List<Movement> (),
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 3
+					},
+				},
+				Shot = nodes.Where(x => x.X == 0 && x.Y == 1).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 14,
+				Name = "The n'd",
+				Difficulty = 5,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+				Movements = new List<Movement> (),
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 3
+					},
+				},
+				Shot = nodes.Where(x => x.X == 1 && x.Y == 1).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 15,
+				Name = "Nylander",
+				Difficulty = 7,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+				Movements = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 3
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 4
+					},
+				},
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						Order = 2
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 3
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 4
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+						Order = 5
+					},
+				},
+				Shot = nodes.Where(x => x.X == 0 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 16,
+				Name = "Sidechange",
+				Difficulty = 5,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+				Movements = new List<Movement> (),
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+						Order = 2
+					},
+				},
+				Shot = nodes.Where(x => x.X == 1 && x.Y == 0).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 17,
+				Name = "Dropzone",
+				Difficulty = 4,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+				Movements = new List<Movement> (),
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X ==1  && x.Y == 2).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 2
+					},
+				},
+				Shot = nodes.Where(x => x.X == 0 && x.Y == 1).First()
+			});
+			cards.Add(new TacticCard{
+				Id = 18,
+				Name = "Blitzkrieg",
+				Difficulty = 5,
+				Nodes = new List<Node>() {
+					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+				},
+				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+				Movements = new List<Movement> (),
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
+						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						Order = 1
+					},
+					new Movement {
+						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
+						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+						Order = 2
+					},
+				},
+				Shot = nodes.Where(x => x.X == 0 && x.Y == 1).First()
+			});
+
+
 			return cards;
 		}
 
