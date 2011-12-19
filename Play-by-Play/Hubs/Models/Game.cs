@@ -15,17 +15,7 @@ namespace Play_by_Play.Hubs.Models {
 		public bool IsFaceOff { get; private set; }
 		public int Period { get; private set; }
 		public int Turn { get; private set; }
-		private TacticCard _currentTactic;
-		public TacticCard CurrentTactic {
-			get { return _currentTactic; }
-			set {
-				var user = IsHomeTurn
-										? HomeUser
-										: AwayUser;
-				if (user.CurrentCards.Contains(value))
-					_currentTactic = value;
-			}
-		}
+		public TacticCard CurrentTactic { get; set; }
 		private List<TacticCard> AvailableCards { get; set; }
 
 		public bool IsFinished { get; set; }
