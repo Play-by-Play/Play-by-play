@@ -627,12 +627,12 @@ namespace Play_by_Play.Hubs.Models {
 					new Movement {
 						Start = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
 						End = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-						Order = 
+						Order = 1
 					},
 					new Movement {
 						Start = nodes.Where(x => x.X == 1 && x.Y == 1).First(),
 						End = nodes.Where(x => x.X == 0 && x.Y == 1).First(),
-						Order = 
+						Order = 2
 					},
 				},
 				Shot = nodes.Where(x => x.X == 0 && x.Y == 1).First()
