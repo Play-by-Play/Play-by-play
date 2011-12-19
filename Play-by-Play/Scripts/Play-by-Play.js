@@ -779,11 +779,18 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 									square += "D";
 									break;
 							}
+							var playerCard = null;
 							if (result.isHomeAttacking) {
-								var playerCard = players.find(battle.HomePlayers[0].Id);
-								playerCard.setLocation($(square));
+								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
-								var playerCard = players.find(battle.AwayPlayers[0].Id);
+								playerCard = players.find(battle.AwayPlayers[0].Id);
+							}
+							if (playerCard != null) {
+								var squarePos = $(square).position();
+								$("#" + playerCard.getId()).animate({
+									right: squarePos.left + $(square).width(),
+									bottom: squarePos.top + $(square).height()
+								});
 								playerCard.setLocation($(square));
 							}
 							return false;
