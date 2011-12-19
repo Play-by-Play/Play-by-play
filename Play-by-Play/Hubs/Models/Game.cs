@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -159,6 +160,7 @@ namespace Play_by_Play.Hubs.Models {
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
 				},
 				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 				Movements = new List<Movement> {
