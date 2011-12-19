@@ -36,5 +36,24 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			throw new Exception("No area with the specified name");
 		}
+
+		public bool AddHomePlayer(Player player) {
+			if (HomePlayers.Count >= 5)
+				return false;
+			HomePlayers.Add(player);
+			return true;
+		}
+
+		public bool AddAwayPlayer(Player player) {
+			if (AwayPlayers.Count >= 5)
+				return false;
+			AwayPlayers.Add(player);
+			return true;
+		}
+
+		public void Clear() {
+			HomePlayers = new List<Player>();
+			AwayPlayers = new List<Player>();
+		}
 	}
 }

@@ -34,7 +34,7 @@ namespace Play_by_Play.Hubs {
 					ClientId = Context.ClientId
 				};
 
-				users[Context.ClientId] = user;
+				users.Add(Context.ClientId, user);
 
 				Caller.Name = user.Name;
 				Caller.Id = user.Id;
@@ -74,6 +74,10 @@ namespace Play_by_Play.Hubs {
 			var user = users.FirstOrDefault(x => x.Key.Equals(Context.ClientId)).Value;
 
 			game.AwayUser = user;
+
+			user.Oppenent = game.HomeUser;
+			game.HomeUser.Oppenent = user;
+
 			game.Start();
 
 			Caller.gameId = game.Id;
@@ -85,7 +89,7 @@ namespace Play_by_Play.Hubs {
 			Clients.removeGame(game.Id);
 		}
 
-		public void GetTacticCards(int amount) {
+		public void GetTacticCards() {
 			var user = GetUser();
 			var tactics = user.CurrentCards;
 			Caller.createTacticCards(tactics);
@@ -101,14 +105,13 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void PlacePlayer(int playerId, string areaName) {
-			var userId = Context.ClientId;
-			var user = users.FirstOrDefault(x => x.Key == userId).Value;
-			if (user == null)
-				throw new Exception("User does not exist");
-			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var game = GetGame();
 			var coords = GameArea.GetCoords(areaName);
 			var oppositeX = 1 - coords[0];
 			var oppositeY = 3 - coords[1];
+			var user = GetUser();
+			if (user == null)
+				throw new Exception("User does not exist");
 			var isHome = user == game.HomeUser;
 			var opponentId = isHome
 												? game.AwayUser.ClientId
@@ -279,7 +282,7 @@ namespace Play_by_Play.Hubs {
 
 		private Game GetGame() {
 			var user = GetUser();
-			return games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			return games.Values.FirstOrDefault(z => z.AwayUser == user || z.HomeUser == user);
 		}
 
 		private string GetMD5Hash(string username) {
