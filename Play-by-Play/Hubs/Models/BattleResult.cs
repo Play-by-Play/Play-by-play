@@ -4,15 +4,26 @@ using System.Linq;
 
 namespace Play_by_Play.Hubs.Models {
 	public class BattleResult {
+		private RandomGenerator _generator;
 		private BattleResult() {}
-		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack) {
+
+		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack)
+			: this(homePlayers, awayPlayers, type, homeAttack, new RandomGenerator()){}
+		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack, RandomGenerator generator) {
 			HomePlayers = homePlayers;
 			AwayPlayers = awayPlayers;
 			Type = type;
 			IsHomeAttacking = homeAttack;
-
-			Execute();
-			IsHomeWinner = IsHomeWinning();
+			_generator = generator;
+			var succeeded = true;
+			do {
+				Execute();
+				try {
+					IsHomeWinner = IsHomeWinning();
+				} catch(Exception) {
+					succeeded = false;
+				}
+			} while (!succeeded);
 		}
 
 		public List<Player> HomePlayers { get; set; }
@@ -24,30 +35,38 @@ namespace Play_by_Play.Hubs.Models {
 		public bool IsHomeWinner { get; private set; }
 		public GameArea Area { get; set; }
 		public string Type { get; set; }
+		public int HomePlayersTotal { get { return TotalAttributes(HomePlayers, IsHomeAttacking); } }
+		public int AwayPlayersTotal { get { return TotalAttributes(AwayPlayers, !IsHomeAttacking); } }
 
 		public int HomeTotal { 
 			get {
-				return HomeModifier != 1
-				       	? TotalAttributes(HomePlayers) + HomeModifier
+				var totalAttributes = TotalAttributes(HomePlayers, IsHomeAttacking);
+				return HomeModifier != 1 && totalAttributes != 0
+				       	? totalAttributes + HomeModifier
 				       	: 0;
 			}
 		}
 		public int AwayTotal {
 			get {
-				return AwayModifier != 1
-				       	? TotalAttributes(AwayPlayers) + AwayModifier
+				var totalAttributes = TotalAttributes(AwayPlayers, !IsHomeAttacking);
+				return AwayModifier != 1 && totalAttributes != 0
+				       	? totalAttributes + AwayModifier
 				       	: 0;
 			}
 		}
 
-		private int TotalAttributes(IEnumerable<Player> players) {
+		public bool Success {
+			get { return (IsHomeAttacking && IsHomeWinner) || (!IsHomeAttacking && !IsHomeWinner); }
+		}
+
+		private int TotalAttributes(IEnumerable<Player> players, bool isAttacking) {
 			var sum = 0;
 			if (Type.Equals(BattleType.FaceOff)) {
 				sum = players.Sum(x => x.Offense);
 			} else if (Type.Equals(BattleType.Scramble) || Type.Equals(BattleType.Pass)) {
-				sum = players.Sum(x => IsHomeAttacking ? x.Offense : x.Defense);
+				sum = players.Sum(x => isAttacking ? x.Offense : x.Defense);
 			} else if (Type.Equals(BattleType.Shot)) {
-				sum = IsHomePlayer
+				sum = isAttacking
 				      	? (IsHomeAttacking
 				      	   	? players.Sum(x => x.Offense)
 				      	   	: players.Sum(x => x.Defense))
@@ -60,9 +79,8 @@ namespace Play_by_Play.Hubs.Models {
 		}
 
 		private void Execute() {
-			var rnd = new Random();
-			var homeModifier = rnd.Next(1, 6);
-			var awayModifier = rnd.Next(1, 6);
+			var homeModifier = _generator.Next(1, 6);
+			var awayModifier = _generator.Next(1, 6);
 
 			HomeModifier = homeModifier;
 			AwayModifier = awayModifier;
@@ -99,14 +117,20 @@ namespace Play_by_Play.Hubs.Models {
 				return HomeTotal > AwayTotal;
 
 			// Face-off is tied
-			var homeAttributes = TotalAttributes(HomePlayers);
-			var awayAttributes = TotalAttributes(AwayPlayers);
+			var homeAttributes = TotalAttributes(HomePlayers, IsHomeAttacking);
+			var awayAttributes = TotalAttributes(AwayPlayers, !IsHomeAttacking);
 			if (homeAttributes == awayAttributes) {
 				// Same attribute total, execute faceoff again
-				Execute();
-				return IsHomeWinning();
+				throw new Exception();
 			}
 			return homeAttributes > awayAttributes;
+		}
+	}
+
+	public class RandomGenerator {
+		private static readonly Random Rnd = new Random();
+		public int Next(int min, int max) {
+			return Rnd.Next(min, max);
 		}
 	}
 }

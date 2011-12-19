@@ -1,6 +1,7 @@
 /// <reference path="underscore.js" />
 /// <reference path="jquery-1.7-vsdoc.js" />
 /// <reference path="jquery-ui-1.8.16.js" />
+/// <reference path="~/Scripts/GameConnection.js" />
 
 
 window.PlayByPlay = window.PlayByPlay || (function ($, _) {
@@ -663,7 +664,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".gameSquare").droppable({ disabled: false });
 		},
 		enablePlayers: function (tab) {
-			$(tab).find(".card").draggable("enable");
+			$('#' + tab).find(".card").draggable("enable");
 		},
 		enableAllPlyers: function () {
 			$('#playerBench').find('.card').draggable("enable");
@@ -735,10 +736,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 				// TODO: player movement...
 			});
-			if (!cont)
-				return false;
+//			if (!cont)
+//				return false;
 			setTimeout(function () {
 				layout.clearGameboardTactic();
+				window.connection.nextTurn();
 			}, result.Battles.length * 3 * delay);
 		},
 		addGoal: function (user) {
@@ -756,7 +758,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		enableTacticCards: function () {
 			layout.clearGameboardTactic();
 			$('.tacticCard').each(function () {
-				$(this).css({ opacity: 0.5 });
+				$(this).css({ opacity: 1 });
 			});
 			layout.tacticCardsEnabled = true;
 		},
@@ -908,7 +910,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 					}).fail(function (error) {
 						console.warn(error);
-						layout.rerender();
 					});
 					// Resize and move card
 					cardDiv.removeClass("benched");
@@ -930,14 +931,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		players: players,
 		Bonus: Bonus,
 		debug: debug,
-		puck: puck
+		puck: puck,
+		setTacticsEnabled: function (isTurn) {
+			if (isTurn === true) {
+				play.enableTacticCards();
+			} else {
+				play.disableTacticCards();
+			}
+		}
 	};
 	//#endregion
 
 	//#region Layout
 	var layout = {
 		init: function () {
-			layout.tacticCardsEnabled = true;
+			play.disableTacticCards();
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
@@ -1007,9 +1015,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			context.clearRect(0, 0, width, height);
 
 			// Set margin for the container of game squares
-//			var squares = $('#gameBoardBackgroundLayer');
-//			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
-			
+			//			var squares = $('#gameBoardBackgroundLayer');
+			//			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
+
 			// draw ice rink
 			context.beginPath();
 			context.arc(left + width / 5, top + height / 8, width / 5, -Math.PI / 2, Math.PI, true);
