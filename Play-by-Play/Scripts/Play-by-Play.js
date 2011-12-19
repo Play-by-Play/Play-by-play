@@ -677,10 +677,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".gameSquare").droppable({ disabled: false });
 		},
 		enablePlayers: function (tab) {
-			$('#' + tab).find(".card").draggable("enable");
+			$('#' + tab).find(".card").draggable("enable").css({ opacity: 1 });
 		},
 		enableAllPlyers: function () {
-			$('#playerBench').find('.card').draggable("enable");
+			$('#playerBench').find('.card').draggable("enable").css({ opacity: 1 });
 		},
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
@@ -977,11 +977,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 			layout.setCardSizes();
 			$("#gameBoardFaceOff").droppable({
-				activeClass: "gameSquareActive",
-				hoverClass: "gameSquareHover",
 				accept: function (draggable) {
 					return draggable.find(".playerPos").text() == "C";
 				},
+				activeClass: "gameSquareActive",
+				hoverClass: "gameSquareHover",
 				drop: function (event, ui) {
 					// Get hold of the card div
 					var cardDiv = ui.draggable;
