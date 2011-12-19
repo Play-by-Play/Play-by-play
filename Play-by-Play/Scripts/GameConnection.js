@@ -1,5 +1,6 @@
 ﻿window.connection = window.connection || (function () {
 	var userInfo = {};
+	var nextTurnActions = [];
 
 	var connection = $.connection.game;
 	// Server connectivity    
@@ -49,14 +50,14 @@
 	};
 
 	connection.newPeriod = function () {
-		PlayByPlay.restorePlayers();
-		connection.getTacticCards();
-		PlayByPlay.showFaceoff();
+		nextTurnActions.push(function () {
+			PlayByPlay.restorePlayers();
+			connection.getTacticCards();
+			PlayByPlay.showFaceoff();
+		});
 	};
 
 	connection.substitution = function () {
-		PlayByPlay.restorePlayers();
-
 		var activeLine = $('#playerBench').data('active-line');
 		var nextLine = 'line' + (1 + (+activeLine.substr(4, 1) % 2));
 		var tabIds = [];
@@ -64,6 +65,10 @@
 
 		var lineIndex = $.inArray(nextLine, tabIds);
 		$('#playerBench').tabs('select', lineIndex);
+
+		nextTurnActions.push(function () {
+			PlayByPlay.restorePlayers();
+		});
 
 		window.PlayByPlay.disablePlayers(activeLine);
 		window.PlayByPlay.enablePlayers(nextLine);
@@ -106,6 +111,7 @@
 
 		PlayByPlay.hideFaceoff();
 		PlayByPlay.showBattleView(result);
+		connection.nextTurn();
 	};
 
 	connection.tacticResult = function (result) {
@@ -123,7 +129,23 @@
 	};
 
 	connection.setTurn = function (isTurn) {
-		window.PlayByPlay.setTacticsEnabled(isTurn);
+		nextTurnActions.push(function () {
+			window.PlayByPlay.setTacticsEnabled(isTurn);
+		});
+	};
+
+	connection.nextTurn = function () {
+		var actions = nextTurnActions;
+		_.each(actions, function (action) {
+			if (typeof action === 'function')
+				action();
+			else {
+				var func = action[0];
+				var parameters = _.without(action, func);
+				func.apply(this, parameters);
+			}
+			nextTurnActions = _.without(nextTurnActions, action);
+		});
 	};
 
 	return connection;

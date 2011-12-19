@@ -1,6 +1,7 @@
 /// <reference path="underscore.js" />
 /// <reference path="jquery-1.7-vsdoc.js" />
 /// <reference path="jquery-ui-1.8.16.js" />
+/// <reference path="~/Scripts/GameConnection.js" />
 
 
 window.PlayByPlay = window.PlayByPlay || (function ($, _) {
@@ -735,10 +736,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 				// TODO: player movement...
 			});
-			if (!cont)
-				return false;
+//			if (!cont)
+//				return false;
 			setTimeout(function () {
 				layout.clearGameboardTactic();
+				window.connection.nextTurn();
 			}, result.Battles.length * 3 * delay);
 		},
 		addGoal: function (user) {

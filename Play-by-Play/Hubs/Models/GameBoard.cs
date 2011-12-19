@@ -20,7 +20,7 @@ namespace Play_by_Play.Hubs.Models {
 
 		public IEnumerable<Player> AwayPlayers {
 			get {
-				return Areas.SelectMany(area => area.HomePlayers);
+				return Areas.SelectMany(area => area.AwayPlayers);
 			}
 		}
 
@@ -46,9 +46,9 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			var area = GetArea(x, y);
 			if(isHome)
-				area.HomePlayers.Add(player);
+				area.AddHomePlayer(player);
 			else
-				area.AwayPlayers.Add(player);
+				area.AddAwayPlayer(player);
 		}
 
 		public GameArea GetArea(int x, int y) {
@@ -127,8 +127,7 @@ namespace Play_by_Play.Hubs.Models {
 
 		public void ClearBoard() {
 			foreach (var area in Areas) {
-				area.HomePlayers.Clear();
-				area.AwayPlayers.Clear();
+				area.Clear();
 			}
 
 			

@@ -433,6 +433,7 @@ namespace Play_by_Play.Hubs.Models {
 									? HomeUser
 									: AwayUser;
 			user.UseTactic(CurrentTactic);
+			CurrentTactic = null;
 
 			ChangeTurn();
 
@@ -482,6 +483,12 @@ namespace Play_by_Play.Hubs.Models {
 			// Call clients
 			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod();
 			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod();
+
+			// Initialize events if start of game
+			if(Period == 1) {
+				Hub.GetClients<GameConnection>()[HomeUser.ClientId].nextTurn();
+				Hub.GetClients<GameConnection>()[AwayUser.ClientId].nextTurn();
+			}
 
 		}
 	}
