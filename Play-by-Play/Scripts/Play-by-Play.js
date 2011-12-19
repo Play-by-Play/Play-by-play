@@ -719,6 +719,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var cont = true;
 			var userScore = false;
 			var oppScore = false;
+			var skippedDelays = 0;
 			$.each(result.Battles, function (index, battle) {
 				var attackerWon = (result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal));
 				var isUserAttacking = result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer;
@@ -740,18 +741,20 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 						else
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 					}
-				}, (index * 2 + (index == 0 ? 0 : (index - 1))) * delay);
+				}, (index * 2 + (index == 0 ? 0 : (index - 1)) - skippedDelays) * delay);
 				// Show battle view
 				setTimeout(function () {
 					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0 || !result.IsHomeAttacking && battle.HomePlayers.length == 0)) {
 						play.showBattleView(battle);
+					} else {
+						skippedDelays += 2;
 					}
-				}, (index * 3) * delay);
+				}, (index * 3 - skippedDelays) * delay);
 				// Check if attack continues
 				if (!attackerWon) {
 					setTimeout(function () {
 						layout.clearGameboardTactic();
-					}, ((index + 1) * 3) * delay);
+					}, ((index + 1) * 3 - skippedDelays) * delay);
 					cont = false;
 					return cont;
 				}
@@ -807,7 +810,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 							return false;
 						}
 					});
-				}, (index * 3 + 2) * delay);
+				}, (index * 3 + 2 - skippedDelays) * delay);
 			});
 			//			if (!cont)
 			//				return false;
@@ -818,7 +821,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					play.addGoal("opponent");
 				else if (userScore)
 					play.addGoal("player");
-			}, ((result.Battles.length - 1) * 3 + 2) * delay);
+			}, ((result.Battles.length - 1) * 3 + 2 - skippedDelays) * delay);
 		},
 		addGoal: function (user) {
 			var scoreDiv = $("#" + user + "Goals");
