@@ -567,6 +567,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			oppDiv.empty();
 			oppDiv.append($("<h1>").text("Opponent"));
 
+			var hasUserWon = result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal;
+
 			// Determine if current user is home or away team
 			if (result.IsHomePlayer) {
 				var homeDiv = userDiv;
@@ -603,7 +605,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Add result text
 			var span = $("<span>");
 			// Check if current user won the battle
-			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (hasUserWon) {
 				span.text("You won!");
 			} else {
 				span.text("Your opponent won...");
@@ -622,11 +624,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var height = baseHeight * width / baseWidth;
 
 			// Set position on puck
+			puck.removeAttr('style');
 			puck.position({
 				of: $("#battleAnim"),
 				my: 'center center',
-				at: 'center center',
-				offset: '0'
+				at: 'center center'
 			});
 
 			// Open battle view
@@ -643,12 +645,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 
 			// Animate battle
-			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (hasUserWon) {
 				var anim = '-';
 			} else {
 				var anim = '+';
 			}
-			$("#battlePuck").animate({
+			puck.animate({
 				left: anim + (width / 2 - 0.1 * width)
 			}, delay);
 			// Show results
@@ -683,13 +685,13 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
 											 .find(".card")
-											 .draggable("disable")/*.css({ opacity: 1 })*/;
+											 .draggable("disable").css({ opacity: 0.75 });
 		},
 		disablePlayersExceptOn: function (tab) {
 			$('#playerBench').find('.tab')
 											 .not('#' + tab)
 											 .find(".card")
-											 .draggable("disable")/*.css({ opacity: 1 })*/;
+											 .draggable("disable").css({ opacity: 0.75 });
 		},
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
@@ -720,8 +722,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$.each(result.Battles, function (index, battle) {
 				var attackerWon = (result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal));
 				var isUserAttacking = result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer;
+				// Get puck to the battle
 				setTimeout(function () {
-					// Get puck to the battle
 					if (battle.Type == "Shot") {
 						if (isUserAttacking) {
 							puck.shoot("opponent");
@@ -738,13 +740,13 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 						else
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 					}
-				}, (index * 3) * delay);
+				}, (index * 2 + (index == 0 ? 0 : (index - 1))) * delay);
+				// Show battle view
 				setTimeout(function () {
-					// Show battle view
 					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0 || !result.IsHomeAttacking && battle.HomePlayers.length == 0)) {
 						play.showBattleView(battle);
 					}
-				}, (index * 3 + (index == 0 ? 0 : 1)) * delay);
+				}, (index * 3) * delay);
 				// Check if attack continues
 				if (!attackerWon) {
 					setTimeout(function () {
@@ -805,7 +807,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 							return false;
 						}
 					});
-				}, ((index + 1) * 3) * delay);
+				}, (index * 3 + 2) * delay);
 			});
 			//			if (!cont)
 			//				return false;
@@ -816,7 +818,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					play.addGoal("opponent");
 				else if (userScore)
 					play.addGoal("player");
-			}, result.Battles.length * 3 * delay);
+			}, ((result.Battles.length - 1) * 3 + 2) * delay);
 		},
 		addGoal: function (user) {
 			var scoreDiv = $("#" + user + "Goals");
