@@ -719,10 +719,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var oppScore = false;
 			$.each(result.Battles, function (index, battle) {
 				var attackerWon = (result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal));
+				var isUserAttacking = result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer;
 				setTimeout(function () {
 					// Get puck to the battle
 					if (battle.Type == "Shot") {
-						if (result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer) {
+						if (isUserAttacking) {
 							puck.shoot("opponent");
 							if (attackerWon)
 								userScore = true;
@@ -745,14 +746,14 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					}
 				}, (index * 3 + (index == 0 ? 0 : 1)) * delay);
 				// Check if attack continues
-				if (result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal)) {// attacker lost
+				if (!attackerWon) {
 					setTimeout(function () {
 						layout.clearGameboardTactic();
 					}, ((index + 1) * 3) * delay);
 					cont = false;
 					return cont;
 				}
-				// Player movement... TODO: Fix rotated view!
+				// Player movement
 				setTimeout(function () {
 					$.each(result.Card.Movements, function (index, movement) {
 						if (index != (result.Battles.length - 1) && battle.Area.X == movement.Start.X && battle.Area.Y == movement.Start.Y) {
@@ -780,20 +781,34 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 									square += "D";
 									break;
 							}
+							var playerCard = null;
 							if (result.isHomeAttacking) {
-								var playerCard = players.find(battle.HomePlayers[0].Id);
-								playerCard.setLocation($(square));
+								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
-								var playerCard = players.find(battle.AwayPlayers[0].Id);
-								playerCard.setLocation($(square));
+								playerCard = players.find(battle.AwayPlayers[0].Id);
+							}
+							if (playerCard != null) {
+								var squarePos = $(square).position();
+								var left = 'left';
+								var top = 'top';
+								if (isUserAttacking) {
+									left = 'right';
+									top = 'bottom';
+								}
+
+								var obj = {};
+								obj[left] = squarePos.left + $(square).width();
+								obj[top] = squarePos.top + $(square).height();
+
+								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });
 							}
 							return false;
 						}
 					});
 				}, ((index + 1) * 3) * delay);
 			});
-//			if (!cont)
-//				return false;
+			//			if (!cont)
+			//				return false;
 			setTimeout(function () {
 				layout.clearGameboardTactic();
 				window.connection.nextTurn();
