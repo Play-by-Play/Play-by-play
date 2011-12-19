@@ -123,9 +123,11 @@
       <DependentUpon>T4MVC.tt</DependentUpon>
     </Compile>
     <Compile Include="Hubs\Models\BattleResult.cs" />
+    <Compile Include="Hubs\Models\BattleType.cs" />
     <Compile Include="Hubs\Models\Formation.cs" />
     <Compile Include="Hubs\Models\GameArea.cs" />
     <Compile Include="Hubs\Models\GameBoard.cs" />
+    <Compile Include="Hubs\Models\GameScore.cs" />
     <Compile Include="Hubs\Models\GameUser.cs" />
     <Compile Include="Hubs\Models\Game.cs" />
     <Compile Include="Hubs\GameConnection.cs" />

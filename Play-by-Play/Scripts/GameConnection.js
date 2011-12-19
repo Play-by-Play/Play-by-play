@@ -1,5 +1,6 @@
 ﻿window.connection = window.connection || (function () {
 	var userInfo = {};
+	var nextTurnActions = [];
 
 	var connection = $.connection.game;
 	// Server connectivity    
@@ -15,7 +16,7 @@
 	connection.addChatMessage = function (name, message) {
 		var data = { name: name, message: message };
 		$('#chatMessageTemplate').tmpl(data).appendTo('#chatMessages > .content');
-		$('#chatMessages').nanoScroller({scroll: 'bottom'});
+		$('#chatMessages').nanoScroller({ scroll: 'bottom' });
 	};
 
 	connection.addActionMessage = function (message, type) {
@@ -46,8 +47,31 @@
 		window.Game = game;
 		PlayByPlay.lobby.closeLobby();
 		connection.getPlayers();
-		connection.getTacticCards(5);
-		PlayByPlay.showFaceoff();
+	};
+
+	connection.newPeriod = function () {
+		nextTurnActions.push(function () {
+			PlayByPlay.restorePlayers();
+			connection.getTacticCards();
+			PlayByPlay.showFaceoff();
+		});
+	};
+
+	connection.substitution = function () {
+		var activeLine = $('#playerBench').data('active-line');
+		var nextLine = 'line' + (1 + (+activeLine.substr(4, 1) % 2));
+		var tabIds = [];
+		$('#playerBench').children('div').each(function () { tabIds.push(this.id); });
+
+		var lineIndex = $.inArray(nextLine, tabIds);
+		$('#playerBench').tabs('select', lineIndex);
+
+		nextTurnActions.push(function () {
+			PlayByPlay.restorePlayers();
+		});
+
+		window.PlayByPlay.disablePlayers(activeLine);
+		window.PlayByPlay.enablePlayers(nextLine);
 	};
 
 	connection.createTacticCards = function (cards) {
@@ -75,10 +99,19 @@
 			activeLine = window.PlayByPlay.players.find(result.AwayPlayers[0].Id).getLine();
 		}
 
+		var tabIds = [];
+		$('#playerBench').children('div').each(function () { tabIds.push(this.id); });
+
+		var lineIndex = $.inArray(activeLine, tabIds);
+		$('#playerBench').tabs('select', lineIndex);
+
+		$('#playerBench').data('active-line', activeLine);
+
 		window.PlayByPlay.disablePlayersExceptOn(activeLine);
 
 		PlayByPlay.hideFaceoff();
 		PlayByPlay.showBattleView(result);
+		connection.nextTurn();
 	};
 
 	connection.tacticResult = function (result) {
@@ -93,6 +126,26 @@
 
 	connection.removeGame = function (gameId) {
 		$('.lobby-game[data-game-id=' + gameId + ']').remove();
+	};
+
+	connection.setTurn = function (isTurn) {
+		nextTurnActions.push(function () {
+			window.PlayByPlay.setTacticsEnabled(isTurn);
+		});
+	};
+
+	connection.nextTurn = function () {
+		var actions = nextTurnActions;
+		_.each(actions, function (action) {
+			if (typeof action === 'function')
+				action();
+			else {
+				var func = action[0];
+				var parameters = _.without(action, func);
+				func.apply(this, parameters);
+			}
+			nextTurnActions = _.without(nextTurnActions, action);
+		});
 	};
 
 	return connection;
