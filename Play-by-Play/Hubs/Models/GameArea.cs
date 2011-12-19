@@ -40,12 +40,16 @@ namespace Play_by_Play.Hubs.Models {
 		public bool AddHomePlayer(Player player) {
 			if (HomePlayers.Count >= 5)
 				return false;
+			if (HomePlayers.Contains(player))
+				return false;
 			HomePlayers.Add(player);
 			return true;
 		}
 
 		public bool AddAwayPlayer(Player player) {
 			if (AwayPlayers.Count >= 5)
+				return false;
+			if (AwayPlayers.Contains(player))
 				return false;
 			AwayPlayers.Add(player);
 			return true;

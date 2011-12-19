@@ -143,10 +143,10 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void PlaceGoalkeeper(int playerId) {
-			var user = users[Context.ClientId];
+			var user = GetUser();
 			if (user == null)
 				throw new Exception("User does not exist");
-			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var game = GetGame();
 			var isHome = user == game.HomeUser;
 			
 			var goalie = user.Team.Goalies.SingleOrDefault(g => g.Id == playerId);

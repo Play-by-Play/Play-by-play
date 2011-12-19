@@ -18,7 +18,7 @@ namespace Play_by_Play.Tests.UnitTests {
 		}
 
 		[Fact]
-		public void OffensiveEqualsOffensivePlayerAttribute() {
+		public void OffensiveEqualsOffensivePlayerAttributeWhenHomeTeamAttacks() {
 			var homePlayers = GetPlayers(1);
 			var awayPlayers = GetPlayers(1);
 			
@@ -28,7 +28,7 @@ namespace Play_by_Play.Tests.UnitTests {
 		}
 
 		[Fact]
-		public void DefensiveEqualsDefensivePlayerAttribute() {
+		public void DefensiveEqualsDefensivePlayerAttributeWhenHomeTeamAttacks() {
 			var homePlayers = GetPlayers(1);
 			var awayPlayers = GetPlayers(1);
 
@@ -38,7 +38,7 @@ namespace Play_by_Play.Tests.UnitTests {
 		}
 
 		[Fact]
-		public void OffensiveEqualsAllOffensivePlayersAttribute() {
+		public void OffensiveEqualsAllOffensivePlayersAttributeWhenHomeTeamAttacks() {
 			var homePlayers = GetPlayers(2);
 			var awayPlayers = GetPlayers(1);
 
@@ -48,13 +48,64 @@ namespace Play_by_Play.Tests.UnitTests {
 		}
 
 		[Fact]
-		public void DefensiveEqualsAllDefensivePlayersAttribute() {
+		public void DefensiveEqualsAllDefensivePlayersAttributeWhenHomeTeamAttacks() {
 			var homePlayers = GetPlayers(1);
 			var awayPlayers = GetPlayers(2);
 
 			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, true);
 
 			result.AwayPlayersTotal.ShouldEqual(2 * 2);
+		}
+
+		[Fact]
+		public void OffensiveEqualsOffensivePlayerAttributeWhenAwayTeamAttacks() {
+			var homePlayers = GetPlayers(1);
+			var awayPlayers = GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false);
+
+			result.AwayPlayersTotal.ShouldEqual(3);
+		}
+
+		[Fact]
+		public void DefensiveEqualsDefensivePlayerAttributeWhenAwayTeamAttacks() {
+			var homePlayers = GetPlayers(1);
+			var awayPlayers = GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false);
+
+			result.HomePlayersTotal.ShouldEqual(2);
+		}
+
+		[Fact]
+		public void OffensiveEqualsAllOffensivePlayersAttributeWhenAwayTeamAttacks() {
+			var homePlayers = GetPlayers(1);
+			var awayPlayers = GetPlayers(2);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false);
+
+			result.AwayPlayersTotal.ShouldEqual(3 * 2);
+		}
+
+		[Fact]
+		public void DefensiveEqualsAllDefensivePlayersAttributeWhenAwayTeamAttacks() {
+			var homePlayers = GetPlayers(2);
+			var awayPlayers = GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false);
+
+			result.HomePlayersTotal.ShouldEqual(2 * 2);
+		}
+
+		[Fact]
+		public void GetHomeResultHasCorrextValues() {
+			var homePlayers = GetPlayers(2);
+			var awayPlayers = GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false).GetHomeResult();
+
+			result.HomePlayersTotal.ShouldEqual(2 * 2);
+			result.IsHomeAttacking.ShouldBeTrue();
 		}
 
 		private static List<Player> GetPlayers(int nr) {
