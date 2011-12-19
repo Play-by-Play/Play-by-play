@@ -42,7 +42,7 @@ namespace Play_by_Play.Hubs.Models {
 			get {
 				var totalAttributes = TotalAttributes(HomePlayers, IsHomeAttacking);
 				return HomeModifier != 1 && totalAttributes != 0
-				       	? totalAttributes + HomeModifier
+					? totalAttributes + HomeModifier + (IsHomeWinner ? 1 : 0)
 				       	: 0;
 			}
 		}
@@ -50,7 +50,7 @@ namespace Play_by_Play.Hubs.Models {
 			get {
 				var totalAttributes = TotalAttributes(AwayPlayers, !IsHomeAttacking);
 				return AwayModifier != 1 && totalAttributes != 0
-				       	? totalAttributes + AwayModifier
+								? totalAttributes + AwayModifier + (!IsHomeWinner ? 1 : 0)
 				       	: 0;
 			}
 		}

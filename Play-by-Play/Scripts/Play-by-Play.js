@@ -395,6 +395,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	};
 	var play = {
 		addTacticCards: function (cards) {
+			$('#tacticCards').empty();
 			_.each(cards, function (card) {
 				card = convertTacticCard(card);
 				play.addTacticCard(card.Id, card.Name, card.Difficulty, { startNode: card.startNode, nodes: card.nodes, movementNode: card.movementNodes, passes: card.passes, movingPass: card.movingPass, shot: card.shot });
@@ -736,8 +737,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 				// TODO: player movement...
 			});
-//			if (!cont)
-//				return false;
+			//			if (!cont)
+			//				return false;
 			setTimeout(function () {
 				layout.clearGameboardTactic();
 				window.connection.nextTurn();
