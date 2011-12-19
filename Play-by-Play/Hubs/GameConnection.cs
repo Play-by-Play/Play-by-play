@@ -229,6 +229,7 @@ namespace Play_by_Play.Hubs {
 
 		public void PlayTactic(int id) {
 			var game = GetGame();
+			
 			var isHomeUser = GetUser() == game.HomeUser;
 
 			var tacticList = isHomeUser

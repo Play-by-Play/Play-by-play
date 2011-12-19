@@ -155,13 +155,13 @@ namespace Play_by_Play.Hubs.Models {
 			return cards;
 		}
 
-		public List<TacticCard> GenerateTactics(int amount) {
+		public List<TacticCard> GenerateTactics(int amount, GameUser user) {
 			var list = new List<TacticCard>(amount);
-			var available = AvailableCards.ToList();
+			var available = AvailableCards.Except(user.CurrentCards).ToList();
 
 			var rnd = new Random();
 
-			for (var i = 0; i < amount; i++) {
+			for (var i = 0; i < amount && available.Count > 0; i++) {
 				var nrAvailable = available.Count;
 				var choosen = rnd.Next(nrAvailable);
 				var card = available.ElementAt(choosen);
@@ -425,6 +425,15 @@ namespace Play_by_Play.Hubs.Models {
 			user.UseTactic(CurrentTactic);
 			CurrentTactic = null;
 
+			// Update score
+			if (tacticResult.Battles.Last().Success) {
+				if (IsHomeTurn)
+					Score.HomeGoal();
+				else {
+					Score.AwayGoal();
+				}
+			}
+
 			ChangeTurn();
 
 			return tacticResult;
@@ -467,8 +476,8 @@ namespace Play_by_Play.Hubs.Models {
 			Turn = 1;
 
 			// Send new cards
-			HomeUser.AddTactics(GenerateTactics(5 - HomeUser.CurrentCards.Count));
-			AwayUser.AddTactics(GenerateTactics(5 - AwayUser.CurrentCards.Count));
+			HomeUser.AddTactics(GenerateTactics(5 - HomeUser.CurrentCards.Count, HomeUser));
+			AwayUser.AddTactics(GenerateTactics(5 - AwayUser.CurrentCards.Count, AwayUser));
 
 			// Call clients
 			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod();
