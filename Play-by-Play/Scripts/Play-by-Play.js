@@ -977,6 +977,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 			layout.setCardSizes();
 			$("#gameBoardFaceOff").droppable({
+				activeClass: "gameSquareActive",
+				hoverClass: "gameSquareHover",
 				accept: function (draggable) {
 					return draggable.find(".playerPos").text() == "C";
 				},
