@@ -301,7 +301,7 @@ namespace Play_by_Play.Hubs {
 
 			var gamesToRemove = games.Values.Where(x => x.HomeUser == user || x.AwayUser == user).ToArray();
 
-			for (int i = 0; i < gamesToRemove.Count(); i++) {
+			for (var i = 0; i < gamesToRemove.Count(); i++) {
 				AbortGame(gamesToRemove[i]);
 			}
 		}
