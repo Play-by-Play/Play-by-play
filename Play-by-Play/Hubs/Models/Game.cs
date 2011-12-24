@@ -9,7 +9,12 @@ namespace Play_by_Play.Hubs.Models {
 		public string Id { get; set; }
 		public GameBoard Board { get; set; }
 		public GameScore Score { get; private set; }
-		public GameUser HomeUser { get; set; }
+		private GameUser _homeUser;
+		public GameUser HomeUser {
+			get { return _homeUser; }
+			set { _homeUser = value; }
+		}
+
 		public GameUser AwayUser { get; set; }
 		public bool IsHomeTurn { get; /*private*/ set; }
 		public bool IsFaceOff { get; private set; }
@@ -27,6 +32,343 @@ namespace Play_by_Play.Hubs.Models {
 			Score = new GameScore();
 			Period = 0;
 			AvailableCards = GenerateTacticCards();
+		}
+
+		public List<TacticCard> GenerateTactics(int amount, GameUser user) {
+			var list = new List<TacticCard>(amount);
+			var available = AvailableCards.Except(user.CurrentCards).ToList();
+
+			var rnd = new Random();
+
+			for (var i = 0; i < amount && available.Count > 0; i++) {
+				var nrAvailable = available.Count;
+				var choosen = rnd.Next(nrAvailable);
+				var card = available.ElementAt(choosen);
+				list.Add(card);
+				available.Remove(card);
+			}
+
+			//return list;
+			return list;
+		}
+
+		public void Start() {
+			# region Team Init
+			HomeUser.Team = new Team {
+				Name = "DET",
+				Color = "c00",
+				Players = new List<Player> {
+					new Player{
+						Name = "Zetterberg",
+						Offense = 5,
+						Defense = 3,
+						Position = Position.LW,
+						Formation = Formation.Line1,
+						Id = 1
+					},
+					new Player{
+						Name = "Datsyuk",
+						Offense = 4,
+						Defense = 4,
+						Position = Position.C,
+						Formation = Formation.Line1,
+						Id = 2
+					},
+					new Player{
+						Name = "Holmstrom",
+						Offense = 3,
+						Defense = 3,
+						Position = Position.RW,
+						Formation = Formation.Line1,
+						Id = 3
+					},
+					new Player{
+						Name = "Lidstrom",
+						Offense = 3,
+						Defense = 4,
+						Position = Position.LD,
+						Formation = Formation.Line1,
+						Id = 4
+					},
+					new Player{
+						Name = "Rafalski",
+						Offense = 2,
+						Defense = 4,
+						Position = Position.RD,
+						Formation = Formation.Line1,
+						Id = 5
+					},
+					new Player{
+						Name = "Cleary",
+						Offense = 4,
+						Defense = 2,
+						Position = Position.LW,
+						Formation = Formation.Line2,
+						Id = 6
+					},
+					new Player{
+						Name = "Filppula",
+						Offense = 4,
+						Defense = 2,
+						Position = Position.C,
+						Formation = Formation.Line2,
+						Id = 7
+					},
+					new Player{
+						Name = "Bertuzzi",
+						Offense = 4,
+						Defense = 3,
+						Position = Position.RW,
+						Formation = Formation.Line2,
+						Id = 8
+					},
+					new Player{
+						Name = "Kronwall",
+						Offense = 3,
+						Defense = 3,
+						Position = Position.LD,
+						Formation = Formation.Line2,
+						Id = 9
+					},
+					new Player{
+						Name = "Stuart",
+						Offense = 2,
+						Defense = 4,
+						Position = Position.RD,
+						Formation = Formation.Line2,
+						Id = 10
+					},
+					new Player{
+						Name = "Howard",
+						Offense = 3,
+						Defense = 5,
+						Position = Position.G,
+						Formation = Formation.Goalies,
+						Id = 11
+					},
+					new Player{
+						Name = "Osgood",
+						Offense = 3,
+						Defense = 4,
+						Position = Position.G,
+						Formation = Formation.Goalies,
+						Id = 12
+					}
+				}
+			};
+
+			AwayUser.Team = new Team {
+				Name = "NYR",
+				Color = "00c",
+				Players = new List<Player> {
+					new Player{
+						Name = "Dubinsky",
+						Offense = 5,
+						Defense = 2,
+						Position = Position.LW,
+						Formation = Formation.Line1,
+						Id = 13
+					},
+					new Player{
+						Name = "Drury",
+						Offense = 5,
+						Defense = 3,
+						Position = Position.C,
+						Formation = Formation.Line1,
+						Id = 14
+					},
+					new Player{
+						Name = "Gaborik",
+						Offense = 6,
+						Defense = 1,
+						Position = Position.RW,
+						Formation = Formation.Line1,
+						Id = 15
+					},
+					new Player{
+						Name = "Girardi",
+						Offense = 1,
+						Defense = 4,
+						Position = Position.LD,
+						Formation = Formation.Line1,
+						Id = 16
+					},
+					new Player{
+						Name = "Staal",
+						Offense = 3,
+						Defense = 4,
+						Position = Position.RD,
+						Formation = Formation.Line1,
+						Id = 17
+					},
+					new Player{
+						Name = "Zuccarello",
+						Offense = 4,
+						Defense = 2,
+						Position = Position.LW,
+						Formation = Formation.Line2,
+						Id = 18
+					},
+					new Player{
+						Name = "Anisimov",
+						Offense = 4,
+						Defense = 2,
+						Position = Position.C,
+						Formation = Formation.Line2,
+						Id = 19
+					},
+					new Player{
+						Name = "Callahan",
+						Offense = 4,
+						Defense = 3,
+						Position = Position.RW,
+						Formation = Formation.Line2,
+						Id = 20
+					},
+					new Player{
+						Name = "McCabe",
+						Offense = 2,
+						Defense = 4,
+						Position = Position.LD,
+						Formation = Formation.Line2,
+						Id = 21
+					},
+					new Player{
+						Name = "Del Zotto",
+						Offense = 2,
+						Defense = 3,
+						Position = Position.RD,
+						Formation = Formation.Line2,
+						Id = 22
+					},
+					new Player{
+						Name = "Lundqvist",
+						Offense = 4,
+						Defense = 4,
+						Position = Position.G,
+						Formation = Formation.Goalies,
+						Id = 23
+					},
+					new Player{
+						Name = "Biron",
+						Offense = 2,
+						Defense = 3,
+						Position = Position.G,
+						Formation = Formation.Goalies,
+						Id = 24
+					}
+				}
+			};
+			# endregion
+
+			NewPeriod();
+		}
+
+		public BattleResult ExecuteFaceOff() {
+			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff }, BattleType.FaceOff, false);
+
+			IsHomeTurn = battleResult.IsHomeWinner;
+
+			IsFaceOff = false;
+			Board.HomeFaceoff = null;
+			Board.AwayFaceoff = null;
+
+			HomeUser.SetTurn(IsHomeTurn);
+			AwayUser.SetTurn(!IsHomeTurn);
+
+			return battleResult;
+		}
+
+		public bool IsReadyForFaceoff() {
+			return Board.IsReadyForFaceoff();
+		}
+
+		public bool IsReadyForTactic() {
+			return Board.HomePlayers.Count() == 5 &&
+						 Board.AwayPlayers.Count() == 5 &&
+						 Board.HomeGoalie != null &&
+						 Board.AwayGoalie != null &&
+						 CurrentTactic != null;
+		}
+
+		public TacticResult ExecuteTactic() {
+			var tacticResult = new TacticResult {
+				Card = CurrentTactic,
+				IsHomeAttacking = IsHomeTurn,
+				Battles = Board.ExecuteTactic(CurrentTactic, IsHomeTurn)
+			};
+
+			var user = IsHomeTurn
+									? HomeUser
+									: AwayUser;
+			user.UseTactic(CurrentTactic);
+			CurrentTactic = null;
+
+			// Update score
+			if (tacticResult.Battles.Last().Success) {
+				if (IsHomeTurn)
+					Score.HomeGoal();
+				else {
+					Score.AwayGoal();
+				}
+			}
+
+			ChangeTurn();
+
+			return tacticResult;
+		}
+
+		public void SendHomeActionMessage(string message, string type) {
+			Hub.GetClients<GameConnection>()[HomeUser.ClientId].addActionMessage(message, type);
+		}
+
+		public void SendAwayActionMessage(string message, string type) {
+			Hub.GetClients<GameConnection>()[AwayUser.ClientId].addActionMessage(message, type);
+		}
+
+		/*private*/
+		public void ChangeTurn() {
+			if (Turn % 4 == 0) {
+				NewPeriod();
+				if (Period == 4)
+					IsFinished = true;
+				return;
+			}
+
+			Turn++;
+
+			if (Turn % 2 == 0)
+				IsHomeTurn = !IsHomeTurn;
+			else {
+				Board.ClearBoard();
+				Hub.GetClients<GameConnection>()[HomeUser.ClientId].substitution();
+				Hub.GetClients<GameConnection>()[AwayUser.ClientId].substitution();
+			}
+
+			HomeUser.SetTurn(IsHomeTurn);
+			AwayUser.SetTurn(!IsHomeTurn);
+		}
+
+		private void NewPeriod() {
+			IsFaceOff = true;
+			Period++;
+			Turn = 1;
+			Board.ClearBoard();
+
+			// Send new cards
+			HomeUser.AddTactics(GenerateTactics(5 - HomeUser.CurrentCards.Count, HomeUser));
+			AwayUser.AddTactics(GenerateTactics(5 - AwayUser.CurrentCards.Count, AwayUser));
+
+			// Call clients
+			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod();
+			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod();
+
+			// Initialize events if start of game
+			if(Period == 1) {
+				Hub.GetClients<GameConnection>()[HomeUser.ClientId].nextTurn();
+				Hub.GetClients<GameConnection>()[AwayUser.ClientId].nextTurn();
+			}
+
 		}
 
 		private List<TacticCard> GenerateTacticCards() {
@@ -640,342 +982,6 @@ namespace Play_by_Play.Hubs.Models {
 
 
 			return cards;
-		}
-
-		public List<TacticCard> GenerateTactics(int amount, GameUser user) {
-			var list = new List<TacticCard>(amount);
-			var available = AvailableCards.Except(user.CurrentCards).ToList();
-
-			var rnd = new Random();
-
-			for (var i = 0; i < amount && available.Count > 0; i++) {
-				var nrAvailable = available.Count;
-				var choosen = rnd.Next(nrAvailable);
-				var card = available.ElementAt(choosen);
-				list.Add(card);
-				available.Remove(card);
-			}
-
-			//return list;
-			return list;
-		}
-
-		public void Start() {
-			# region Team Init
-			HomeUser.Team = new Team {
-				Name = "DET",
-				Color = "c00",
-				Players = new List<Player> {
-					new Player{
-						Name = "Zetterberg",
-						Offense = 5,
-						Defense = 3,
-						Position = Position.LW,
-						Formation = Formation.Line1,
-						Id = 1
-					},
-					new Player{
-						Name = "Datsyuk",
-						Offense = 4,
-						Defense = 4,
-						Position = Position.C,
-						Formation = Formation.Line1,
-						Id = 2
-					},
-					new Player{
-						Name = "Holmstrom",
-						Offense = 3,
-						Defense = 3,
-						Position = Position.RW,
-						Formation = Formation.Line1,
-						Id = 3
-					},
-					new Player{
-						Name = "Lidstrom",
-						Offense = 3,
-						Defense = 4,
-						Position = Position.LD,
-						Formation = Formation.Line1,
-						Id = 4
-					},
-					new Player{
-						Name = "Rafalski",
-						Offense = 2,
-						Defense = 4,
-						Position = Position.RD,
-						Formation = Formation.Line1,
-						Id = 5
-					},
-					new Player{
-						Name = "Cleary",
-						Offense = 4,
-						Defense = 2,
-						Position = Position.LW,
-						Formation = Formation.Line2,
-						Id = 6
-					},
-					new Player{
-						Name = "Filppula",
-						Offense = 4,
-						Defense = 2,
-						Position = Position.C,
-						Formation = Formation.Line2,
-						Id = 7
-					},
-					new Player{
-						Name = "Bertuzzi",
-						Offense = 4,
-						Defense = 3,
-						Position = Position.RW,
-						Formation = Formation.Line2,
-						Id = 8
-					},
-					new Player{
-						Name = "Kronwall",
-						Offense = 3,
-						Defense = 3,
-						Position = Position.LD,
-						Formation = Formation.Line2,
-						Id = 9
-					},
-					new Player{
-						Name = "Stuart",
-						Offense = 2,
-						Defense = 4,
-						Position = Position.RD,
-						Formation = Formation.Line2,
-						Id = 10
-					},
-					new Player{
-						Name = "Howard",
-						Offense = 3,
-						Defense = 5,
-						Position = Position.G,
-						Formation = Formation.Goalies,
-						Id = 11
-					},
-					new Player{
-						Name = "Osgood",
-						Offense = 3,
-						Defense = 4,
-						Position = Position.G,
-						Formation = Formation.Goalies,
-						Id = 12
-					}
-				}
-			};
-
-			AwayUser.Team = new Team {
-				Name = "NYR",
-				Color = "00c",
-				Players = new List<Player> {
-					new Player{
-						Name = "Dubinsky",
-						Offense = 5,
-						Defense = 2,
-						Position = Position.LW,
-						Formation = Formation.Line1,
-						Id = 13
-					},
-					new Player{
-						Name = "Drury",
-						Offense = 5,
-						Defense = 3,
-						Position = Position.C,
-						Formation = Formation.Line1,
-						Id = 14
-					},
-					new Player{
-						Name = "Gaborik",
-						Offense = 6,
-						Defense = 1,
-						Position = Position.RW,
-						Formation = Formation.Line1,
-						Id = 15
-					},
-					new Player{
-						Name = "Girardi",
-						Offense = 1,
-						Defense = 4,
-						Position = Position.LD,
-						Formation = Formation.Line1,
-						Id = 16
-					},
-					new Player{
-						Name = "Staal",
-						Offense = 3,
-						Defense = 4,
-						Position = Position.RD,
-						Formation = Formation.Line1,
-						Id = 17
-					},
-					new Player{
-						Name = "Zuccarello",
-						Offense = 4,
-						Defense = 2,
-						Position = Position.LW,
-						Formation = Formation.Line2,
-						Id = 18
-					},
-					new Player{
-						Name = "Anisimov",
-						Offense = 4,
-						Defense = 2,
-						Position = Position.C,
-						Formation = Formation.Line2,
-						Id = 19
-					},
-					new Player{
-						Name = "Callahan",
-						Offense = 4,
-						Defense = 3,
-						Position = Position.RW,
-						Formation = Formation.Line2,
-						Id = 20
-					},
-					new Player{
-						Name = "McCabe",
-						Offense = 2,
-						Defense = 4,
-						Position = Position.LD,
-						Formation = Formation.Line2,
-						Id = 21
-					},
-					new Player{
-						Name = "Del Zotto",
-						Offense = 2,
-						Defense = 3,
-						Position = Position.RD,
-						Formation = Formation.Line2,
-						Id = 22
-					},
-					new Player{
-						Name = "Lundqvist",
-						Offense = 4,
-						Defense = 4,
-						Position = Position.G,
-						Formation = Formation.Goalies,
-						Id = 23
-					},
-					new Player{
-						Name = "Biron",
-						Offense = 2,
-						Defense = 3,
-						Position = Position.G,
-						Formation = Formation.Goalies,
-						Id = 24
-					}
-				}
-			};
-			# endregion
-
-			NewPeriod();
-		}
-
-		public BattleResult ExecuteFaceOff() {
-			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff }, BattleType.FaceOff, false);
-
-			IsHomeTurn = battleResult.IsHomeWinner;
-
-			IsFaceOff = false;
-			Board.HomeFaceoff = null;
-			Board.AwayFaceoff = null;
-
-			HomeUser.SetTurn(IsHomeTurn);
-			AwayUser.SetTurn(!IsHomeTurn);
-
-			return battleResult;
-		}
-
-		public bool IsReadyForFaceoff() {
-			return Board.IsReadyForFaceoff();
-		}
-
-		public bool IsReadyForTactic() {
-			return Board.HomePlayers.Count() == 5 &&
-						 Board.AwayPlayers.Count() == 5 &&
-						 Board.HomeGoalie != null &&
-						 Board.AwayGoalie != null &&
-						 CurrentTactic != null;
-		}
-
-		public TacticResult ExecuteTactic() {
-			var tacticResult = new TacticResult {
-				Card = CurrentTactic,
-				IsHomeAttacking = IsHomeTurn,
-				Battles = Board.ExecuteTactic(CurrentTactic, IsHomeTurn)
-			};
-
-			var user = IsHomeTurn
-									? HomeUser
-									: AwayUser;
-			user.UseTactic(CurrentTactic);
-			CurrentTactic = null;
-
-			// Update score
-			if (tacticResult.Battles.Last().Success) {
-				if (IsHomeTurn)
-					Score.HomeGoal();
-				else {
-					Score.AwayGoal();
-				}
-			}
-
-			ChangeTurn();
-
-			return tacticResult;
-		}
-
-		public void SendHomeActionMessage(string message, string type) {
-			Hub.GetClients<GameConnection>()[HomeUser.ClientId].addActionMessage(message, type);
-		}
-
-		public void SendAwayActionMessage(string message, string type) {
-			Hub.GetClients<GameConnection>()[AwayUser.ClientId].addActionMessage(message, type);
-		}
-
-		/*private*/
-		public void ChangeTurn() {
-			if (Turn % 4 == 0) {
-				NewPeriod();
-				if (Period == 4)
-					IsFinished = true;
-				return;
-			}
-
-			Turn++;
-
-			if (Turn % 2 == 0)
-				IsHomeTurn = !IsHomeTurn;
-			else {
-				Board.ClearBoard();
-				Hub.GetClients<GameConnection>()[HomeUser.ClientId].substitution();
-				Hub.GetClients<GameConnection>()[AwayUser.ClientId].substitution();
-			}
-
-			HomeUser.SetTurn(IsHomeTurn);
-			AwayUser.SetTurn(!IsHomeTurn);
-		}
-
-		private void NewPeriod() {
-			IsFaceOff = true;
-			Period++;
-			Turn = 1;
-
-			// Send new cards
-			HomeUser.AddTactics(GenerateTactics(5 - HomeUser.CurrentCards.Count, HomeUser));
-			AwayUser.AddTactics(GenerateTactics(5 - AwayUser.CurrentCards.Count, AwayUser));
-
-			// Call clients
-			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod();
-			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod();
-
-			// Initialize events if start of game
-			if(Period == 1) {
-				Hub.GetClients<GameConnection>()[HomeUser.ClientId].nextTurn();
-				Hub.GetClients<GameConnection>()[AwayUser.ClientId].nextTurn();
-			}
-
 		}
 	}
 }
