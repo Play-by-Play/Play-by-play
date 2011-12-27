@@ -1,5 +1,5 @@
-﻿(function($) {
-	$.scrollbarWidth = function() {
+﻿(function ($) {
+	$.scrollbarWidth = function () {
 		var inner = document.createElement('p');
 		inner.style.width = "100%";
 		inner.style.height = "200px";
@@ -24,8 +24,19 @@
 
 		return (w1 - w2);
 	};
-	$.fn.setFullWidth = function() {
-		return this.each(function() {
+	$.sleep = function (time) {
+		var start = (new Date()).getMilliseconds();
+
+		var sleeping = true;
+
+		while (sleeping) {
+			var alarm = (new Date()).getMilliseconds();
+			if (alarm - start > time)
+				sleeping = false;
+		}
+	};
+	$.fn.setFullWidth = function () {
+		return this.each(function () {
 			var $this = $(this);
 
 			var margin = $this.marginLeft + $this.marginRight,

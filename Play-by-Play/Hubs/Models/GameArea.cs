@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Script.Serialization;
 
 namespace Play_by_Play.Hubs.Models {
 	public class GameArea {
 		public int X { get; set; }
 		public int Y { get; set; }
+		[ScriptIgnore]
+		public GameArea Opposite { get; set; }
 
 		public List<Player> HomePlayers { get; set; }
 		public List<Player> AwayPlayers { get; set; }
@@ -14,7 +17,6 @@ namespace Play_by_Play.Hubs.Models {
 			HomePlayers = new List<Player>();
 			AwayPlayers = new List<Player>();
 		}
-
 
 		private static string[][] areaNames = new []{
 			new[]{"gameBoardLW", "gameBoardRW"},
@@ -33,6 +35,29 @@ namespace Play_by_Play.Hubs.Models {
 				}
 			}
 			throw new Exception("No area with the specified name");
+		}
+
+		public bool AddHomePlayer(Player player) {
+			if (HomePlayers.Count >= 5)
+				return false;
+			if (HomePlayers.Contains(player))
+				return false;
+			HomePlayers.Add(player);
+			return true;
+		}
+
+		public bool AddAwayPlayer(Player player) {
+			if (AwayPlayers.Count >= 5)
+				return false;
+			if (AwayPlayers.Contains(player))
+				return false;
+			AwayPlayers.Add(player);
+			return true;
+		}
+
+		public void Clear() {
+			HomePlayers = new List<Player>();
+			AwayPlayers = new List<Player>();
 		}
 	}
 }

@@ -4,6 +4,7 @@
 		<title>Play-by-Play</title>
 		<link rel="stylesheet" href="/Content/reset.css" />
 		<link rel="stylesheet" href="/Content/themes/playbyplay/jquery-ui-1.8.16.custom.css" />
+		<link href="../Content/nanoscroller.css" rel="stylesheet" type="text/css" />
 		<link rel="stylesheet" href="/Content/style.css" />
 		<link rel="stylesheet" href="/Content/card.css" />
 		<link rel="Stylesheet" href="/Content/board.css" />
@@ -21,27 +22,27 @@
 		</div>
 		</script>
 		<script type="text/template" id="chatMessageTemplate">
-			<li>
+			<div>
 				<span class="name">${name}</span>
 				<span class="message">${message}</span>
-			</li>
+			</div>
 		</script>
 		<script type="text/template" id="playerCardTemplate">
-            <div class="placeholder">
-                <span>${pos}</span>
-	            <div id="${id}" class="card benched ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
-				    <div class="teamLogo">
-					    <img src="/Public/images/logobacks/${team}.png"/>
-					    <div class="playerBio">
-						    <img src="/Public/images/bios/${name}.png"/>
-					    </div>
-				    </div>
-				    <div class="playerName">${name}</div>
-				    <div class="attr1">${attr1}</div>
-				    <div class="attr2">${attr2}</div>
-				    <div class="playerPos">${pos}</div>
-			    </div>
-            </div>
+			<div class="placeholder">
+				<span>${pos}</span>
+				<div id="${id}" class="card benched ${user}{{if (pos == 'G')}} goalie{{else}} skater{{/if}}${draggable} ${pos}" style="background-color: #${color}">
+					<div class="teamLogo">
+						<img src="/Public/images/logobacks/${team}.png"/>
+						<div class="playerBio">
+							<img src="/Public/images/bios/${name}.png"/>
+						</div>
+					</div>
+					<div class="playerName">${name}</div>
+					<div class="attr1">${attr1}</div>
+					<div class="attr2">${attr2}</div>
+					<div class="playerPos">${pos}</div>
+				</div>
+			</div>
 		</script>
 		<script type="text/template" id="tacticCardTemplate">
 			<div class="tacticCard">
@@ -50,6 +51,36 @@
 				</div>
 				<div class="tacticName">${name}</div>
 				<div class="diff">${diff}</div>
+			</div>
+		</script>
+		
+		<script id="userDialogTmpl" type="text/template">
+			<div id="new-user">
+				<form id="lobby-playerName">
+					<span class="label">Name</span>
+					<input id="playerNameInput" type="text" />
+					<input type="submit" id="add-user" value="Create user" />
+				</form>
+				<div id="username-exist">
+				</div>
+			</div>
+		</script>
+		<script id="lobbyTmpl" type="text/template">
+			<div id="lobby-dialog">
+				<div id="lobby">
+					<div id="lobby-team">
+					</div>
+					<div id="lobby-games">
+						<div id="active-games">
+						</div>
+						<button id="new-game">
+							Create new game</button>
+						<button id="join-game">
+							Join game</button>
+					</div>
+					<div id="lobby-chat">
+					</div>
+				</div>
 			</div>
 		</script>
 	</head>
@@ -86,6 +117,7 @@
 		</div>
 		<div id="center" class="column">
 			<div id="gameboard">
+				<div id="gameBoardPuck"></div>
 				<canvas id="gameBoardCanvas"></canvas>
 				<canvas id="gameBoardTacticalCanvas"></canvas>
 				<div id="gameBoardBackgroundLayer">
@@ -116,15 +148,14 @@
 					</div>
 					<div id="gameBoardGoalkeeper" class="gameSquareGoalkeeper gameBoardPlaceholder">
 						G</div>
-					<div id="gameBoardPuck">
-					</div>
+					
 				</div>
 			</div>
 		</div>
 		<div id="right" class="column">
 			<div id="score" class="panel">
 				<span id="playerGoals" class="goals">0</span> - <span id="opponentGoals" class="goals">
-					0</span>
+				                                                	0</span>
 			</div>
 			<div id="console" class="panel">
 				<ul>
@@ -137,49 +168,30 @@
 					Stats</div>
 			</div>
 			<div id="chat" class="panel">
-				<ul id="chatMessages">
-				</ul>
+				<div id="chatMessages" class="nano">
+					<div class="content"></div>
+				</div>
 				<form id="chatMessage">
 					<input id="chatInput" type="text" />
 					<input id="chatSubmit" type="submit" value="Post" />
 				</form>
 			</div>
 		</div>
-		<div id="new-user">
-			<form id="lobby-playerName">
-				<span class="label">Name</span>
-				<input id="playerNameInput" type="text" />
-				<input type="submit" id="add-user" value="Create user" />
-			</form>
-			<div id="username-exist">
-			</div>
-		</div>
-		<div id="lobby-dialog">
-			<div id="lobby">
-				<div id="lobby-team">
-				</div>
-				<div id="lobby-games">
-					<div id="active-games">
-					</div>
-					<button id="new-game">
-						Create new game</button>
-					<button id="join-game">
-						Join game</button>
-				</div>
-				<div id="lobby-chat">
-				</div>
-			</div>
-		</div>
 		<div id="battle-view">
-			<div id="userBattle" />
-			<span>VS.</span>
-			<div id="oppBattle" />
-			<div id="battleResult" />
+			<div id="userBattle"></div>
+			<div id="vs"><span>VS</span></div>
+			<div id="oppBattle"></div>
+			<div id="battleResult">
+				<div id="battleAnim">
+					<div id="battlePuck"></div>
+				</div>
+			</div>
 		</div>
 		<script type="text/javascript" src="/Scripts/modernizr-1.7.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-1.7.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.js"></script>
 		<script type="text/javascript" src="/Scripts/jQuery.tmpl.js"></script>
+		<script src="../Scripts/jquery.nanoscroller.js" type="text/javascript"></script>
 		<script type="text/javascript" src="/Scripts/jquery.signalR.js"></script>
 		<script type="text/javascript" src="/Scripts/underscore.js"></script>
 		<script type="text/javascript" src="/signalr/hubs"></script>

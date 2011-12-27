@@ -2,34 +2,27 @@ var Lobby = function (username) {
 	this.username = username;
 };
 Lobby.prototype = {
-	initialize: function () {
-		var width = $('body').width() * 0.9,
-		    height = $('body').height() * 0.9;
-		var userDialog = this.userDialog = $('#new-user');
-		var el = this.el = $('#lobby');
 
-		this.el.dialog({
-			title: 'Lobby',
-			height: height,
-			width: width,
-			modal: true,
-			resizable: false,
-			initialize: 'slide',
-			draggable: false,
-			autoOpen: false//,
-			//open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-		});
+	initialize: function () {
+		this.width = $('body').width() * 0.9,
+		this.height = $('body').height() * 0.9;
+		this.userDialog = $('#userDialogTmpl').tmpl();
+		this.lobbyDialog = $('#lobbyTmpl').tmpl();
+
+		this.userDialog.appendTo('body');
 
 		this.userDialog.dialog({
 			title: 'Lobby',
-			height: height,
-			width: width,
+			height: this.height,
+			width: this.width,
 			modal: true,
 			resizable: false,
 			initialize: 'slide',
+			autoOpen: false,
 			draggable: false//,
 			//open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});
+		this.userDialog.dialog('open');
 		$('#lobby-playerName').submit(function (e) {
 			e.preventDefault();
 			var username = $('#playerNameInput').val();
@@ -39,12 +32,57 @@ Lobby.prototype = {
 		});
 
 
+
+	},
+	selectUsername: function (username) {
+		this.username = username;
+	},
+
+	newGame: function (context) {
+		connection.createGame();
+		context.lobbyDialog.dialog('destroy');
+		context.lobbyDialog.remove();
+	},
+
+	closeLobby: function () {
+		if (!this.lobbyDialog)
+			return;
+		this.lobbyDialog.dialog('close');
+		this.lobbyDialog.remove();
+	},
+
+	openLobby: function (user) {
+		this.userDialog.dialog('destroy');
+		this.userDialog.remove();
+		this.lobbyDialog.appendTo('body');
+
+		connection.getGames();
+
+		this.lobbyDialog.dialog({
+			title: 'Lobby',
+			height: this.height,
+			width: this.width,
+			modal: true,
+			resizable: false,
+			initialize: 'slide',
+			draggable: false,
+			autoOpen: false//,
+			//open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});
+
 		// $('#lobby-playerName').height(el.height() * 0.1);
 
-		$('#lobby-games').height(el.height() - $('#lobby-playerName').height() - 2);
-		$('#lobby-games').width(el.width() / 2 - 2);
+		$('#lobby-games').height(this.lobbyDialog.height() - $('#lobby-playerName').height() - 2);
+		$('#lobby-games').width(this.lobbyDialog.width() / 2 - 2);
 
-		$('#new-game').click(this.newGame);
+		this.lobbyDialog.dialog('open');
+		this.lobbyDialog.dialog('option', 'title', 'Lobby - ' + (user.Name || ""));
+
+		var that = this;
+		$('#new-game').click(function (e) {
+			e.preventDefault();
+			that.newGame(that);
+		});
 
 		$('.lobby-game').live('click', function (evt) {
 			evt.preventDefault();
@@ -69,20 +107,6 @@ Lobby.prototype = {
 				alert("Not a valid game");
 			}
 		});
-	},
-	selectUsername: function (username) {
-		this.username = username;
-	},
-
-	newGame: function () {
-		connection.createGame();
-		$('#lobby').dialog('close');
-	},
-
-	openLobby: function (message) {
-		this.userDialog.dialog('close');
-		this.el.dialog('open');
-		this.el.dialog('option', 'title', 'Lobby - ' + username);
 	}
 
 
