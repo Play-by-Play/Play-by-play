@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Play_by_Play.Hubs.Models {
 	public class BattleResult {
-		private RandomGenerator _generator;
+		private readonly RandomGenerator _generator;
 		private BattleResult() {}
 
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack)
@@ -41,7 +41,7 @@ namespace Play_by_Play.Hubs.Models {
 		public int HomeTotal { 
 			get {
 				var totalAttributes = TotalAttributes(HomePlayers, IsHomeAttacking);
-				return HomeModifier != 1 && totalAttributes != 0
+				return HomeModifier != 1 && totalAttributes != 0 || AwayPlayers.Count == 0
 					? totalAttributes + HomeModifier + (IsHomeWinner ? 1 : 0)
 				       	: 0;
 			}
@@ -49,7 +49,7 @@ namespace Play_by_Play.Hubs.Models {
 		public int AwayTotal {
 			get {
 				var totalAttributes = TotalAttributes(AwayPlayers, !IsHomeAttacking);
-				return AwayModifier != 1 && totalAttributes != 0
+				return AwayModifier != 1 && totalAttributes != 0 || HomePlayers.Count == 0
 								? totalAttributes + AwayModifier + (!IsHomeWinner ? 1 : 0)
 				       	: 0;
 			}
@@ -66,13 +66,9 @@ namespace Play_by_Play.Hubs.Models {
 			} else if (Type.Equals(BattleType.Scramble) || Type.Equals(BattleType.Pass)) {
 				sum = players.Sum(x => isAttacking ? x.Offense : x.Defense);
 			} else if (Type.Equals(BattleType.Shot)) {
-				sum = IsHomeAttacking
-								? (isAttacking
-				      	   	? players.Sum(x => x.Offense)
-				      	   	: players.Sum(x => x.Defense))
-								: (isAttacking
-				      	   	? players.Sum(x => x.Defense)
-				      	   	: players.Sum(x => x.Offense));
+				sum = isAttacking
+				      	? players.Sum(x => x.Offense)
+				      	: players.Sum(x => x.Defense);
 			}
 
 			return sum;

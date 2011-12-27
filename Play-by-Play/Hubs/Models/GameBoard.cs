@@ -112,14 +112,14 @@ namespace Play_by_Play.Hubs.Models {
 				var shooter = area.HomePlayers.First();
 				var goalie = AwayGoalie;
 
-				var battleResult = new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}, BattleType.Shot, homePlayerAttacks);
+				var battleResult = new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}, BattleType.Shot, true);
 				battles.Add(battleResult);
 
 			} else {
 				var shooter = area.AwayPlayers.First();
 				var goalie = HomeGoalie;
 
-				var battleResult = new BattleResult(new List<Player> { goalie }, new List<Player> { shooter }, BattleType.Shot, homePlayerAttacks);
+				var battleResult = new BattleResult(new List<Player> { goalie }, new List<Player> { shooter }, BattleType.Shot, false);
 				battles.Add(battleResult);
 			}
 			return battles;

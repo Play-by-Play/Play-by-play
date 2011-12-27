@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Play_by_Play.Hubs.Models;
 using Should;
 using Xunit;
@@ -98,23 +99,43 @@ namespace Play_by_Play.Tests.UnitTests {
 		}
 
 		[Fact]
-		public void GetHomeResultHasCorrextValues() {
+		public void GetHomeResultHasCorrectValues() {
 			var homePlayers = GetPlayers(2);
 			var awayPlayers = GetPlayers(1);
 
 			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false).GetHomeResult();
 
 			result.HomePlayersTotal.ShouldEqual(2 * 2);
-			result.IsHomeAttacking.ShouldBeTrue();
+			result.IsHomeAttacking.ShouldBeFalse();
 		}
 
-		private static List<Player> GetPlayers(int nr) {
+		[Fact]
+		public void HomePlayerShotIsCorrect() {
+			var shooter = GetPlayers(1);
+			var goalie = GetPlayers(1, "G");
+
+			var result = new BattleResult(shooter, goalie, BattleType.Shot, true);
+
+			result.HomePlayersTotal.ShouldEqual(3);
+		}
+
+		[Fact]
+		public void AwayPlayerShotIsCorrect() {
+			var shooter = GetPlayers(1);
+			var goalie = GetPlayers(1, "G");
+
+			var result = new BattleResult(goalie, shooter, BattleType.Shot, false);
+
+			result.AwayPlayersTotal.ShouldEqual(3);
+		}
+
+		private static List<Player> GetPlayers(int nr, string position = "C") {
 			var players = new List<Player>();
 			for (int i = 0; i < nr; i++) {
 				players.Add(new Player {
 					Defense = 2,
 					Offense = 3,
-					Position = Position.C
+					Position = position
 				});
 			}
 			return players;
