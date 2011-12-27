@@ -410,7 +410,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					$('.tacticCard').each(function () {
 						$(this).css({ opacity: 0.5 });
 					});
-					// reset opacity to the player cards
+					// change opacity to the player cards
 					$("#gameBoardBackgroundLayer").css({ opacity: 0.3 });
 				},
 				function () {
@@ -426,6 +426,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
 				}
 			);
+
+			// disable tactic cards as default
+			play.disableTacticCards();
 		},
 		addTacticCard: function (id, name, diff, tactic) {
 			var data = { name: name, diff: diff };
@@ -481,10 +484,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 				layout.drawPlayerPlacedTactic(tactic, template);
 				window.connection.playTactic(id);
+
+				// reset opacity to the player cards
+				$("#gameBoardBackgroundLayer").css({ opacity: 1.0 });
 			});
 
 			// set card to disable as default
-			//template.disable(true);
 		},
 		placePlayerCard: function (id, square) {
 			// Get the card object
@@ -719,9 +724,18 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var cont = true;
 			var userScore = false;
 			var oppScore = false;
+
+			console.log(result);
+
+			var firstBattle = result.Battles[0];
+			var isUserAttacking = result.IsHomeAttacking && firstBattle.IsHomePlayer || !result.IsHomeAttacking && !firstBattle.IsHomePlayer;
+
+			if (!isUserAttacking) {
+				layout.drawOpponentPlacedTactic(convertTacticCard(result.Card));
+			}
+
 			$.each(result.Battles, function (index, battle) {
 				var attackerWon = (result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal));
-				var isUserAttacking = result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer;
 				// Get puck to the battle
 				setTimeout(function () {
 					if (battle.Type == "Shot") {
@@ -1091,10 +1105,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			context.clearRect(0, 0, width, height);
 
-			// Set margin for the container of game squares
-			//			var squares = $('#gameBoardBackgroundLayer');
-			//			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
-
 			// draw ice rink
 			context.beginPath();
 			context.arc(left + width / 5, top + height / 8, width / 5, -Math.PI / 2, Math.PI, true);
@@ -1235,21 +1245,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var canvas = document.getElementById("gameBoardTacticalCanvas");
 			layout.placedTactic = tactic;
 
-			layout.drawTactic(canvas, tactic);
+			layout.drawTactic(canvas, tactic, false);
 		},
 
 		drawOpponentPlacedTactic: function (tactic) {
 			var canvas = document.getElementById("gameBoardCanvas");
 			var context = canvas.getContext("2d");
 
-			context.rotate(-Math.PI);
-			layout.drawTactic(canvas, tactic);
+			console.log(tactic);
 
-			// restore context rotation
 			context.rotate(Math.PI);
+			layout.drawTactic(canvas, tactic, false);
+			context.rotate(-Math.PI);
 		},
 
-		drawTactic: function (canvas, tactic) {
+		drawTactic: function (canvas, tactic, invertedAttack) {
 			// seting up canvas
 			var context = canvas.getContext("2d");
 			var width = canvas.width;
@@ -1300,14 +1310,26 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			context.strokeStyle = "#000";
 			context.fillStyle = "#000";
 			context.moveTo(left + gameSquareWidth * tactic.shot[0], top + gameSquareHeight * tactic.shot[1]);
-			context.lineTo(left + gameSquareWidth / 2, top - gameSquareHeight / 2);
+			if (invertedAttack === true) {
+				context.lineTo(left + gameSquareWidth / 2, top + gameSquareHeight * 3 + gameSquareHeight / 2);
+			}
+			else {
+				context.lineTo(left + gameSquareWidth / 2, top - gameSquareHeight / 2);
+			}
 			context.stroke();
 
 			// draw arrow on shot line
 			var fromX = left + gameSquareWidth * tactic.shot[0];
 			var fromY = top + gameSquareHeight * tactic.shot[1];
 			var toX = left + gameSquareWidth / 2;
-			var toY = top - gameSquareHeight / 2;
+			if (invertedAttack === true) {
+				// direct shot to players goal
+				var toY = top + gameSquareHeight * 3 + gameSquareHeight / 2;
+			}
+			else {
+				// direct shot to opponent goal
+				var toY = top - gameSquareHeight / 2;
+			}
 			var headlenght = gameSquareHeight / 5;
 			var angle = Math.atan2(toY - fromY, toX - fromX);
 			context.beginPath();
