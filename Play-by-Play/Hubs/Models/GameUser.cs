@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
-using Play_by_Play.Models;
 using SignalR.Hubs;
 
 namespace Play_by_Play.Hubs.Models {

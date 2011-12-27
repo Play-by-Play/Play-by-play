@@ -19,7 +19,8 @@ namespace Play_by_Play.Tests.UnitTests {
 		[Fact]
 		public void GameIsNotReadyWhenSomePlayerIsMissing() {
 			var game = SetupGame();
-			game.Board.GetArea(0,0).HomePlayers.RemoveAt(0);
+			var area = game.Board.GetArea(0,2);
+			area.HomePlayers.RemoveAt(0);
 			
 			var result = game.IsReadyForTactic();
 

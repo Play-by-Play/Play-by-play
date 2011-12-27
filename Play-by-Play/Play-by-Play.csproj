@@ -133,12 +133,16 @@
     <Compile Include="Hubs\GameConnection.cs" />
     <Compile Include="Hubs\Models\Player.cs" />
     <Compile Include="Hubs\Models\Position.cs" />
+    <Compile Include="Hubs\Models\RandomGenerator.cs" />
     <Compile Include="Hubs\Models\TacticResult.cs" />
     <Compile Include="Hubs\Models\Team.cs" />
     <Compile Include="Migrations\Settings.cs" />
+    <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\DB.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\ExpandoObjectConverter.cs" />
+    <Compile Include="Models\Movement.cs" />
+    <Compile Include="Models\Node.cs" />
     <Compile Include="Models\StateMachine\States\StartGameState.cs" />
     <Compile Include="Models\StateMachine\GameStateMachine.cs" />
     <Compile Include="Models\StateMachine\IGameState.cs" />
