@@ -682,10 +682,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".gameSquare").droppable({ disabled: false });
 		},
 		enablePlayers: function (tab) {
-			$('#' + tab).find(".card").draggable("enable");
+			$('#' + tab).find(".card").draggable("enable").css({ opacity: 1 });
 		},
 		enableAllPlyers: function () {
-			$('#playerBench').find('.card').draggable("enable");
+			$('#playerBench').find('.card').draggable("enable").css({ opacity: 1 });
 		},
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
@@ -724,6 +724,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var cont = true;
 			var userScore = false;
 			var oppScore = false;
+			var skippedDelays = 0;
 
 			console.log(result);
 
@@ -754,18 +755,20 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 						else
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 					}
-				}, (index * 2 + (index == 0 ? 0 : (index - 1))) * delay);
+				}, (index * 2 + (index == 0 ? 0 : (index - 1)) - skippedDelays) * delay);
 				// Show battle view
 				setTimeout(function () {
 					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0 || !result.IsHomeAttacking && battle.HomePlayers.length == 0)) {
 						play.showBattleView(battle);
+					} else {
+						skippedDelays += 2;
 					}
-				}, (index * 3) * delay);
+				}, (index * 3 - skippedDelays) * delay);
 				// Check if attack continues
 				if (!attackerWon) {
 					setTimeout(function () {
 						layout.clearGameboardTactic();
-					}, ((index + 1) * 3) * delay);
+					}, ((index + 1) * 3 - skippedDelays) * delay);
 					cont = false;
 					return cont;
 				}
@@ -821,7 +824,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 							return false;
 						}
 					});
-				}, (index * 3 + 2) * delay);
+				}, (index * 3 + 2 - skippedDelays) * delay);
 			});
 			//			if (!cont)
 			//				return false;
@@ -832,7 +835,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					play.addGoal("opponent");
 				else if (userScore)
 					play.addGoal("player");
-			}, ((result.Battles.length - 1) * 3 + 2) * delay);
+			}, ((result.Battles.length - 1) * 3 + 2 - skippedDelays) * delay);
 		},
 		addGoal: function (user) {
 			var scoreDiv = $("#" + user + "Goals");
@@ -991,6 +994,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				accept: function (draggable) {
 					return draggable.find(".playerPos").text() == "C";
 				},
+				activeClass: "gameSquareActive",
+				hoverClass: "gameSquareHover",
 				drop: function (event, ui) {
 					// Get hold of the card div
 					var cardDiv = ui.draggable;
