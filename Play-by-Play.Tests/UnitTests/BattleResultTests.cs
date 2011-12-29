@@ -3,6 +3,7 @@ using System.Linq;
 using Play_by_Play.Hubs.Models;
 using Should;
 using Xunit;
+using System;
 
 namespace Play_by_Play.Tests.UnitTests {
 	public class BattleResultTests {
@@ -127,6 +128,19 @@ namespace Play_by_Play.Tests.UnitTests {
 			var result = new BattleResult(goalie, shooter, BattleType.Shot, false);
 
 			result.AwayPlayersTotal.ShouldEqual(3);
+		}
+
+		[Fact]
+		public void FaceOffIsNeverTied() {
+			var home = GetPlayers(1);
+			var away = GetPlayers(1);
+			Console.WriteLine("Tests started");
+			for (int i = 0; i < 10; i++) {
+				Console.WriteLine(string.Format("Test {0} of 100", i + 1));
+				var result = new BattleResult(home, away, BattleType.FaceOff, true);
+
+				result.HomeTotal.ShouldNotEqual(result.AwayTotal);
+			}
 		}
 
 		private static List<Player> GetPlayers(int nr, string position = "C") {

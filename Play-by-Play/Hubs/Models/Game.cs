@@ -9,11 +9,7 @@ namespace Play_by_Play.Hubs.Models {
 		public string Id { get; set; }
 		public GameBoard Board { get; set; }
 		public GameScore Score { get; private set; }
-		private GameUser _homeUser;
-		public GameUser HomeUser {
-			get { return _homeUser; }
-			set { _homeUser = value; }
-		}
+		public GameUser HomeUser { get;set; }
 
 		public GameUser AwayUser { get; set; }
 		public bool IsHomeTurn { get; /*private*/ set; }
