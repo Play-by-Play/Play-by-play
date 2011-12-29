@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Play_by_Play.Hubs.Models {
+namespace Play_by_Play.Hubs.Models
+{
 	public class BattleResult {
 		private readonly RandomGenerator _generator;
 		private BattleResult() {}
@@ -122,13 +123,6 @@ namespace Play_by_Play.Hubs.Models {
 				throw new Exception();
 			}
 			return homeAttributes > awayAttributes;
-		}
-	}
-
-	public class RandomGenerator {
-		private static readonly Random Rnd = new Random();
-		public int Next(int min, int max) {
-			return Rnd.Next(min, max);
 		}
 	}
 }

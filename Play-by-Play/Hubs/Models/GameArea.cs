@@ -18,7 +18,7 @@ namespace Play_by_Play.Hubs.Models {
 			AwayPlayers = new List<Player>();
 		}
 
-		private static string[][] areaNames = new []{
+		private static readonly string[][] areaNames = new []{
 			new[]{"gameBoardLW", "gameBoardRW"},
 			new[]{"gameBoardLCW", "gameBoardRCW"}, 
 			new[]{"gameBoardLCD", "gameBoardRCD"},
