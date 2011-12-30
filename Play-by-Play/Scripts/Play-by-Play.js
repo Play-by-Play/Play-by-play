@@ -539,7 +539,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 			};
 			// Function for adding a row with total values
-			var addTotal = function (table, amount, total) {
+			var addTotal = function (table, amount, total, mod) {
 				var tr = $("<tr>");
 				tr.css({ "border-top": "2px solid #fff" });
 				table.append(tr);
@@ -553,6 +553,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				td.text(total);
 				td.addClass("bigAttr");
 				tr.append(td);
+
+				td.append($("<span>").text(" + " + mod).css('color', '#f60'));
 			};
 
 			// Get battle view divs
@@ -588,7 +590,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.HomePlayers.length, total);
+			addTotal(table, result.HomePlayers.length, total, result.HomeModifier);
 			homeDiv.append(table);
 			// Construct away team table
 			table = $("<table>");
@@ -600,7 +602,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.AwayPlayers.length, total);
+			addTotal(table, result.AwayPlayers.length, total, result.AwayModifier);
 			awayDiv.append(table);
 
 			// Add result text
@@ -662,6 +664,44 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			setTimeout(function () {
 				viewDiv.dialog('close');
 			}, delay * 2);
+		},
+		endGame: function () {
+			var endDiv = $("#end-game");
+			// Add result text
+			var span = $("<span>");
+			// Check if current user won the battle
+			var userGoals = parseInt($("#playerGoals").text());
+			var oppGoals = parseInt($("#opponentGoals").text());
+			if (userGoals == oppGoals) {
+				span.text("The game ends in a tie.");
+			} else if (userGoals > oppGoals) {
+				span.text("You won the game!");
+			} else {
+				span.text("Your opponent won the game...");
+			}
+			span.appendTo(endDiv);
+
+			// Set size on dialog
+			var baseWidth = 300;
+			var baseHeight = 200;
+
+			var totalWidth = $(document).width();
+
+			var width = totalWidth * baseWidth / 1280;
+			var height = baseHeight * width / baseWidth;
+
+			// Open battle view
+			endDiv.dialog({
+				title: "Game ended",
+				modal: true,
+				draggable: false,
+				resizable: false,
+				width: width,
+				height: height,
+				open: function () {
+					$(this).parent().find(".ui-dialog-titlebar-close").hide();
+				}
+			});
 		},
 		showFaceoff: function () {
 			// Show faceoff squares

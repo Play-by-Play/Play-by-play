@@ -143,3 +143,6 @@ img.board {
 	background: #111;
 	border: 1px 0 solid #444;
 }
+#end-game {
+	text-align: center;
+}
