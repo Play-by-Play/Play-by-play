@@ -32,16 +32,14 @@ namespace Play_by_Play.Hubs.Models {
 
 		public List<TacticCard> GenerateTactics(int amount, GameUser user) {
 			var list = new List<TacticCard>(amount);
-			var available = AvailableCards.Except(user.CurrentCards).ToList();
-
 			var rnd = new Random();
 
-			for (var i = 0; i < amount && available.Count > 0; i++) {
-				var nrAvailable = available.Count;
+			for (var i = 0; i < amount && AvailableCards.Count > 0; i++) {
+				var nrAvailable = AvailableCards.Count;
 				var choosen = rnd.Next(nrAvailable);
-				var card = available.ElementAt(choosen);
+				var card = AvailableCards.ElementAt(choosen);
 				list.Add(card);
-				available.Remove(card);
+				AvailableCards.Remove(card);
 			}
 
 			//return list;
@@ -326,8 +324,6 @@ namespace Play_by_Play.Hubs.Models {
 		public void ChangeTurn() {
 			if (Turn % 4 == 0) {
 				NewPeriod();
-				if (Period == 4)
-					IsFinished = true;
 				return;
 			}
 
@@ -349,6 +345,12 @@ namespace Play_by_Play.Hubs.Models {
 			IsFaceOff = true;
 			Period++;
 			Turn = 1;
+			if (Period == 4) {
+				IsFinished = true;
+				Hub.GetClients<GameConnection>()[HomeUser.ClientId].endGame();
+				Hub.GetClients<GameConnection>()[AwayUser.ClientId].endGame();
+				return;
+			}
 			Board.ClearBoard();
 
 			// Send new cards

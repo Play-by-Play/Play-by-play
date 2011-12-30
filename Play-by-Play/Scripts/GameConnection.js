@@ -150,5 +150,9 @@
 		});
 	};
 
+	connection.endGame = function () {
+		PlayByPlay.endGame();
+	};
+
 	return connection;
 })();
