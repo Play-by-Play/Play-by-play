@@ -151,7 +151,9 @@
 	};
 
 	connection.endGame = function () {
-		PlayByPlay.endGame();
+		nextTurnActions.push(function () {
+			PlayByPlay.endGame();
+		});
 	};
 
 	return connection;
