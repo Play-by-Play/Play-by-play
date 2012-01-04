@@ -18,7 +18,7 @@ namespace Play_by_Play.Hubs.Models {
 			AwayPlayers = new List<Player>();
 		}
 
-		private static string[][] areaNames = new []{
+		private static readonly string[][] areaNames = new []{
 			new[]{"gameBoardLW", "gameBoardRW"},
 			new[]{"gameBoardLCW", "gameBoardRCW"}, 
 			new[]{"gameBoardLCD", "gameBoardRCD"},
@@ -35,6 +35,29 @@ namespace Play_by_Play.Hubs.Models {
 				}
 			}
 			throw new Exception("No area with the specified name");
+		}
+
+		public bool AddHomePlayer(Player player) {
+			if (HomePlayers.Count >= 5)
+				return false;
+			if (HomePlayers.Contains(player))
+				return false;
+			HomePlayers.Add(player);
+			return true;
+		}
+
+		public bool AddAwayPlayer(Player player) {
+			if (AwayPlayers.Count >= 5)
+				return false;
+			if (AwayPlayers.Contains(player))
+				return false;
+			AwayPlayers.Add(player);
+			return true;
+		}
+
+		public void Clear() {
+			HomePlayers = new List<Player>();
+			AwayPlayers = new List<Player>();
 		}
 	}
 }

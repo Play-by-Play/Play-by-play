@@ -20,7 +20,7 @@ namespace Play_by_Play.Hubs.Models {
 
 		public IEnumerable<Player> AwayPlayers {
 			get {
-				return Areas.SelectMany(area => area.HomePlayers);
+				return Areas.SelectMany(area => area.AwayPlayers);
 			}
 		}
 
@@ -46,9 +46,9 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			var area = GetArea(x, y);
 			if(isHome)
-				area.HomePlayers.Add(player);
+				area.AddHomePlayer(player);
 			else
-				area.AwayPlayers.Add(player);
+				area.AddAwayPlayer(player);
 		}
 
 		public GameArea GetArea(int x, int y) {
@@ -69,8 +69,10 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			var battles = new List<BattleResult>();
 			var area = Areas.Single(x => x.X == tacticCard.StartNode.X && x.Y == tacticCard.StartNode.Y);
-			battles.Add(new BattleResult(area.HomePlayers, area.AwayPlayers){Type = "Scramble", Area = area});
-			
+			var result = new BattleResult(area.HomePlayers, area.AwayPlayers, BattleType.Scramble, homePlayerAttacks) {Area = area};
+			battles.Add(result);
+			if (!result.Success)
+				return battles;
 
 			foreach (var pass in tacticCard.Passes) {
 				var node = pass.End;
@@ -79,9 +81,8 @@ namespace Play_by_Play.Hubs.Models {
 				var homePlayers = new List<Player>(area.HomePlayers);
 				var awayPlayers = new List<Player>(area.AwayPlayers);
 
-				var result = new BattleResult(homePlayers, awayPlayers) {
-					Area = area,
-					Type = "Scramble"
+				result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, homePlayerAttacks) {
+					Area = area
 				};
 
 				// Is there any player movin to that area?
@@ -100,6 +101,8 @@ namespace Play_by_Play.Hubs.Models {
 					}
 				}
 				battles.Add(result);
+				if (!result.Success)
+					return battles;
 			}
 
 			//Shot
@@ -109,17 +112,25 @@ namespace Play_by_Play.Hubs.Models {
 				var shooter = area.HomePlayers.First();
 				var goalie = AwayGoalie;
 
-				var battleResult = new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}) {Type = "Shot"};
+				var battleResult = new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}, BattleType.Shot, true);
 				battles.Add(battleResult);
 
 			} else {
 				var shooter = area.AwayPlayers.First();
 				var goalie = HomeGoalie;
 
-				var battleResult = new BattleResult(new List<Player> {goalie}, new List<Player> {shooter}) {Type = "Shot"};
+				var battleResult = new BattleResult(new List<Player> { goalie }, new List<Player> { shooter }, BattleType.Shot, false);
 				battles.Add(battleResult);
 			}
 			return battles;
+		}
+
+		public void ClearBoard() {
+			foreach (var area in Areas) {
+				area.Clear();
+			}
+
+			
 		}
 	}
 }

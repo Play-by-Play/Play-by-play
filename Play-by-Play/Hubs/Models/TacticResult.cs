@@ -9,19 +9,21 @@ namespace Play_by_Play.Hubs.Models {
 		public List<BattleResult> Battles { get; set; }
 
 		public TacticResult GetHomeResult() {
-			return new TacticResult {
-				Card = Card,
+			var tacticResult = new TacticResult {
+				Card = IsHomeAttacking ? Card : Card.Reverse(),
 				IsHomeAttacking = IsHomeAttacking,
 				Battles = Battles.Select(x => x.GetHomeResult()).ToList()
 			};
+			return tacticResult;
 		}
 
 		public TacticResult GetAwayResult() {
-			return new TacticResult {
-				Card = Card,
+			var tacticResult = new TacticResult {
+				Card = IsHomeAttacking ? Card.Reverse() : Card,
 				IsHomeAttacking = IsHomeAttacking,
 				Battles = Battles.Select(x => x.GetAwayResult()).ToList()
 			};
+			return tacticResult;
 		}
 	}
 }

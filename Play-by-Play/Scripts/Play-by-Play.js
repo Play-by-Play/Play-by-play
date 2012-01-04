@@ -1,6 +1,7 @@
 /// <reference path="underscore.js" />
 /// <reference path="jquery-1.7-vsdoc.js" />
 /// <reference path="jquery-ui-1.8.16.js" />
+/// <reference path="~/Scripts/GameConnection.js" />
 
 
 window.PlayByPlay = window.PlayByPlay || (function ($, _) {
@@ -394,6 +395,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	};
 	var play = {
 		addTacticCards: function (cards) {
+			$('#tacticCards').empty();
 			_.each(cards, function (card) {
 				card = convertTacticCard(card);
 				play.addTacticCard(card.Id, card.Name, card.Difficulty, { startNode: card.startNode, nodes: card.nodes, movementNode: card.movementNodes, passes: card.passes, movingPass: card.movingPass, shot: card.shot });
@@ -537,7 +539,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 			};
 			// Function for adding a row with total values
-			var addTotal = function (table, amount, total) {
+			var addTotal = function (table, amount, total, mod) {
 				var tr = $("<tr>");
 				tr.css({ "border-top": "2px solid #fff" });
 				table.append(tr);
@@ -551,6 +553,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				td.text(total);
 				td.addClass("bigAttr");
 				tr.append(td);
+
+				td.append($("<span>").text(" + " + mod).css('color', '#f60'));
 			};
 
 			// Get battle view divs
@@ -565,6 +569,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			userDiv.append($("<h1>").text("You"));
 			oppDiv.empty();
 			oppDiv.append($("<h1>").text("Opponent"));
+
+			var hasUserWon = result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal;
 
 			// Determine if current user is home or away team
 			if (result.IsHomePlayer) {
@@ -584,7 +590,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.HomePlayers.length, total);
+			addTotal(table, result.HomePlayers.length, total, result.HomeModifier);
 			homeDiv.append(table);
 			// Construct away team table
 			table = $("<table>");
@@ -596,13 +602,13 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.AwayPlayers.length, total);
+			addTotal(table, result.AwayPlayers.length, total, result.AwayModifier);
 			awayDiv.append(table);
 
 			// Add result text
 			var span = $("<span>");
 			// Check if current user won the battle
-			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (hasUserWon) {
 				span.text("You won!");
 			} else {
 				span.text("Your opponent won...");
@@ -621,11 +627,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var height = baseHeight * width / baseWidth;
 
 			// Set position on puck
+			puck.removeAttr('style');
 			puck.position({
 				of: $("#battleAnim"),
 				my: 'center center',
-				at: 'center center',
-				offset: '0'
+				at: 'center center'
 			});
 
 			// Open battle view
@@ -642,12 +648,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 
 			// Animate battle
-			if (result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal) {
+			if (hasUserWon) {
 				var anim = '-';
 			} else {
 				var anim = '+';
 			}
-			$("#battlePuck").animate({
+			puck.animate({
 				left: anim + (width / 2 - 0.1 * width)
 			}, delay);
 			// Show results
@@ -658,6 +664,44 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			setTimeout(function () {
 				viewDiv.dialog('close');
 			}, delay * 2);
+		},
+		endGame: function () {
+			var endDiv = $("#end-game");
+			// Add result text
+			var span = $("<span>");
+			// Check if current user won the battle
+			var userGoals = parseInt($("#playerGoals").text());
+			var oppGoals = parseInt($("#opponentGoals").text());
+			if (userGoals == oppGoals) {
+				span.text("The game ends in a tie.");
+			} else if (userGoals > oppGoals) {
+				span.text("You won the game!");
+			} else {
+				span.text("Your opponent won the game...");
+			}
+			span.appendTo(endDiv);
+
+			// Set size on dialog
+			var baseWidth = 300;
+			var baseHeight = 200;
+
+			var totalWidth = $(document).width();
+
+			var width = totalWidth * baseWidth / 1280;
+			var height = baseHeight * width / baseWidth;
+
+			// Open battle view
+			endDiv.dialog({
+				title: "Game ended",
+				modal: true,
+				draggable: false,
+				resizable: false,
+				width: width,
+				height: height,
+				open: function () {
+					$(this).parent().find(".ui-dialog-titlebar-close").hide();
+				}
+			});
 		},
 		showFaceoff: function () {
 			// Show faceoff squares
@@ -674,21 +718,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$(".gameSquare").droppable({ disabled: false });
 		},
 		enablePlayers: function (tab) {
-			$(tab).find(".card").draggable("enable");
+			$('#' + tab).find(".card").draggable("enable").css({ opacity: 1 });
 		},
-		enableAllPlyers: function () {
-			$('#playerBench').find('.card').draggable("enable");
+		enableAllPlayers: function () {
+			$('#playerBench').find('.card').draggable("enable").css({ opacity: 1 });
 		},
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
 											 .find(".card")
-											 .draggable("disable")/*.css({ opacity: 1 })*/;
+											 .draggable("disable").css({ opacity: 0.75 });
 		},
 		disablePlayersExceptOn: function (tab) {
 			$('#playerBench').find('.tab')
 											 .not('#' + tab)
 											 .find(".card")
-											 .draggable("disable")/*.css({ opacity: 1 })*/;
+											 .draggable("disable").css({ opacity: 0.75 });
 		},
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
@@ -716,12 +760,14 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var cont = true;
 			var userScore = false;
 			var oppScore = false;
+			var skippedDelays = 0;
 			$.each(result.Battles, function (index, battle) {
 				var attackerWon = (result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal));
+				var isUserAttacking = result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer;
+				// Get puck to the battle
 				setTimeout(function () {
-					// Get puck to the battle
 					if (battle.Type == "Shot") {
-						if (result.IsHomeAttacking && battle.IsHomePlayer || !result.IsHomeAttacking && !battle.IsHomePlayer) {
+						if (isUserAttacking) {
 							puck.shoot("opponent");
 							if (attackerWon)
 								userScore = true;
@@ -736,22 +782,24 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 						else
 							puck.moveTo(battle.Area.X, battle.Area.Y);
 					}
-				}, (index * 3) * delay);
+				}, (index * 2 + (index == 0 ? 0 : (index - 1)) - skippedDelays) * delay);
+				// Show battle view
 				setTimeout(function () {
-					// Show battle view
 					if (!(result.IsHomeAttacking && battle.AwayPlayers.length == 0 || !result.IsHomeAttacking && battle.HomePlayers.length == 0)) {
 						play.showBattleView(battle);
+					} else {
+						skippedDelays += 2;
 					}
-				}, (index * 3 + (index == 0 ? 0 : 1)) * delay);
+				}, (index * 3 - skippedDelays) * delay);
 				// Check if attack continues
-				if (result.IsHomeAttacking && (battle.HomeTotal < battle.AwayTotal) || !result.IsHomeAttacking && (battle.HomeTotal > battle.AwayTotal)) {// attacker lost
+				if (!attackerWon) {
 					setTimeout(function () {
 						layout.clearGameboardTactic();
-					}, ((index + 1) * 3) * delay);
+					}, ((index + 1) * 3 - skippedDelays) * delay);
 					cont = false;
 					return cont;
 				}
-				// Player movement... TODO: Fix rotated view!
+				// Player movement
 				setTimeout(function () {
 					$.each(result.Card.Movements, function (index, movement) {
 						if (index != (result.Battles.length - 1) && battle.Area.X == movement.Start.X && battle.Area.Y == movement.Start.Y) {
@@ -779,27 +827,42 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 									square += "D";
 									break;
 							}
+							var playerCard = null;
 							if (result.isHomeAttacking) {
-								var playerCard = players.find(battle.HomePlayers[0].Id);
-								playerCard.setLocation($(square));
+								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
-								var playerCard = players.find(battle.AwayPlayers[0].Id);
-								playerCard.setLocation($(square));
+								playerCard = players.find(battle.AwayPlayers[0].Id);
+							}
+							if (playerCard != null) {
+								var squarePos = $(square).position();
+								var left = 'left';
+								var top = 'top';
+								if (isUserAttacking) {
+									left = 'right';
+									top = 'bottom';
+								}
+
+								var obj = {};
+								obj[left] = squarePos.left + $(square).width();
+								obj[top] = squarePos.top + $(square).height();
+
+								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });
 							}
 							return false;
 						}
 					});
-				}, ((index + 1) * 3) * delay);
+				}, (index * 3 + 2 - skippedDelays) * delay);
 			});
-			if (!cont)
-				return false;
+			//			if (!cont)
+			//				return false;
 			setTimeout(function () {
 				layout.clearGameboardTactic();
+				window.connection.nextTurn();
 				if (oppScore)
 					play.addGoal("opponent");
 				else if (userScore)
 					play.addGoal("player");
-			}, result.Battles.length * 3 * delay);
+			}, ((result.Battles.length - 1) * 3 + 2 - skippedDelays) * delay);
 		},
 		addGoal: function (user) {
 			var scoreDiv = $("#" + user + "Goals");
@@ -816,7 +879,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		enableTacticCards: function () {
 			layout.clearGameboardTactic();
 			$('.tacticCard').each(function () {
-				$(this).css({ opacity: 0.5 });
+				$(this).css({ opacity: 1 });
 			});
 			layout.tacticCardsEnabled = true;
 		},
@@ -958,6 +1021,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				accept: function (draggable) {
 					return draggable.find(".playerPos").text() == "C";
 				},
+				activeClass: "gameSquareActive",
+				hoverClass: "gameSquareHover",
 				drop: function (event, ui) {
 					// Get hold of the card div
 					var cardDiv = ui.draggable;
@@ -968,7 +1033,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 					}).fail(function (error) {
 						console.warn(error);
-						layout.rerender();
 					});
 					// Resize and move card
 					cardDiv.removeClass("benched");
@@ -990,14 +1054,21 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		players: players,
 		Bonus: Bonus,
 		debug: debug,
-		puck: puck
+		puck: puck,
+		setTacticsEnabled: function (isTurn) {
+			if (isTurn === true) {
+				play.enableTacticCards();
+			} else {
+				play.disableTacticCards();
+			}
+		}
 	};
 	//#endregion
 
 	//#region Layout
 	var layout = {
 		init: function () {
-			layout.tacticCardsEnabled = true;
+			play.disableTacticCards();
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
@@ -1067,11 +1138,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			context.clearRect(0, 0, width, height);
 
 			// Set margin for the container of game squares
-			//console.log("Width: " + outerLineWidth);
-			var squares = $('#gameBoardBackgroundLayer');
-			//console.log("Margin before: " + squares.css('margin-left'));
-			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
-			//console.log("Margin after: " + squares.css('margin-left'));
+			//			var squares = $('#gameBoardBackgroundLayer');
+			//			squares.css('margin', Math.ceil(outerLineWidth) + 'px');
 
 			// draw ice rink
 			context.beginPath();

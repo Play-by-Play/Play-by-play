@@ -9,7 +9,7 @@ namespace Play_by_Play.Tests.UnitTests {
 		public void GetAreaName_Returns_The_Correct_Name() {
 			var coords = new[] {1, 1};
 			var name = GameArea.GetAreaName(coords[0], coords[1]);
-			name.ShouldEqual("gameBoardLCW");
+			name.ShouldEqual("gameBoardRCW");
 		}
 
 		[Fact]

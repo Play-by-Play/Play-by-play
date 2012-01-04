@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Play_by_Play.Models;
+using System.Web.Script.Serialization;
+using SignalR.Hubs;
 
 namespace Play_by_Play.Hubs.Models {
 	[Serializable]
@@ -13,6 +14,8 @@ namespace Play_by_Play.Hubs.Models {
 		public List<TacticCard> CurrentCards { get; private set; }
 		public List<TacticCard> UsedCards { get; private set; }
 		public Team Team { get; set; }
+		[ScriptIgnore]
+		public GameUser Oppenent { get; set; }
 
 		public GameUser(string name, string hash) {
 			Name = name;
@@ -32,11 +35,32 @@ namespace Play_by_Play.Hubs.Models {
 
 		public bool UseTactic(int id) {
 			var tactic = CurrentCards.SingleOrDefault(x => x.Id == id);
+			return UseTactic(tactic);
+		}
+
+		public bool UseTactic(TacticCard tactic) {
 			if (tactic == null)
 				return false;
 
+			CurrentCards.Remove(tactic);
 			UsedCards.Add(tactic);
 			return true;
+		}
+
+		public void SetTurn(bool isPlayersTurn) {
+			string message;
+			if (isPlayersTurn) {
+				message = "Now it's your turn";
+			} else {
+				var oppenentName = Oppenent.Name;
+				message = string.Format("It is {0}'s turn now", oppenentName);
+			}
+			SendActionMessage(message, "info");
+			Hub.GetClients<GameConnection>()[ClientId].setTurn(isPlayersTurn);
+		}
+
+		public void SendActionMessage(string message, string type) {
+			Hub.GetClients<GameConnection>()[ClientId].addActionMessage(message, type);
 		}
 	}
 }
