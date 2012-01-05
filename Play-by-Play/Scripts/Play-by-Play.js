@@ -520,6 +520,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 				td = $("<td>");
 				var attr = 0;
+				// TODO: Get right attribute for goalies
 				if (isOffense || isFaceOff) {
 					attr = player.Offense;
 					if (player.Bonus == Bonus.OFF) {
@@ -539,7 +540,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 			};
 			// Function for adding a row with total values
-			var addTotal = function (table, amount, total, mod) {
+			var addTotal = function (table, amount, ply, mod, tot) {
 				var tr = $("<tr>");
 				tr.css({ "border-top": "2px solid #fff" });
 				table.append(tr);
@@ -550,11 +551,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 
 				td = $("<td>");
-				td.text(total);
+				td.text(ply);
 				td.addClass("bigAttr");
 				tr.append(td);
 
 				td.append($("<span>").text(" + " + mod).css('color', '#f60'));
+				td.append($("<span>").text(" = " + tot).css('color', '#0c0'));
 			};
 
 			// Get battle view divs
@@ -590,7 +592,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.HomePlayers.length, total, result.HomeModifier);
+			addTotal(table, result.HomePlayers.length, total, result.HomeModifier, result.HomeTotal);
 			homeDiv.append(table);
 			// Construct away team table
 			table = $("<table>");
@@ -602,7 +604,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.AwayPlayers.length, total, result.AwayModifier);
+			addTotal(table, result.AwayPlayers.length, total, result.AwayModifier, result.AwayTotal);
 			awayDiv.append(table);
 
 			// Add result text
@@ -834,7 +836,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 								playerCard = players.find(battle.AwayPlayers[0].Id);
 							}
 							if (playerCard != null) {
-								var squarePos = $(square).position();
+								/*var squarePos = $(square).position();
 								var left = 'left';
 								var top = 'top';
 								if (isUserAttacking) {
@@ -846,7 +848,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 								obj[left] = squarePos.left + $(square).width();
 								obj[top] = squarePos.top + $(square).height();
 
-								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });
+								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });*/
+								playerCard.setLocation($(square));
 							}
 							return false;
 						}
@@ -1068,7 +1071,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	//#region Layout
 	var layout = {
 		init: function () {
-			play.disableTacticCards();
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
@@ -1405,6 +1407,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		clearTactic: function (canvas) {
 			// remove drawn tactic on element
 			var context = canvas.getContext("2d");
+			layout.placedTactic = null;
 
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.beginPath();
@@ -1594,7 +1597,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$("#battle-view").dialog("option", {
 				'width': width,
 				'height': height,
-				'position': center
+				'position': 'center'
 			});
 		}
 	};
@@ -1643,12 +1646,14 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 	// On ready
 	$(function () {
+		play.disableTacticCards();
 		layout.init();
 		layout.drawMainGameboard();
 		layout.setCardSizes();
 		$('#console').tabs();
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
+		$('#actions').nanoScroller();
 		$('#chatMessages').nanoScroller();
 
 		PlayByPlay.lobby = new Lobby();
