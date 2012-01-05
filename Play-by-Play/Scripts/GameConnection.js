@@ -112,7 +112,7 @@
 		window.PlayByPlay.disablePlayersExceptOn(activeLine);
 
 		PlayByPlay.hideFaceoff();
-		PlayByPlay.showBattleView(result);
+		PlayByPlay.showBattleView(result, /*isFaceOff*/ true);
 		connection.nextTurn();
 	};
 

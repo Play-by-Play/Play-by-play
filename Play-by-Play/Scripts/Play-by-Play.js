@@ -493,7 +493,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Set the new card location
 			playerCard.setLocation($('#' + square));
 		},
-		showBattleView: function (result) {
+		showBattleView: function (result, isFaceOff) {
 			if (debug) {
 				title = "Debug-battle";
 				result = {
@@ -520,7 +520,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 				td = $("<td>");
 				var attr = 0;
-				if (isOffense) {
+				if (isOffense || isFaceOff) {
 					attr = player.Offense;
 					if (player.Bonus == Bonus.OFF) {
 						attr++;
