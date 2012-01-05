@@ -153,4 +153,18 @@ namespace Play_by_Play.Tests.UnitTests.BattleResultTests {
 			result.IsHomeAttacking.ShouldBeFalse();
 		}
 	}
+
+	public class ClearTests {
+		[Fact]
+		public void BonusIsNotResettedWhenGameBoardIsCleared() {
+			var home = Factory.GetPlayers(1, "LW").First();
+			home.Bonus = Bonus.Offense;
+			var away = Factory.GetPlayers(1);
+			var result = new BattleResult(new List<Player> {home}, away, BattleType.Scramble, true);
+
+			home.Bonus = Bonus.None;
+
+			result.HomePlayers.First().Bonus.ShouldEqual(Bonus.Offense);
+		}
+	}
 }

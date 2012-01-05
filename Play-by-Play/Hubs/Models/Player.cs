@@ -7,5 +7,17 @@ namespace Play_by_Play.Hubs.Models {
 		public int Offense { get; set; }
 		public int Defense { get; set; }
 		public Bonus Bonus { get; set; }
+
+		public Player Clone() {
+			return new Player {
+				Id = Id,
+				Name = Name,
+				Position = Position,
+				Formation = Formation,
+				Offense = Offense,
+				Defense = Defense,
+				Bonus = Bonus
+			};
+		}
 	}
 }

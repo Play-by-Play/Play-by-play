@@ -323,4 +323,20 @@ namespace Play_by_Play.Tests.UnitTests.GameAreaTests {
 		}
 	}
 
+	public class ClearTests {
+		[Fact]
+		public void AreaIsCleared() {
+			var area = Factory.GetArea(0, 0);
+			var home = Factory.GetPlayers(1).First();
+			var away = Factory.GetPlayers(1).First();
+
+			area.AddHomePlayer(home);
+			area.AddAwayPlayer(away);
+
+			area.Clear();
+
+			area.HomePlayers.Count.ShouldEqual(0);
+			area.AwayPlayers.Count.ShouldEqual(0);
+		}
+	}
 }

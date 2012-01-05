@@ -10,8 +10,8 @@ namespace Play_by_Play.Hubs.Models {
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack)
 			: this(homePlayers, awayPlayers, type, homeAttack, new RandomGenerator()) { }
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack, RandomGenerator generator) {
-			HomePlayers = homePlayers;
-			AwayPlayers = awayPlayers;
+			HomePlayers = homePlayers.Select(player => player.Clone()).ToList();
+			AwayPlayers = awayPlayers.Select(player => player.Clone()).ToList();
 			Type = type;
 			IsHomeAttacking = homeAttack;
 			_generator = generator;
