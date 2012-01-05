@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="Hubs\Models\BattleResult.cs" />
     <Compile Include="Hubs\Models\BattleType.cs" />
+    <Compile Include="Hubs\Models\Bonus.cs" />
     <Compile Include="Hubs\Models\Formation.cs" />
     <Compile Include="Hubs\Models\GameArea.cs" />
     <Compile Include="Hubs\Models\GameBoard.cs" />

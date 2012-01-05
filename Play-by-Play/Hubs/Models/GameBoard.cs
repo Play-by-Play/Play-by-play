@@ -92,12 +92,12 @@ namespace Play_by_Play.Hubs.Models {
 					if(homePlayerAttacks) {
 						var player = area.HomePlayers.First();
 						area.HomePlayers.Remove(player);
-						nextArea.HomePlayers.Add(player);
+						nextArea.AddHomePlayer(player);
 					}
 					else {
 						var player = area.AwayPlayers.First();
 						area.AwayPlayers.Remove(player);
-						nextArea.AwayPlayers.Add(player);
+						nextArea.AddAwayPlayer(player);
 					}
 				}
 				battles.Add(result);

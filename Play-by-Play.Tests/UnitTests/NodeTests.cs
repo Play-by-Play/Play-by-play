@@ -4,16 +4,18 @@ using Xunit;
 
 namespace Play_by_Play.Tests.UnitTests {
 	public class NodeTests {
-		[Fact]
-		public void ToStringWorks() {
-			var node = new Node {
-				X = 1,
-				Y = 2
-			};
+		public class ToStringTests {
+			[Fact]
+			public void ToStringWorks() {
+				var node = new Node {
+					X = 1,
+					Y = 2
+				};
 
-			var result = node.ToString();
+				var result = node.ToString();
 
-			result.ShouldEqual("{X: 1, Y: 2}");
-		} 
+				result.ShouldEqual("{X: 1, Y: 2}");
+			}
+		}
 	}
 }

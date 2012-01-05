@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachineTests\GameStateMachineTests.cs" />
     <Compile Include="UnitTests\BattleResultTests.cs" />
