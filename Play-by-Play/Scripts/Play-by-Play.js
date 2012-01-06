@@ -754,6 +754,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					cardDiv.draggable("enable");
 				}
 			});
+			// Also remove puck from board
+			$("#gameBoardPuck").css('visibility', 'hidden');
 		},
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
@@ -840,8 +842,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 								var left = 'left';
 								var top = 'top';
 								if (isUserAttacking) {
-									left = 'right';
-									top = 'bottom';
+								left = 'right';
+								top = 'bottom';
 								}
 
 								var obj = {};
