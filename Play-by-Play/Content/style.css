@@ -38,11 +38,13 @@ html, body {
 }
 
 #score {
-	font-size: 50pt;
 	text-align: center;
 	font-family: "Century Gothic" , Verdana;
 }
 
+#score .goals {
+	font-size: 50pt;
+}
 #console, #playerBench, #oppBench {
 	font-size: 10pt;
 	width: 90%;

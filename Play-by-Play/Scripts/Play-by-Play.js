@@ -494,6 +494,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			playerCard.setLocation($('#' + square));
 		},
 		showBattleView: function (result, isFaceOff) {
+			// Play face-off sound
+			if (isFaceOff) {
+				$("#sound9").trigger("play");
+			}
 			if (debug) {
 				title = "Debug-battle";
 				result = {
@@ -671,45 +675,50 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var endDiv = $("#end-game");
 			// Add result text
 			var span = $("<span>");
-			// Check if current user won the battle
-			var userGoals = parseInt($("#playerGoals").text());
-			var oppGoals = parseInt($("#opponentGoals").text());
-			if (userGoals == oppGoals) {
-				span.text("The game ends in a tie.");
-			} else if (userGoals > oppGoals) {
-				span.text("You won the game!");
-			} else {
-				span.text("Your opponent won the game...");
-			}
-			span.appendTo(endDiv);
-
-			// Set size on dialog
-			var baseWidth = 300;
-			var baseHeight = 200;
-
-			var totalWidth = $(document).width();
-
-			var width = totalWidth * baseWidth / 1280;
-			var height = baseHeight * width / baseWidth;
-
-			// Open battle view
-			endDiv.dialog({
-				title: "Game ended",
-				modal: true,
-				draggable: false,
-				resizable: false,
-				width: width,
-				height: height,
-				open: function () {
-					$(this).parent().find(".ui-dialog-titlebar-close").hide();
+			setTimeout(function () {
+				// Check if current user won the game
+				var userGoals = parseInt($("#playerGoals").text());
+				var oppGoals = parseInt($("#opponentGoals").text());
+				if (userGoals == oppGoals) {
+					span.text("The game ends in a tie.");
+				} else if (userGoals > oppGoals) {
+					span.text("You won the game!");
+				} else {
+					span.text("Your opponent won the game...");
 				}
-			});
+				span.appendTo(endDiv);
+
+				// Set size on dialog
+				var baseWidth = 300;
+				var baseHeight = 200;
+
+				var totalWidth = $(document).width();
+
+				var width = totalWidth * baseWidth / 1280;
+				var height = baseHeight * width / baseWidth;
+
+				// Open battle view
+				endDiv.dialog({
+					title: "Game ended",
+					modal: true,
+					draggable: false,
+					resizable: false,
+					width: width,
+					height: height,
+					open: function () {
+						$(this).parent().find(".ui-dialog-titlebar-close").hide();
+					}
+				});
+			}, delay);
 		},
 		showFaceoff: function () {
 			// Show faceoff squares
 			$(".gameSquareFaceOff").show();
 			// Disable other squares
 			$(".gameSquare").droppable({ disabled: true });
+			// Increment period
+			var periodSpan = $("#period");
+			periodSpan.text(parseInt(periodSpan.text()) + 1);
 		},
 		hideFaceoff: function () {
 			// Restore centers
@@ -756,6 +765,14 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 			// Also remove puck from board
 			$("#gameBoardPuck").css('visibility', 'hidden');
+			// Change shift label
+			var shiftSpan = $("#shift");
+			var shift = shiftSpan.text();
+			if (shift == "1st")
+				shift = "2nd";
+			else
+				shift = "1st";
+			shiftSpan.text(shift);
 		},
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
@@ -1648,15 +1665,17 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 	// On ready
 	$(function () {
-		play.disableTacticCards();
-		layout.init();
-		layout.drawMainGameboard();
-		layout.setCardSizes();
 		$('#console').tabs();
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
 		$('#actions').nanoScroller();
 		$('#chatMessages').nanoScroller();
+
+		play.disableTacticCards();
+		layout.init();
+		layout.drawMainGameboard();
+		layout.setCardSizes();
+		layout.setBattleViewSize();
 
 		PlayByPlay.lobby = new Lobby();
 		if (!debug) {
