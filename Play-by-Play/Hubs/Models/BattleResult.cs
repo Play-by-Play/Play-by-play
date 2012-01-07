@@ -76,18 +76,26 @@ namespace Play_by_Play.Hubs.Models {
 		private void Execute() {
 			HomePlayersTotal = TotalAttributes(HomePlayers, IsHomeAttacking);
 			AwayPlayersTotal = TotalAttributes(AwayPlayers, !IsHomeAttacking);
-			
 			do{
 				HomeModifier = _generator.Next(1, 6);
 				AwayModifier = _generator.Next(1, 6);
+				
+				int homeBonus = HomePlayers.Count(player => player.Bonus == (IsHomeAttacking
+				                                                             	? Bonus.Offense
+				                                                             	: Bonus.Defense));
+
+				int awayBonus = AwayPlayers.Count(player => player.Bonus == (!IsHomeAttacking
+				                                                             	? Bonus.Offense
+				                                                             	: Bonus.Defense));
 
 				HomeTotal = HomeModifier != 1 && HomePlayersTotal != 0 || AwayPlayers.Count == 0
-					? HomePlayersTotal + HomeModifier + HomePlayers.Count(player => player.Bonus == (IsHomeAttacking ? Bonus.Offense : Bonus.Defense)) + (IsHomeWinner ? 1 : 0)
-									: 0;
+				            	? HomePlayersTotal + HomeModifier + homeBonus
+				            	: 0;
 				AwayTotal = AwayModifier != 1 && AwayPlayersTotal != 0 || HomePlayers.Count == 0
-									? AwayPlayersTotal + AwayModifier + AwayPlayers.Count(player => player.Bonus == (!IsHomeAttacking ? Bonus.Offense : Bonus.Defense)) + (!IsHomeWinner ? 1 : 0)
-									: 0;
+				            	? AwayPlayersTotal + AwayModifier + awayBonus
+				            	: 0;
 			} while(HomeTotal == AwayTotal);
+
 
 			IsHomeWinner = HomeTotal > AwayTotal;
 			Success = IsHomeAttacking ? IsHomeWinner : !IsHomeWinner;

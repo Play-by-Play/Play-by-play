@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Play_by_Play.Hubs.Models;
+using Play_by_Play.Tests.Fakes;
 using Play_by_Play.Tests.Helpers;
 using Should;
 using Xunit;
@@ -142,13 +143,85 @@ namespace Play_by_Play.Tests.UnitTests.BattleResultTests {
 		}
 	}
 
+	public class AwayTotalTests {
+		[Fact]
+		public void FaceOffUsesOnlyOffensiveAttributes() {
+			var homePlayers = Factory.GetPlayers(1);
+			var awayPlayers = Factory.GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.FaceOff, true, new FakeGenerator());
+
+			result.AwayTotal.ShouldEqual(6);
+		}
+
+		[Fact]
+		public void DefensiveEqualsDefensivePlayerAttributeWhenHomeTeamAttacks() {
+			var homePlayers = Factory.GetPlayers(1);
+			var awayPlayers = Factory.GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, true, new FakeGenerator());
+
+			result.AwayTotal.ShouldEqual(5);
+		}
+
+		[Fact]
+		public void AwayTotal_WhenHomeTeamAttacks_DefensiveEqualsAllAwayPlayers() {
+			var homePlayers = Factory.GetPlayers(1);
+			var awayPlayers = Factory.GetPlayers(2);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, true, new FakeGenerator());
+
+			result.AwayTotal.ShouldEqual(7);
+		}
+
+		[Fact]
+		public void OffensiveEqualsOffensivePlayerAttributeWhenAwayTeamAttacks() {
+			var homePlayers = Factory.GetPlayers(1);
+			var awayPlayers = Factory.GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false, new FakeGenerator());
+
+			result.AwayTotal.ShouldEqual(6);
+		}
+
+		[Fact]
+		public void OffensiveEqualsAllOffensivePlayersAttributeWhenAwayTeamAttacks() {
+			var homePlayers = Factory.GetPlayers(1);
+			var awayPlayers = Factory.GetPlayers(2);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false, new FakeGenerator());
+
+			result.AwayTotal.ShouldEqual(9);
+		}
+
+		[Fact]
+		public void AwayPlayerShotIsCorrect() {
+			var shooter = Factory.GetPlayers(1);
+			var goalie = Factory.GetPlayers(1, "G");
+
+			var result = new BattleResult(goalie, shooter, BattleType.Shot, false, new FakeGenerator());
+
+			result.AwayTotal.ShouldEqual(6);
+		}
+	}
+
 	public class IsHomeAttackingTests {
 		[Fact]
-		public void GetHomeResultHasCorrectValues() {
+		public void GetHomeResultHasCorrectValue() {
 			var homePlayers = Factory.GetPlayers(2);
 			var awayPlayers = Factory.GetPlayers(1);
 
 			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false).GetHomeResult();
+
+			result.IsHomeAttacking.ShouldBeFalse();
+		}
+
+		[Fact]
+		public void GetAwayResultHasCorrectValue() {
+			var homePlayers = Factory.GetPlayers(1);
+			var awayPlayers = Factory.GetPlayers(1);
+
+			var result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, false).GetAwayResult();
 
 			result.IsHomeAttacking.ShouldBeFalse();
 		}
