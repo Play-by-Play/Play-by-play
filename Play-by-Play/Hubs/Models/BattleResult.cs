@@ -10,8 +10,8 @@ namespace Play_by_Play.Hubs.Models {
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack)
 			: this(homePlayers, awayPlayers, type, homeAttack, new RandomGenerator()) { }
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack, RandomGenerator generator) {
-			HomePlayers = homePlayers;
-			AwayPlayers = awayPlayers;
+			HomePlayers = homePlayers.Select(player => player.Clone()).ToList();
+			AwayPlayers = awayPlayers.Select(player => player.Clone()).ToList();
 			Type = type;
 			IsHomeAttacking = homeAttack;
 			_generator = generator;
@@ -82,10 +82,10 @@ namespace Play_by_Play.Hubs.Models {
 				AwayModifier = _generator.Next(1, 6);
 
 				HomeTotal = HomeModifier != 1 && HomePlayersTotal != 0 || AwayPlayers.Count == 0
-									? HomePlayersTotal + HomeModifier + (IsHomeWinner ? 1 : 0)
+					? HomePlayersTotal + HomeModifier + HomePlayers.Count(player => player.Bonus == (IsHomeAttacking ? Bonus.Offense : Bonus.Defense)) + (IsHomeWinner ? 1 : 0)
 									: 0;
 				AwayTotal = AwayModifier != 1 && AwayPlayersTotal != 0 || HomePlayers.Count == 0
-									? AwayPlayersTotal + AwayModifier + (!IsHomeWinner ? 1 : 0)
+									? AwayPlayersTotal + AwayModifier + AwayPlayers.Count(player => player.Bonus == (!IsHomeAttacking ? Bonus.Offense : Bonus.Defense)) + (!IsHomeWinner ? 1 : 0)
 									: 0;
 			} while(HomeTotal == AwayTotal);
 
