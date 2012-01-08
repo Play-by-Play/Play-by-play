@@ -560,7 +560,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 
 				td.append($("<span>").text(" + " + mod).css('color', '#f60'));
-				td.append($("<span>").text(" = " + tot).css('color', '#0c0'));
+				td.append($("<span>").text(" = " + tot).css('color', tot != 0 ? '#0c0' : '#f00'));
 			};
 
 			// Get battle view divs
