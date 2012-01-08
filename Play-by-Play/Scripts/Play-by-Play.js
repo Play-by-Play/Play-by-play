@@ -728,22 +728,34 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Enable other squares
 			$(".gameSquare").droppable({ disabled: false });
 		},
+		changeShift: function () {
+			// Change shift label
+			var shiftSpan = $("#shift");
+			var shift = shiftSpan.text();
+			if (shift == "1st")
+				shift = "2nd";
+			else
+				shift = "1st";
+			shiftSpan.text(shift);
+		},
 		enablePlayers: function (tab) {
 			$('#' + tab).find(".card").draggable("enable").css({ opacity: 1 });
+			changeShift();
 		},
 		enableAllPlayers: function () {
 			$('#playerBench').find('.card').draggable("enable").css({ opacity: 1 });
+			changeShift();
 		},
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
-											 .find(".card")
-											 .draggable("disable").css({ opacity: 0.75 });
+				.find(".card")
+				.draggable("disable").css({ opacity: 0.75 });
 		},
 		disablePlayersExceptOn: function (tab) {
 			$('#playerBench').find('.tab')
-											 .not('#' + tab)
-											 .find(".card")
-											 .draggable("disable").css({ opacity: 0.75 });
+				.not('#' + tab)
+				.find(".card")
+				.draggable("disable").css({ opacity: 0.75 });
 		},
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
@@ -765,14 +777,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 			// Also remove puck from board
 			$("#gameBoardPuck").css('visibility', 'hidden');
-			// Change shift label
-			var shiftSpan = $("#shift");
-			var shift = shiftSpan.text();
-			if (shift == "1st")
-				shift = "2nd";
-			else
-				shift = "1st";
-			shiftSpan.text(shift);
 		},
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
@@ -823,6 +827,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				// Player movement
 				setTimeout(function () {
 					$.each(result.Card.Movements, function (index, movement) {
+						// battle.area sometimes null!
 						if (index != (result.Battles.length - 1) && battle.Area.X == movement.Start.X && battle.Area.Y == movement.Start.Y) {
 							var x = movement.End.X;
 							var y = movement.End.Y;
@@ -852,6 +857,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 							if (result.isHomeAttacking) {
 								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
+								// Does not work?!
 								playerCard = players.find(battle.AwayPlayers[0].Id);
 							}
 							if (playerCard != null) {
