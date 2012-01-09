@@ -11,9 +11,21 @@
 		<link rel="stylesheet" href="/Content/lobby.css" />
 		<link rel="stylesheet" href="/Content/battle.css" />
 		<link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico" />
-		<audio id="sound9" src="/Public/audio/Track No09.mp3">
-			<source src="/Public/audio/Track No09.mp3" type="audio/mpeg" />
-		</audio>
+		<!-- Audio files -->
+		<audio id="soundBG" loop="loop"><source src="/Public/audio/Track No02.mp3" type="audio/mpeg" /></audio>
+		<audio id="soundLobby" loop="loop"><source src="/Public/audio/Track No05.mp3" type="audio/mpeg" /></audio>
+		<audio id="soundEnd"><source src="/Public/audio/Track No06.mp3" type="audio/mpeg" /></audio>
+		<audio id="soundFO"><source src="/Public/audio/Track No09.mp3" type="audio/mpeg" /></audio>
+		<audio id="siren"><source src="/Public/audio/siren.wav" type="audio/wav" /></audio>
+		<audio id="shot"><source src="/Public/audio/shot.wav" type="audio/wav" /></audio>
+		<audio id="pass"><source src="/Public/audio/pass.wav" type="audio/wav" /></audio>
+		<audio id="ohhh"><source src="/Public/audio/ohhh.wav" type="audio/wav" /></audio>
+		<audio id="horn"><source src="/Public/audio/horn.wav" type="audio/wav" /></audio>
+		<audio id="crowd"><source src="/Public/audio/crowd.wav" type="audio/wav" /></audio>
+		<audio id="boo"><source src="/Public/audio/boo.wav" type="audio/wav" /></audio>
+		<audio id="check1"><source src="/Public/audio/check1.wav" type="audio/wav" /></audio>
+		<audio id="check2"><source src="/Public/audio/check2.wav" type="audio/wav" /></audio>
+		<!-- End audio -->
 		<script type="text/template" id="actionTemplate">
 		<div class="action">
 			${message}
@@ -163,7 +175,7 @@
 				</p>
 				<p>
 					Period <span id="period">0</span> - 
-					<span id="shift">1st</span> shift
+					<span id="shift">0</span> shift
 				</p>
 			</div>
 			<div id="console" class="panel">
