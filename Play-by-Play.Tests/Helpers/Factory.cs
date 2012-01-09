@@ -5,14 +5,20 @@ using Play_by_Play.Models;
 
 namespace Play_by_Play.Tests.Helpers {
 	public static class Factory {
+
+		public static Player GetPlayer(string position = "C", int[] attributes = null) {
+			if (attributes == null) attributes = new[] {3, 2};
+			return new Player {
+				Offense = attributes[0],
+				Defense = attributes[1],
+				Position = position
+			};
+		}
+
 		public static List<Player> GetPlayers(int nr, string position = "C") {
 			var players = new List<Player>();
 			for (int i = 0; i < nr; i++) {
-				players.Add(new Player {
-					Offense = 3,
-					Defense = 2,
-					Position = position
-				});
+				players.Add(GetPlayer(position));
 			}
 			return players;
 		}
@@ -49,6 +55,33 @@ namespace Play_by_Play.Tests.Helpers {
 				Shot = nodes.Where(x => x.X == 0 && x.Y == 2).First()
 			};
 			return card;
+		}
+
+		public static TacticCard GetMovementCard() {
+			var nodes = new List<Node> {
+				new Node {X = 0, Y = 0},
+				new Node {X = 0, Y = 1}
+			};
+
+			return new TacticCard {
+				Id = 1,
+				Name = "Movement",
+				Nodes = nodes,
+				StartNode = nodes.First(),
+				Movements = new List<Movement> {
+					new Movement {
+						Start = nodes.First(node => node.Y == 0),
+						End = nodes.First(node => node.Y == 1)
+					}
+				},
+				Passes = new List<Movement> {
+					new Movement {
+						Start = nodes.First(node => node.Y == 0),
+						End = nodes.First(node => node.Y == 1)
+					}
+				},
+				Shot = nodes.Last()
+			};
 		}
 
 		public static Game SetupGame() {

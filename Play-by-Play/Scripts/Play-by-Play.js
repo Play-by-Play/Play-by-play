@@ -573,7 +573,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 
 				td.append($("<span>").text(" + " + mod).css('color', '#f60'));
-				td.append($("<span>").text(" = " + tot).css('color', '#0c0'));
+				td.append($("<span>").text(" = " + tot).css('color', tot != 0 ? '#0c0' : '#f00'));
 			};
 
 			// Get battle view divs
@@ -884,7 +884,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 									break;
 							}
 							var playerCard = null;
-							if (result.isHomeAttacking) {
+							if (result.IsHomeAttacking) {
 								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
 								// Does not work?!
@@ -1169,6 +1169,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			// draw game board on canvas
 			layout.drawGameboard(canvas);
+			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
+			$('.panel').setFullWidth();
 		},
 
 		drawGameboard: function (canvas) {
