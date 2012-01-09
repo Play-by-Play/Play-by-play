@@ -849,7 +849,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 									break;
 							}
 							var playerCard = null;
-							if (result.isHomeAttacking) {
+							if (result.IsHomeAttacking) {
 								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
 								playerCard = players.find(battle.AwayPlayers[0].Id);
@@ -1131,6 +1131,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			// draw game board on canvas
 			layout.drawGameboard(canvas);
+			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
+			$('.panel').setFullWidth();
 		},
 
 		drawGameboard: function (canvas) {
