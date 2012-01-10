@@ -11,9 +11,24 @@
 		<link rel="stylesheet" href="/Content/lobby.css" />
 		<link rel="stylesheet" href="/Content/battle.css" />
 		<link rel="shortcut icon" type="image/x-icon" href="/Public/images/favicon.ico" />
+		<!-- Audio files -->
+		<audio id="soundBG" loop="loop"><source src="/Public/audio/Track No02.mp3" type="audio/mpeg" /></audio>
+		<audio id="soundLobby" loop="loop"><source src="/Public/audio/Track No05.mp3" type="audio/mpeg" /></audio>
+		<audio id="soundEnd"><source src="/Public/audio/Track No06.mp3" type="audio/mpeg" /></audio>
+		<audio id="soundFO"><source src="/Public/audio/Track No09.mp3" type="audio/mpeg" /></audio>
+		<audio id="siren"><source src="/Public/audio/siren.wav" type="audio/wav" /></audio>
+		<audio id="shot"><source src="/Public/audio/shot.wav" type="audio/wav" /></audio>
+		<audio id="pass"><source src="/Public/audio/pass.wav" type="audio/wav" /></audio>
+		<audio id="ohhh"><source src="/Public/audio/ohhh.wav" type="audio/wav" /></audio>
+		<audio id="horn"><source src="/Public/audio/horn.wav" type="audio/wav" /></audio>
+		<audio id="crowd"><source src="/Public/audio/crowd.wav" type="audio/wav" /></audio>
+		<audio id="boo"><source src="/Public/audio/boo.wav" type="audio/wav" /></audio>
+		<audio id="check1"><source src="/Public/audio/check1.wav" type="audio/wav" /></audio>
+		<audio id="check2"><source src="/Public/audio/check2.wav" type="audio/wav" /></audio>
+		<!-- End audio -->
 		<script type="text/template" id="actionTemplate">
-		<div class="action">
-			${message}
+		<div class="action ${type}">
+			<span class="message">${message}</span>
 		</div>
 		</script>
 		<script type="text/template" id="lobby-game-tmpl">
@@ -88,9 +103,9 @@
 		<div id="left" class="column">
 			<div id="oppBench" class="players panel">
 				<ul>
-					<li><a href="#oppLine1">Line 1</a></li>
-					<li><a href="#oppLine2">Line 2</a></li>
-					<li><a href="#oppGoalies">Goalies</a></li>
+					<li><a href="#oppLine1">Opp. Line 1</a></li>
+					<li><a href="#oppLine2">Opp. Line 2</a></li>
+					<li><a href="#oppGoalies">Opp. Goalies</a></li>
 				</ul>
 				<div id="oppLine1" class="tab line">
 				</div>
@@ -154,18 +169,26 @@
 		</div>
 		<div id="right" class="column">
 			<div id="score" class="panel">
-				<span id="playerGoals" class="goals">0</span> - <span id="opponentGoals" class="goals">
-				                                                	0</span>
+				<p class="goals">
+					<span id="playerGoals">0</span> - 
+					<span id="opponentGoals">0</span>
+				</p>
+				<p>
+					Period <span id="period">0</span> - 
+					<span id="shift">0</span> shift
+				</p>
 			</div>
 			<div id="console" class="panel">
 				<ul>
 					<li><a href="#actions">Action</a></li>
 					<li><a href="#stats">Stats</a></li>
+					<li><a href="#settings">Settings</a></li>
 				</ul>
-				<div id="actions" class="tab">
-					Action</div>
-				<div id="stats" class="tab">
-					Stats</div>
+				<div id="actions" class="tab nano">
+					<div class="content"></div>
+				</div>
+				<div id="stats" class="tab">Coming soon...</div>
+				<div id="settings" class="tab"></div>
 			</div>
 			<div id="chat" class="panel">
 				<div id="chatMessages" class="nano">
@@ -187,6 +210,7 @@
 				</div>
 			</div>
 		</div>
+		<div id="end-game"></div>
 		<script type="text/javascript" src="/Scripts/modernizr-1.7.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-1.7.js"></script>
 		<script type="text/javascript" src="/Scripts/jquery-ui-1.8.16.js"></script>

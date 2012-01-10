@@ -11,7 +11,6 @@ html, body {
 	width: 33%;
 	height: 100%;
 	position: relative;
-	display: inline-block;
 }
 
 #left {
@@ -38,11 +37,13 @@ html, body {
 }
 
 #score {
-	font-size: 50pt;
 	text-align: center;
 	font-family: "Century Gothic" , Verdana;
 }
 
+#score .goals {
+	font-size: 50pt;
+}
 #console, #playerBench, #oppBench {
 	font-size: 10pt;
 	width: 90%;
@@ -50,6 +51,35 @@ html, body {
 
 #oppLine1, #oppLine2, #line1, #line2 {
 	text-align: center;
+}
+
+#console {
+	height: 33%;
+}
+
+#actions {
+	margin-bottom: 20px;
+	overflow-y: hidden;
+	font-size: 11pt;
+	height: 80%;
+}
+
+#actions .action {
+	margin-bottom: 2px;
+}
+
+#actions .action:before {
+	content: "> ";
+}
+
+#actions .sys {
+	color: #ff6;
+	font-weight: bold;
+}
+
+#actions .temp {
+	color: #ccc;
+	font-style: italic;
 }
 
 #chat {
@@ -65,6 +95,10 @@ html, body {
 	overflow-y: hidden;
 	font-size: 11pt;
 	height: 100%;
+}
+
+#chatMessages .content div {
+	margin-bottom: 2px;
 }
 
 #chatMessages .name {
@@ -134,7 +168,7 @@ img.board {
 }
 
 .nano .content {
-	padding: 0px;
+	padding: 5px;
 }
 .nano .pane {
 	background: #444;
@@ -142,4 +176,7 @@ img.board {
 .nano .pane .slider {
 	background: #111;
 	border: 1px 0 solid #444;
+}
+#end-game {
+	text-align: center;
 }

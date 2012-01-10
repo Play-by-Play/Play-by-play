@@ -11,6 +11,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Delay times
 	var delay = 3000;
 
+	// Sound
+	var sound = true;
+
 	//#region PlayersAndBonus
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -395,6 +398,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	};
 	var play = {
 		addTacticCards: function (cards) {
+			$('#tacticCards').empty();
 			_.each(cards, function (card) {
 				card = convertTacticCard(card);
 				play.addTacticCard(card.Id, card.Name, card.Difficulty, { startNode: card.startNode, nodes: card.nodes, movementNode: card.movementNodes, passes: card.passes, movingPass: card.movingPass, shot: card.shot });
@@ -497,7 +501,26 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Set the new card location
 			playerCard.setLocation($('#' + square));
 		},
-		showBattleView: function (result) {
+		showBattleView: function (result, isFaceOff) {
+			if (sound) {
+				// Play sound according to type
+				switch (result.Type) {
+					case "FaceOff":
+						$("#soundFO").trigger("play");
+						break;
+					case "Scramble":
+						// Could randomize here
+						$("#check1").trigger("play");
+						//$("#check2").trigger("play");
+						break;
+					case "Pass":
+						$("#pass").trigger("play");
+						break;
+					case "Shot":
+						$("#shot").trigger("play");
+						break;
+				}
+			}
 			if (debug) {
 				title = "Debug-battle";
 				result = {
@@ -524,7 +547,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 				td = $("<td>");
 				var attr = 0;
-				if (isOffense) {
+				// TODO: Get right attribute for goalies
+				if (isOffense || isFaceOff) {
 					attr = player.Offense;
 					if (player.Bonus == Bonus.OFF) {
 						attr++;
@@ -543,7 +567,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 			};
 			// Function for adding a row with total values
-			var addTotal = function (table, amount, total) {
+			var addTotal = function (table, amount, ply, mod, tot) {
 				var tr = $("<tr>");
 				tr.css({ "border-top": "2px solid #fff" });
 				table.append(tr);
@@ -554,9 +578,12 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr.append(td);
 
 				td = $("<td>");
-				td.text(total);
+				td.text(ply);
 				td.addClass("bigAttr");
 				tr.append(td);
+
+				td.append($("<span>").text(" + " + mod).css('color', '#f60'));
+				td.append($("<span>").text(" = " + tot).css('color', tot != 0 ? '#0c0' : '#f00'));
 			};
 
 			// Get battle view divs
@@ -573,6 +600,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			oppDiv.append($("<h1>").text("Opponent"));
 
 			var hasUserWon = result.IsHomePlayer && result.HomeTotal > result.AwayTotal || !result.IsHomePlayer && result.HomeTotal < result.AwayTotal;
+			var attackerWon = (result.IsHomeAttacking && (result.HomeTotal > result.AwayTotal) || !result.IsHomeAttacking && (result.HomeTotal < result.AwayTotal));
 
 			// Determine if current user is home or away team
 			if (result.IsHomePlayer) {
@@ -592,7 +620,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.HomePlayers.length, total);
+			addTotal(table, result.HomePlayers.length, total, result.HomeModifier, result.HomeTotal);
 			homeDiv.append(table);
 			// Construct away team table
 			table = $("<table>");
@@ -604,7 +632,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				tr = $("<tr>");
 				table.append(tr);
 			}
-			addTotal(table, result.AwayPlayers.length, total);
+			addTotal(table, result.AwayPlayers.length, total, result.AwayModifier, result.AwayTotal);
 			awayDiv.append(table);
 
 			// Add result text
@@ -638,7 +666,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			// Open battle view
 			viewDiv.dialog({
-				title: result.Title,
+				title: result.Type,
 				modal: true,
 				draggable: false,
 				resizable: false,
@@ -661,17 +689,89 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Show results
 			setTimeout(function () {
 				span.css({ visibility: "visible" });
+				// Play sound according to result
+				if (sound) {
+					if (result.Type == "Shot") {
+						if (attackerWon) {// It's a goal!
+							$("#siren").trigger("play");
+							if (hasUserWon)
+								$("#crowd").trigger("play");
+							else
+								$("#boo").trigger("play");
+						} else
+							$("#ohhh").trigger("play");
+					} else {
+						if (hasUserWon)
+							$("#crowd").trigger("play");
+						else
+							$("#boo").trigger("play");
+					}
+				}
 			}, delay);
 			// Close battle view
 			setTimeout(function () {
 				viewDiv.dialog('close');
+				// Stop faceoff sound
+				if (sound) {
+					$("#soundFO").trigger("pause");
+					$("#soundFO").currentTime = 0;
+				}
 			}, delay * 2);
+		},
+		endGame: function () {
+			// Play period end sound
+			if (sound) {
+				$("#horn").trigger("play");
+				$("#soundBG").trigger("pause");
+				$("#soundEnd").trigger("play");
+			}
+			var endDiv = $("#end-game");
+			// Add result text
+			var span = $("<span>");
+			setTimeout(function () {
+				// Check if current user won the game
+				var userGoals = parseInt($("#playerGoals").text());
+				var oppGoals = parseInt($("#opponentGoals").text());
+				if (userGoals == oppGoals) {
+					span.text("The game ends in a tie.");
+				} else if (userGoals > oppGoals) {
+					span.text("You won the game!");
+				} else {
+					span.text("You lost the game...");
+				}
+				span.appendTo(endDiv);
+
+				// Set size on dialog
+				var baseWidth = 300;
+				var baseHeight = 200;
+
+				var totalWidth = $(document).width();
+
+				var width = totalWidth * baseWidth / 1280;
+				var height = baseHeight * width / baseWidth;
+
+				// Open battle view
+				endDiv.dialog({
+					title: "Game ended",
+					modal: true,
+					draggable: false,
+					resizable: false,
+					width: width,
+					height: height,
+					open: function () {
+						$(this).parent().find(".ui-dialog-titlebar-close").hide();
+					}
+				});
+			}, delay);
 		},
 		showFaceoff: function () {
 			// Show faceoff squares
 			$(".gameSquareFaceOff").show();
 			// Disable other squares
 			$(".gameSquare").droppable({ disabled: true });
+			// Increment period
+			var periodSpan = $("#period");
+			periodSpan.text(parseInt(periodSpan.text()) + 1);
 		},
 		hideFaceoff: function () {
 			// Restore centers
@@ -681,22 +781,38 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Enable other squares
 			$(".gameSquare").droppable({ disabled: false });
 		},
+		changeShift: function () {
+			// Change shift label
+			var shiftSpan = $("#shift");
+			var shift = shiftSpan.text();
+			if (shift == "1st")
+				shift = "2nd";
+			else
+				shift = "1st";
+			shiftSpan.text(shift);
+		},
 		enablePlayers: function (tab) {
 			$('#' + tab).find(".card").draggable("enable").css({ opacity: 1 });
+			play.changeShift();
 		},
-		enableAllPlyers: function () {
+		enableAllPlayers: function () {
 			$('#playerBench').find('.card').draggable("enable").css({ opacity: 1 });
+			play.changeShift();
+			// Play period end sound
+			if (sound) {
+				$("#horn").trigger("play");
+			}
 		},
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
-											 .find(".card")
-											 .draggable("disable").css({ opacity: 0.75 });
+				.find(".card")
+				.draggable("disable").css({ opacity: 0.75 });
 		},
 		disablePlayersExceptOn: function (tab) {
 			$('#playerBench').find('.tab')
-											 .not('#' + tab)
-											 .find(".card")
-											 .draggable("disable").css({ opacity: 0.75 });
+				.not('#' + tab)
+				.find(".card")
+				.draggable("disable").css({ opacity: 0.75 });
 		},
 		restorePlayers: function () {
 			$(".onBoard").each(function () {
@@ -716,6 +832,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					cardDiv.draggable("enable");
 				}
 			});
+			// Also remove puck from board
+			$("#gameBoardPuck").css('visibility', 'hidden');
 		},
 		opponentPlaceTacticCard: function (tactic) {
 			layout.drawOpponentPlacedTactic(tactic);
@@ -775,6 +893,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				// Player movement
 				setTimeout(function () {
 					$.each(result.Card.Movements, function (index, movement) {
+						// battle.area sometimes null!
 						if (index != (result.Battles.length - 1) && battle.Area.X == movement.Start.X && battle.Area.Y == movement.Start.Y) {
 							var x = movement.End.X;
 							var y = movement.End.Y;
@@ -801,25 +920,27 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 									break;
 							}
 							var playerCard = null;
-							if (result.isHomeAttacking) {
+							if (result.IsHomeAttacking) {
 								playerCard = players.find(battle.HomePlayers[0].Id);
 							} else {
+								// Does not work?!
 								playerCard = players.find(battle.AwayPlayers[0].Id);
 							}
 							if (playerCard != null) {
-								var squarePos = $(square).position();
+								/*var squarePos = $(square).position();
 								var left = 'left';
 								var top = 'top';
 								if (isUserAttacking) {
-									left = 'right';
-									top = 'bottom';
+								left = 'right';
+								top = 'bottom';
 								}
 
 								var obj = {};
 								obj[left] = squarePos.left + $(square).width();
 								obj[top] = squarePos.top + $(square).height();
 
-								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });
+								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });*/
+								playerCard.setLocation($(square));
 							}
 							return false;
 						}
@@ -879,6 +1000,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 		},
 		addPlayers: function (userteam, opponentteam) {
+			// Start playing background sound
+			if (sound) {
+				$("#soundLobby").trigger("pause");
+				$("#soundBG").trigger("play");
+			}
 
 			play.addUserPlayers(userteam);
 			play.addOpponentPlayers(opponentteam);
@@ -1041,7 +1167,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	//#region Layout
 	var layout = {
 		init: function () {
-			play.disableTacticCards();
 			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
 			$('.panel').setFullWidth();
 		},
@@ -1083,6 +1208,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			// draw game board on canvas
 			layout.drawGameboard(canvas);
+			$('#right').width(innerWidth - ($('#left').width() + $('#center').width()) - $.scrollbarWidth());
+			$('.panel').setFullWidth();
 		},
 
 		drawGameboard: function (canvas) {
@@ -1386,6 +1513,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		clearTactic: function (canvas) {
 			// remove drawn tactic on element
 			var context = canvas.getContext("2d");
+			layout.placedTactic = null;
 
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.beginPath();
@@ -1575,7 +1703,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$("#battle-view").dialog("option", {
 				'width': width,
 				'height': height,
-				'position': center
+				'position': 'center'
 			});
 		}
 	};
@@ -1624,17 +1752,48 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 	// On ready
 	$(function () {
-		layout.init();
-		layout.drawMainGameboard();
-		layout.setCardSizes();
 		$('#console').tabs();
 		$('#oppBench').tabs();
 		$('#playerBench').tabs();
+		$('#actions').nanoScroller();
 		$('#chatMessages').nanoScroller();
+
+		// Settings panel
+		var settingsDiv = $("#settings");
+		var span = $("<span>");
+		span.text("Sound: ");
+		span.appendTo(settingsDiv);
+		var input = $("<input>");
+		input.attr({
+			id: "toggleSound",
+			type: "checkbox"
+		});
+		input.click(function () {
+			sound = $(this).is(':checked');
+			if (sound)
+				$("#soundBG").trigger("play");
+			else {
+				$("audio").trigger("pause");
+				$("audio").currentTime = 0;
+			}
+		});
+		if (sound) {
+			input.attr('checked', true);
+		}
+		input.appendTo(settingsDiv);
+
+		play.disableTacticCards();
+		layout.init();
+		layout.drawMainGameboard();
+		layout.setCardSizes();
+		layout.setBattleViewSize();
 
 		PlayByPlay.lobby = new Lobby();
 		if (!debug) {
 			PlayByPlay.lobby.initialize();
+			if (sound) {
+				$("#soundLobby").trigger("play");
+			}
 		} else {
 			//play.showBattleView("", "");
 		}

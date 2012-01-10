@@ -48,7 +48,7 @@
 
 #userBattle {
 	position: absolute;
-	//border: 1px solid #fff;
+	/*border: 1px solid #fff;*/
 	left: 0px;
 	width: 45%;
 	height: 75%;
@@ -58,7 +58,7 @@
 
 #oppBattle {
 	position: absolute;
-	//border: 1px solid #fff;
+	/*border: 1px solid #fff;*/
 	right: 0px;
 	width: 45%;
 	height: 75%;
@@ -68,7 +68,7 @@
 
 #battleResult {
 	position: absolute;
-	//border: 1px solid #fff;
+	/*border: 1px solid #fff;*/
 	bottom: 0px;
 	width: 95%;
 	height: 20%;

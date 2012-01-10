@@ -20,7 +20,9 @@
 	};
 
 	connection.addActionMessage = function (message, type) {
-		$('#actionTemplate').tmpl({ type: type, message: message }).appendTo('#actions');
+		$('#actions').find(".temp").remove();
+		$('#actionTemplate').tmpl({ type: type, message: message }).appendTo('#actions > .content');
+		$('#actions').nanoScroller({ scroll: 'bottom' });
 	};
 
 	connection.setUser = function (user) {
@@ -52,6 +54,7 @@
 	connection.newPeriod = function () {
 		nextTurnActions.push(function () {
 			PlayByPlay.restorePlayers();
+			PlayByPlay.enableAllPlayers();
 			connection.getTacticCards();
 			PlayByPlay.showFaceoff();
 		});
@@ -64,14 +67,15 @@
 		$('#playerBench').children('div').each(function () { tabIds.push(this.id); });
 
 		var lineIndex = $.inArray(nextLine, tabIds);
-		$('#playerBench').tabs('select', lineIndex);
 
 		nextTurnActions.push(function () {
 			PlayByPlay.restorePlayers();
-		});
 
-		window.PlayByPlay.disablePlayers(activeLine);
-		window.PlayByPlay.enablePlayers(nextLine);
+			$('#playerBench').tabs('select', lineIndex);
+
+			window.PlayByPlay.disablePlayers(activeLine);
+			window.PlayByPlay.enablePlayers(nextLine);
+		});
 	};
 
 	connection.createTacticCards = function (cards) {
@@ -110,7 +114,7 @@
 		window.PlayByPlay.disablePlayersExceptOn(activeLine);
 
 		PlayByPlay.hideFaceoff();
-		PlayByPlay.showBattleView(result);
+		PlayByPlay.showBattleView(result, /*isFaceOff*/true);
 		connection.nextTurn();
 	};
 
@@ -145,6 +149,12 @@
 				func.apply(this, parameters);
 			}
 			nextTurnActions = _.without(nextTurnActions, action);
+		});
+	};
+
+	connection.endGame = function () {
+		nextTurnActions.push(function () {
+			PlayByPlay.endGame();
 		});
 	};
 

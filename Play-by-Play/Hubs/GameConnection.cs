@@ -82,10 +82,12 @@ namespace Play_by_Play.Hubs {
 
 			Caller.gameId = game.Id;
 			Caller.startGame(game);
-			Caller.addActionMessage("Game against " + game.HomeUser.Name + " has started");
+			Caller.addActionMessage("Game against " + game.HomeUser.Name + " has started", "sys");
+			Caller.addActionMessage("Awaiting goalie and line choices...", "temp");
 
 			Clients[game.HomeUser.ClientId].startGame(game);
-			Clients[game.HomeUser.ClientId].addActionMessage("Game against " + game.AwayUser.Name + " has started");
+			Clients[game.HomeUser.ClientId].addActionMessage("Game against " + game.AwayUser.Name + " has started", "sys");
+			Clients[game.HomeUser.ClientId].addActionMessage("Awaiting goalie and line choices...", "temp");
 			Clients.removeGame(game.Id);
 		}
 
@@ -143,10 +145,10 @@ namespace Play_by_Play.Hubs {
 		}
 
 		public void PlaceGoalkeeper(int playerId) {
-			var user = users[Context.ClientId];
+			var user = GetUser();
 			if (user == null)
 				throw new Exception("User does not exist");
-			var game = games.Values.First(z => z.AwayUser == user || z.HomeUser == user);
+			var game = GetGame();
 			var isHome = user == game.HomeUser;
 			
 			var goalie = user.Team.Goalies.SingleOrDefault(g => g.Id == playerId);
@@ -229,6 +231,7 @@ namespace Play_by_Play.Hubs {
 
 		public void PlayTactic(int id) {
 			var game = GetGame();
+			
 			var isHomeUser = GetUser() == game.HomeUser;
 
 			var tacticList = isHomeUser
@@ -300,7 +303,7 @@ namespace Play_by_Play.Hubs {
 
 			var gamesToRemove = games.Values.Where(x => x.HomeUser == user || x.AwayUser == user).ToArray();
 
-			for (int i = 0; i < gamesToRemove.Count(); i++) {
+			for (var i = 0; i < gamesToRemove.Count(); i++) {
 				AbortGame(gamesToRemove[i]);
 			}
 		}
@@ -331,7 +334,7 @@ namespace Play_by_Play.Hubs {
 			game.Start();
 
 			Caller.startGame(game);
-			Caller.addActionMessage("Fake match started");
+			Caller.addActionMessage("Fake match started", "sys");
 			Caller.DebugMode = true;
 		}
 

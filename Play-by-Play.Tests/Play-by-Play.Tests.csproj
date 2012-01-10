@@ -59,11 +59,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fakes\FakeGenerator.cs" />
+    <Compile Include="Helpers\Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachineTests\GameStateMachineTests.cs" />
     <Compile Include="UnitTests\BattleResultTests.cs" />
     <Compile Include="UnitTests\ExpandoObjectConverterTests.cs" />
     <Compile Include="UnitTests\GameAreaTests.cs" />
+    <Compile Include="UnitTests\GameBoardTests.cs" />
     <Compile Include="UnitTests\GameTests.cs" />
     <Compile Include="UnitTests\NodeTests.cs" />
   </ItemGroup>
