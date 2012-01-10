@@ -27,8 +27,8 @@
 		<audio id="check2"><source src="/Public/audio/check2.wav" type="audio/wav" /></audio>
 		<!-- End audio -->
 		<script type="text/template" id="actionTemplate">
-		<div class="action">
-			${message}
+		<div class="action ${type}">
+			<span class="message">${message}</span>
 		</div>
 		</script>
 		<script type="text/template" id="lobby-game-tmpl">
@@ -182,11 +182,13 @@
 				<ul>
 					<li><a href="#actions">Action</a></li>
 					<li><a href="#stats">Stats</a></li>
+					<li><a href="#settings">Settings</a></li>
 				</ul>
-				<div id="actions" class="tab">
-					Action</div>
-				<div id="stats" class="tab">
-					Stats</div>
+				<div id="actions" class="tab nano">
+					<div class="content"></div>
+				</div>
+				<div id="stats" class="tab">Coming soon...</div>
+				<div id="settings" class="tab"></div>
 			</div>
 			<div id="chat" class="panel">
 				<div id="chatMessages" class="nano">

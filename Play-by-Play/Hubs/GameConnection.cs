@@ -82,10 +82,12 @@ namespace Play_by_Play.Hubs {
 
 			Caller.gameId = game.Id;
 			Caller.startGame(game);
-			Caller.addActionMessage("Game against " + game.HomeUser.Name + " has started");
+			Caller.addActionMessage("Game against " + game.HomeUser.Name + " has started", "sys");
+			Caller.addActionMessage("Awaiting goalie and line choices...", "temp");
 
 			Clients[game.HomeUser.ClientId].startGame(game);
-			Clients[game.HomeUser.ClientId].addActionMessage("Game against " + game.AwayUser.Name + " has started");
+			Clients[game.HomeUser.ClientId].addActionMessage("Game against " + game.AwayUser.Name + " has started", "sys");
+			Clients[game.HomeUser.ClientId].addActionMessage("Awaiting goalie and line choices...", "temp");
 			Clients.removeGame(game.Id);
 		}
 
@@ -332,7 +334,7 @@ namespace Play_by_Play.Hubs {
 			game.Start();
 
 			Caller.startGame(game);
-			Caller.addActionMessage("Fake match started");
+			Caller.addActionMessage("Fake match started", "sys");
 			Caller.DebugMode = true;
 		}
 
