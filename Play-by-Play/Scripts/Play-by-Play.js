@@ -499,22 +499,22 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		showBattleView: function (result, isFaceOff) {
 			if (sound) {
 				// Play sound according to type
-			switch (result.Type) {
-				case "FaceOff":
-					$("#soundFO").trigger("play");
-					break;
-				case "Scramble":
-					// Could randomize here
-					$("#check1").trigger("play");
-					//$("#check2").trigger("play");
-					break;
-				case "Pass":
-					$("#pass").trigger("play");
-					break;
-				case "Shot":
-					$("#shot").trigger("play");
-					break;
-			}
+				switch (result.Type) {
+					case "FaceOff":
+						$("#soundFO").trigger("play");
+						break;
+					case "Scramble":
+						// Could randomize here
+						$("#check1").trigger("play");
+						//$("#check2").trigger("play");
+						break;
+					case "Pass":
+						$("#pass").trigger("play");
+						break;
+					case "Shot":
+						$("#shot").trigger("play");
+						break;
+				}
 			}
 			if (debug) {
 				title = "Debug-battle";
@@ -688,18 +688,18 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				if (sound) {
 					if (result.Type == "Shot") {
 						if (attackerWon) {// It's a goal!
-					$("#siren").trigger("play");
+							$("#siren").trigger("play");
 							if (hasUserWon)
 								$("#crowd").trigger("play");
-				else
+							else
 								$("#boo").trigger("play");
 						} else
-					$("#ohhh").trigger("play");
+							$("#ohhh").trigger("play");
 					} else {
-				if (hasUserWon)
-					$("#crowd").trigger("play");
-				else
-					$("#boo").trigger("play");
+						if (hasUserWon)
+							$("#crowd").trigger("play");
+						else
+							$("#boo").trigger("play");
 					}
 				}
 			}, delay);
@@ -708,7 +708,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				viewDiv.dialog('close');
 				// Stop faceoff sound
 				if (sound) {
-				$("#soundFO").trigger("pause");
+					$("#soundFO").trigger("pause");
 					$("#soundFO").currentTime = 0;
 				}
 			}, delay * 2);
@@ -716,9 +716,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		endGame: function () {
 			// Play period end sound
 			if (sound) {
-			$("#horn").trigger("play");
-			$("#soundBG").trigger("pause");
-			$("#soundEnd").trigger("play");
+				$("#horn").trigger("play");
+				$("#soundBG").trigger("pause");
+				$("#soundEnd").trigger("play");
 			}
 			var endDiv = $("#end-game");
 			// Add result text
@@ -795,7 +795,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			play.changeShift();
 			// Play period end sound
 			if (sound) {
-			$("#horn").trigger("play");
+				$("#horn").trigger("play");
 			}
 		},
 		disablePlayers: function (tab) {
@@ -988,8 +988,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		addPlayers: function (userteam, opponentteam) {
 			// Start playing background sound
 			if (sound) {
-			$("#soundLobby").trigger("pause");
-			$("#soundBG").trigger("play");
+				$("#soundLobby").trigger("pause");
+				$("#soundBG").trigger("play");
 			}
 
 			play.addUserPlayers(userteam);
@@ -1770,7 +1770,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		if (!debug) {
 			PlayByPlay.lobby.initialize();
 			if (sound) {
-			$("#soundLobby").trigger("play");
+				$("#soundLobby").trigger("play");
 			}
 		} else {
 			//play.showBattleView("", "");
