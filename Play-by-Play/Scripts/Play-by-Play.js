@@ -251,12 +251,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var gameSquareWidth = width * 0.48;
 			var gameSquareHeight = height * 0.186;
 
-			//			var gameSquareWidth = $('#gameBoardLW').width();
-			//			var gameSquareHeight = $('#gameBoardLW').height();
-			//			var left = $('#gameBoardLW').position().left + gameSquareWidth / 2 - puckRadius;
-			//			var top = $('#gameBoardLW').position().top + gameSquareHeight / 2 - puckRadius;
-
-
 			if (y < 0)
 			// shot at opponent goal
 				return {
@@ -276,54 +270,18 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			};
 		};
 
-		//		var getSquare = function (x, y) {
-		//			var square = "#gameBoard";
-		//			if (x == 0) {
-		//				square += "L";
-		//			}
-		//			else {
-		//				square += "R";
-		//			}
-		//			switch (y) {
-		//				case 0:
-		//					square += "W";
-		//					break;
-		//				case 1:
-		//					square += "CW";
-		//					break;
-		//				case 2:
-		//					square += "CD";
-		//					break;
-		//				case 3:
-		//					square += "D";
-		//					break;
-		//			}
-
-		//			console.log($(square));
-
-		//			return $(square);
-		//		};
-
 		return {
 			placeAt: function (x, y) {
+				puck.resize();
 				var position = getPixelPosition(x, y);
 				$('#gameBoardPuck').css({
 					'visibility': 'visible',
 					'top': position.top,
 					'left': position.left
 				});
-
-				//				$('#gameBoardPuck').animate({}, {
-				//					step: function () {
-				//						$(this).position({
-				//							of: square,
-				//							my: 'center center',
-				//							at: 'center center'
-				//						});
-				//					}
-				//				});
 			},
 			moveTo: function (x, y) {
+				puck.resize();
 				if ($('#gameBoardPuck').css('visibility') == 'visible') {
 					var position = getPixelPosition(x, y);
 					$('#gameBoardPuck').animate({
@@ -335,6 +293,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					setPosition(x, y);
 			},
 			shoot: function (direction) {
+				puck.resize();
 				// direction = opponent/player
 				var position;
 				if (direction == "opponent") {
@@ -347,6 +306,10 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					top: position.top,
 					left: position.left
 				}, delay);
+			},
+			resize: function () {
+				// adjust puck height
+				$('#gameBoardPuck').height($('#gameBoardPuck').width());
 			}
 		};
 	})();
@@ -1404,14 +1367,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			// don't edit below
 
-			// remove any pass node which also is a movment node
-			//			for (index in tactic.nodes) {
-			//				console.log(passNode);
-			//				console.log(jQuery.inArray(index, tactic.movementNode));
-			//				if (jQuery.inArray(index, tactic.movementNode))
-			//					tactic.nodes.remove(index);
-			//			};
-
 			// calculate position
 			var left = width * 0.26;
 			var top = height * 0.2209;
@@ -1717,6 +1672,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		}
 		layout.setCardSizes();
 		layout.setBattleViewSize();
+		puck.resize();
 	});
 
 
