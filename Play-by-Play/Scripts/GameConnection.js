@@ -20,7 +20,9 @@
 	};
 
 	connection.addActionMessage = function (message, type) {
-		$('#actionTemplate').tmpl({ type: type, message: message }).appendTo('#actions');
+		$('#actions').find(".temp").remove();
+		$('#actionTemplate').tmpl({ type: type, message: message }).appendTo('#actions > .content');
+		$('#actions').nanoScroller({ scroll: 'bottom' });
 	};
 
 	connection.setUser = function (user) {
@@ -112,7 +114,7 @@
 		window.PlayByPlay.disablePlayersExceptOn(activeLine);
 
 		PlayByPlay.hideFaceoff();
-		PlayByPlay.showBattleView(result, /*isFaceOff*/ true);
+		PlayByPlay.showBattleView(result, /*isFaceOff*/true);
 		connection.nextTurn();
 	};
 

@@ -11,7 +11,6 @@ html, body {
 	width: 33%;
 	height: 100%;
 	position: relative;
-	display: inline-block;
 }
 
 #left {
@@ -54,6 +53,35 @@ html, body {
 	text-align: center;
 }
 
+#console {
+	height: 40%;
+}
+
+#actions {
+	margin-bottom: 20px;
+	overflow-y: hidden;
+	font-size: 11pt;
+	height: 100%;
+}
+
+#actions .action {
+	margin-bottom: 2px;
+}
+
+#actions .action:before {
+	content: "> ";
+}
+
+#actions .sys {
+	color: #ff6;
+	font-weight: bold;
+}
+
+#actions .temp {
+	color: #ccc;
+	font-style: italic;
+}
+
 #chat {
 	height: 33%;
 	position: absolute;
@@ -67,6 +95,10 @@ html, body {
 	overflow-y: hidden;
 	font-size: 11pt;
 	height: 100%;
+}
+
+#chatMessages .content div {
+	margin-bottom: 2px;
 }
 
 #chatMessages .name {
@@ -136,7 +168,7 @@ img.board {
 }
 
 .nano .content {
-	padding: 0px;
+	padding: 5px;
 }
 .nano .pane {
 	background: #444;

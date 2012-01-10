@@ -11,6 +11,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Delay times
 	var delay = 3000;
 
+	// Sound
+	var sound = true;
+
 	//#region PlayersAndBonus
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -494,7 +497,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			playerCard.setLocation($('#' + square));
 		},
 		showBattleView: function (result, isFaceOff) {
-			// Play face-off sound
+			if (sound) {
+				// Play sound according to type
 			switch (result.Type) {
 				case "FaceOff":
 					$("#soundFO").trigger("play");
@@ -510,6 +514,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				case "Shot":
 					$("#shot").trigger("play");
 					break;
+			}
 			}
 			if (debug) {
 				title = "Debug-battle";
@@ -679,27 +684,42 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// Show results
 			setTimeout(function () {
 				span.css({ visibility: "visible" });
-				if (result.Type == "Shot" && attackerWon) // It's a goal!
+				// Play sound according to result
+				if (sound) {
+					if (result.Type == "Shot") {
+						if (attackerWon) {// It's a goal!
 					$("#siren").trigger("play");
+							if (hasUserWon)
+								$("#crowd").trigger("play");
 				else
+								$("#boo").trigger("play");
+						} else
 					$("#ohhh").trigger("play");
+					} else {
 				if (hasUserWon)
 					$("#crowd").trigger("play");
 				else
 					$("#boo").trigger("play");
+					}
+				}
 			}, delay);
 			// Close battle view
 			setTimeout(function () {
 				viewDiv.dialog('close');
-				// Pause 
+				// Stop faceoff sound
+				if (sound) {
 				$("#soundFO").trigger("pause");
+					$("#soundFO").currentTime = 0;
+				}
 			}, delay * 2);
 		},
 		endGame: function () {
 			// Play period end sound
+			if (sound) {
 			$("#horn").trigger("play");
 			$("#soundBG").trigger("pause");
 			$("#soundEnd").trigger("play");
+			}
 			var endDiv = $("#end-game");
 			// Add result text
 			var span = $("<span>");
@@ -712,7 +732,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				} else if (userGoals > oppGoals) {
 					span.text("You won the game!");
 				} else {
-					span.text("Your opponent won the game...");
+					span.text("You lost the game...");
 				}
 				span.appendTo(endDiv);
 
@@ -774,7 +794,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$('#playerBench').find('.card').draggable("enable").css({ opacity: 1 });
 			play.changeShift();
 			// Play period end sound
+			if (sound) {
 			$("#horn").trigger("play");
+			}
 		},
 		disablePlayers: function (tab) {
 			$('#playerBench').find('#' + tab)
@@ -964,8 +986,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			});
 		},
 		addPlayers: function (userteam, opponentteam) {
+			// Start playing background sound
+			if (sound) {
 			$("#soundLobby").trigger("pause");
 			$("#soundBG").trigger("play");
+			}
 
 			play.addUserPlayers(userteam);
 			play.addOpponentPlayers(opponentteam);
@@ -1711,6 +1736,30 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		$('#actions').nanoScroller();
 		$('#chatMessages').nanoScroller();
 
+		// Settings panel
+		var settingsDiv = $("#settings");
+		var span = $("<span>");
+		span.text("Sound: ");
+		span.appendTo(settingsDiv);
+		var input = $("<input>");
+		input.attr({
+			id: "toggleSound",
+			type: "checkbox"
+		});
+		input.click(function () {
+			sound = $(this).is(':checked');
+			if (sound)
+				$("#soundBG").trigger("play");
+			else {
+				$("audio").trigger("pause");
+				$("audio").currentTime = 0;
+			}
+		});
+		if (sound) {
+			input.attr('checked', true);
+		}
+		input.appendTo(settingsDiv);
+
 		play.disableTacticCards();
 		layout.init();
 		layout.drawMainGameboard();
@@ -1720,7 +1769,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		PlayByPlay.lobby = new Lobby();
 		if (!debug) {
 			PlayByPlay.lobby.initialize();
+			if (sound) {
 			$("#soundLobby").trigger("play");
+			}
 		} else {
 			//play.showBattleView("", "");
 		}
