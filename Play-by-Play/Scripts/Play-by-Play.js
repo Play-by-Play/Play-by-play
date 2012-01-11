@@ -890,20 +890,24 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 								playerCard = players.find(battle.AwayPlayers[0].Id);
 							}
 							if (playerCard != null) {
-								/*var squarePos = $(square).position();
+								var squarePos = $(square).position();
 								var left = 'left';
 								var top = 'top';
-								if (isUserAttacking) {
-								left = 'right';
-								top = 'bottom';
-								}
+//								if (isUserAttacking) {
+//									left = 'right';
+//									top = 'bottom';
+//								}
+								var playerElem = $("#card" + playerCard.getId());
+								var startSquare = playerElem.parent();
+
+								var transX = squarePos.left - startSquare.position().left;
+								var transY = squarePos.top - startSquare.position().top;
 
 								var obj = {};
-								obj[left] = squarePos.left + $(square).width();
-								obj[top] = squarePos.top + $(square).height();
-
-								$("#" + playerCard.getId()).animate(obj, function () { playerCard.setLocation($(square)); });*/
-								playerCard.setLocation($(square));
+								obj[left] = '+=' + transX + 'px';
+								obj[top] = '+=' + transY + 'px';
+								playerElem.animate(obj, delay, function () { playerCard.setLocation($(square)); });
+								//playerCard.setLocation($(square));
 							}
 							return false;
 						}

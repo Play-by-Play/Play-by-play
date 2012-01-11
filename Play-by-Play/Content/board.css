@@ -49,7 +49,7 @@
 	height: 19.09%;
 	width: 50%;
 	position: relative;
-	overflow: hidden;
+	overflow: visible;
 }
 
 .gameSquareLeft
