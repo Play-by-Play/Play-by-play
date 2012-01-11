@@ -69,7 +69,7 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			var battles = new List<BattleResult>();
 			var area = Areas.Single(x => x.X == tacticCard.StartNode.X && x.Y == tacticCard.StartNode.Y);
-			var result = new BattleResult(area.HomePlayers, area.AwayPlayers, BattleType.Scramble, area, homePlayerAttacks) {Area = area};
+			var result = new BattleResult(area.HomePlayers, area.AwayPlayers, BattleType.Scramble, area, homePlayerAttacks);
 			if(result.Success)
 				Movement(tacticCard, homePlayerAttacks, area, tacticCard.StartNode);
 			battles.Add(result);
