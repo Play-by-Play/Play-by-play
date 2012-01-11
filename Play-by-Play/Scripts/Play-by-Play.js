@@ -847,9 +847,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}, (index * 3 - skippedDelays) * delay);
 				// Check if attack continues
 				if (!attackerWon) {
-					setTimeout(function () {
-						layout.clearGameboardTactic();
-					}, ((index + 1) * 3 - skippedDelays) * delay);
+					//setTimeout(function () {
+					//	layout.clearGameboardTactic();
+					//}, ((index + 1) * 3 - skippedDelays) * delay);
 					cont = false;
 					return cont;
 				}
@@ -920,9 +920,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				else if (userScore)
 					play.addGoal("player");
 			}, ((result.Battles.length - 1) * 3 + 2 - skippedDelays) * delay);
-
-			// removed tactic on game board
-			layout.clearGameboardTactic();
 		},
 		addGoal: function (user) {
 			var scoreDiv = $("#" + user + "Goals");
@@ -1340,7 +1337,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		},
 
 		drawOpponentPlacedTactic: function (tactic) {
-			var canvas = document.getElementById("gameBoardCanvas");
+			var canvas = document.getElementById("gameBoardTacticalCanvas");
 			var context = canvas.getContext("2d");
 
 			layout.drawTactic(canvas, tactic, true);
@@ -1441,9 +1438,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			// draw movment point
 			context.lineWidth = lineWidthNormal;
 			context.fillStyle = "#fff";
-			for (index in tactic.movementNode) {
+			for (index in tactic.movingPass) {
 				context.beginPath();
-				context.arc(left + gameSquareWidth * tactic.movementNode[index][0], top + gameSquareHeight * tactic.movementNode[index][1], gameSquareHeight * pointSize, 0, Math.PI * 2, true);
+				context.arc(left + gameSquareWidth * tactic.movingPass[index][1][0], top + gameSquareHeight * tactic.movingPass[index][1][1], gameSquareHeight * pointSize, 0, Math.PI * 2, true);
 				context.closePath();
 				context.fill();
 				context.stroke();

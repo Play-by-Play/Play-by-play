@@ -390,8 +390,7 @@ namespace Play_by_Play.Hubs.Models {
 				Nodes = new List<Node>{
 					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 0).First()
+					nodes.Where(x => x.X == 0 && x.Y == 0).First()
 				},
 				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 				Movements = new List<Movement> {
@@ -499,9 +498,7 @@ namespace Play_by_Play.Hubs.Models {
 				Difficulty = 3,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
+					nodes.Where(x => x.X == 1 && x.Y == 0).First()
 				},
 				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 				Movements = new List<Movement> {
@@ -533,9 +530,7 @@ namespace Play_by_Play.Hubs.Models {
 					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First()
 				},
 				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
 				Movements = new List<Movement> {
@@ -637,9 +632,7 @@ namespace Play_by_Play.Hubs.Models {
 					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
 					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First()
 				},
 				StartNode = nodes.Where(x => x.X == 1 && x.Y == 2).First(),
 				Movements = new List<Movement> {
@@ -688,9 +681,7 @@ namespace Play_by_Play.Hubs.Models {
 				Name = "Forsberg",
 				Difficulty = 4,
 				Nodes = new List<Node>() {
-					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 3).First()
 				},
 				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
 				Movements = new List<Movement> {
@@ -727,10 +718,8 @@ namespace Play_by_Play.Hubs.Models {
 					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First()
 				},
 				StartNode = nodes.Where(x => x.X == 0 && x.Y == 3).First(),
 				Movements = new List<Movement> {
@@ -847,11 +836,7 @@ namespace Play_by_Play.Hubs.Models {
 				Difficulty = 7,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
-					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
-					nodes.Where(x => x.X == 0 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 0).First()
 				},
 				StartNode = nodes.Where(x => x.X == 1 && x.Y == 3).First(),
 				Movements = new List<Movement> {
