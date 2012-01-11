@@ -260,7 +260,7 @@ namespace Play_by_Play.Hubs.Models {
 		}
 
 		public BattleResult ExecuteFaceOff() {
-			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff }, BattleType.FaceOff, false);
+			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff }, BattleType.FaceOff, null, false);
 
 			IsHomeTurn = battleResult.IsHomeWinner;
 
@@ -359,8 +359,8 @@ namespace Play_by_Play.Hubs.Models {
 			AwayUser.AddTactics(GenerateTactics(5 - AwayUser.CurrentCards.Count, AwayUser));
 
 			// Call clients
-			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod();
-			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod();
+			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod(Period);
+			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod(Period);
 
 			// Initialize events if start of game
 			if(Period == 1) {
