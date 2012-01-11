@@ -297,6 +297,9 @@ namespace Play_by_Play.Hubs.Models {
 									? HomeUser
 									: AwayUser;
 			user.UseTactic(CurrentTactic);
+			string message = string.Format("{0} played \"{1}\"", user.Name, CurrentTactic.Name);
+			SendHomeActionMessage(message, "info");
+			SendAwayActionMessage(message, "info");
 			CurrentTactic = null;
 
 			// Update score
