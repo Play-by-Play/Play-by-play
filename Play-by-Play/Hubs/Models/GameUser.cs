@@ -41,7 +41,8 @@ namespace Play_by_Play.Hubs.Models {
 		public bool UseTactic(TacticCard tactic) {
 			if (tactic == null)
 				return false;
-
+			string message = string.Format("{0} played \"{1}\"", this.Name, tactic.Name);
+			SendActionMessage(message, "info");
 			CurrentCards.Remove(tactic);
 			UsedCards.Add(tactic);
 			return true;
