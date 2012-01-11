@@ -8,10 +8,15 @@ namespace Play_by_Play.Hubs.Models {
 		private BattleResult() { }
 
 		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack)
-			: this(homePlayers, awayPlayers, type, homeAttack, new RandomGenerator()) { }
-		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack, RandomGenerator generator) {
+			: this(homePlayers, awayPlayers, type, null, homeAttack, new RandomGenerator()) { }
+		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, bool homeAttack, RandomGenerator generator)
+			: this(homePlayers, awayPlayers, type, null, homeAttack, generator) { }
+		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, GameArea area, bool homeAttack)
+			: this(homePlayers, awayPlayers, type, area, homeAttack, new RandomGenerator()) { }
+		public BattleResult(List<Player> homePlayers, List<Player> awayPlayers, string type, GameArea area, bool homeAttack, RandomGenerator generator) {
 			HomePlayers = homePlayers.Select(player => player.Clone()).ToList();
 			AwayPlayers = awayPlayers.Select(player => player.Clone()).ToList();
+			Area = area;
 			Type = type;
 			IsHomeAttacking = homeAttack;
 			_generator = generator;
@@ -94,6 +99,7 @@ namespace Play_by_Play.Hubs.Models {
 				AwayTotal = AwayModifier != 1 && AwayPlayersTotal != 0 || HomePlayers.Count == 0
 				            	? AwayPlayersTotal + AwayModifier + awayBonus
 				            	: 0;
+
 			} while(HomeTotal == AwayTotal);
 
 
@@ -108,9 +114,12 @@ namespace Play_by_Play.Hubs.Models {
 			} else if (Type.Equals(BattleType.Scramble) || Type.Equals(BattleType.Pass)) {
 				sum = players.Sum(x => isAttacking ? x.Offense : x.Defense);
 			} else if (Type.Equals(BattleType.Shot)) {
-				sum = isAttacking
-								? players.Sum(x => x.Offense)
-								: players.Sum(x => x.Defense);
+				if (isAttacking) {
+					sum = players.Sum(x => x.Offense);
+				} else {
+					// Determine goalie attribute
+					sum = (IsHomeAttacking && Area.X == 0 || !IsHomeAttacking && Area.X == 1) ? players.First().Offense : players.First().Defense;
+				}
 			}
 
 			return sum;
