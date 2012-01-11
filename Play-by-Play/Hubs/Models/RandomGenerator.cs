@@ -7,7 +7,7 @@ namespace Play_by_Play.Hubs.Models
 		private static readonly Random Rnd = new Random();
 		public virtual int Next(int min, int max)
 		{
-			return Rnd.Next(min, max);
+			return Rnd.Next(min, max + 1);
 		}
 	}
 }

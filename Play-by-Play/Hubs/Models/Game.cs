@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -259,7 +260,7 @@ namespace Play_by_Play.Hubs.Models {
 		}
 
 		public BattleResult ExecuteFaceOff() {
-			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff }, BattleType.FaceOff, false);
+			var battleResult = new BattleResult(new List<Player> { Board.HomeFaceoff }, new List<Player> { Board.AwayFaceoff }, BattleType.FaceOff, null, false);
 
 			IsHomeTurn = battleResult.IsHomeWinner;
 
@@ -358,8 +359,8 @@ namespace Play_by_Play.Hubs.Models {
 			AwayUser.AddTactics(GenerateTactics(5 - AwayUser.CurrentCards.Count, AwayUser));
 
 			// Call clients
-			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod();
-			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod();
+			Hub.GetClients<GameConnection>()[HomeUser.ClientId].newPeriod(Period);
+			Hub.GetClients<GameConnection>()[AwayUser.ClientId].newPeriod(Period);
 
 			// Initialize events if start of game
 			if(Period == 1) {
@@ -500,6 +501,7 @@ namespace Play_by_Play.Hubs.Models {
 					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
 					nodes.Where(x => x.X == 1 && x.Y == 0).First(),
+					nodes.Where(x => x.X == 0 && x.Y == 1).First(),
 				},
 				StartNode = nodes.Where(x => x.X == 0 && x.Y == 2).First(),
 				Movements = new List<Movement> {
@@ -905,7 +907,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 			cards.Add(new TacticCard{
 				Id = 16,
-				Name = "Sidechange",
+				Name = "Side change",
 				Difficulty = 5,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 0 && x.Y == 3).First(),

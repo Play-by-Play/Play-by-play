@@ -69,7 +69,7 @@ namespace Play_by_Play.Hubs.Models {
 			}
 			var battles = new List<BattleResult>();
 			var area = Areas.Single(x => x.X == tacticCard.StartNode.X && x.Y == tacticCard.StartNode.Y);
-			var result = new BattleResult(area.HomePlayers, area.AwayPlayers, BattleType.Scramble, homePlayerAttacks) {Area = area};
+			var result = new BattleResult(area.HomePlayers, area.AwayPlayers, BattleType.Scramble, area, homePlayerAttacks);
 			if(result.Success)
 				Movement(tacticCard, homePlayerAttacks, area, tacticCard.StartNode);
 			battles.Add(result);
@@ -83,7 +83,7 @@ namespace Play_by_Play.Hubs.Models {
 				var homePlayers = new List<Player>(area.HomePlayers);
 				var awayPlayers = new List<Player>(area.AwayPlayers);
 
-				result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, homePlayerAttacks) {
+				result = new BattleResult(homePlayers, awayPlayers, BattleType.Scramble, area, homePlayerAttacks) {
 					Area = area
 				};
 
@@ -103,14 +103,14 @@ namespace Play_by_Play.Hubs.Models {
 				var shooter = area.HomePlayers.First();
 				var goalie = AwayGoalie;
 
-				var battleResult = new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}, BattleType.Shot, true);
+				var battleResult = new BattleResult(new List<Player> {shooter}, new List<Player> {goalie}, BattleType.Shot, area, true);
 				battles.Add(battleResult);
 
 			} else {
 				var shooter = area.AwayPlayers.First();
 				var goalie = HomeGoalie;
 
-				var battleResult = new BattleResult(new List<Player> { goalie }, new List<Player> { shooter }, BattleType.Shot, false);
+				var battleResult = new BattleResult(new List<Player> { goalie }, new List<Player> { shooter }, BattleType.Shot, area, false);
 				battles.Add(battleResult);
 			}
 			return battles;

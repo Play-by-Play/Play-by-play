@@ -51,7 +51,7 @@
 		connection.getPlayers();
 	};
 
-	connection.newPeriod = function () {
+	connection.newPeriod = function (period) {
 		nextTurnActions.push(function () {
 			PlayByPlay.restorePlayers();
 			PlayByPlay.enableAllPlayers();
