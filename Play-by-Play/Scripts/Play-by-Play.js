@@ -920,6 +920,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				else if (userScore)
 					play.addGoal("player");
 			}, ((result.Battles.length - 1) * 3 + 2 - skippedDelays) * delay);
+
+			// removed tactic on game board
+			layout.clearGameboardTactic();
 		},
 		addGoal: function (user) {
 			var scoreDiv = $("#" + user + "Goals");
@@ -1324,18 +1327,11 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 
 			layout.clearGameboardTactic();
 
-
 			//layout.disableTacticCards();
 			$('.tacticCard').css({ opacity: 0.1 });
 
-
 			// inform server of selected tactical card
 			window.connection.playTactic(card.data('cardId'));
-
-			// lock tactic cards
-			//			$('.tacticCard').each(function () {
-			//				//$(this).disable(true);
-			//			});
 
 			var canvas = document.getElementById("gameBoardTacticalCanvas");
 			layout.placedTactic = tactic;
@@ -1347,11 +1343,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var canvas = document.getElementById("gameBoardCanvas");
 			var context = canvas.getContext("2d");
 
-			console.log(tactic);
-
-			context.rotate(Math.PI);
-			layout.drawTactic(canvas, tactic, false);
-			context.rotate(-Math.PI);
+			layout.drawTactic(canvas, tactic, true);
 		},
 
 		drawTactic: function (canvas, tactic, invertedAttack) {
@@ -1471,6 +1463,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			layout.placedTactic = null;
 
 			context.clearRect(0, 0, canvas.width, canvas.height);
+			canvas.width = canvas.width;
 			context.beginPath();
 		},
 
