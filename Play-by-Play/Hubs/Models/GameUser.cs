@@ -50,12 +50,12 @@ namespace Play_by_Play.Hubs.Models {
 		public void SetTurn(bool isPlayersTurn) {
 			string message;
 			if (isPlayersTurn) {
-				message = "Now it's your turn";
+				message = "It is your turn";
 			} else {
-				var oppenentName = Oppenent.Name;
-				message = string.Format("It is {0}'s turn now", oppenentName);
+				var opponentName = Oppenent.Name;
+				message = string.Format("It is {0}'s turn", opponentName);
 			}
-			SendActionMessage(message, "info");
+			SendActionMessage(message, "sys");
 			Hub.GetClients<GameConnection>()[ClientId].setTurn(isPlayersTurn);
 		}
 

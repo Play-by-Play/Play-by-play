@@ -271,6 +271,9 @@ namespace Play_by_Play.Hubs.Models {
 			HomeUser.SetTurn(IsHomeTurn);
 			AwayUser.SetTurn(!IsHomeTurn);
 
+			SendHomeActionMessage("Awaiting player card placement...", "temp");
+			SendAwayActionMessage("Awaiting player card placement...", "temp");
+
 			return battleResult;
 		}
 
@@ -297,17 +300,31 @@ namespace Play_by_Play.Hubs.Models {
 									? HomeUser
 									: AwayUser;
 			user.UseTactic(CurrentTactic);
-			string message = string.Format("{0} played \"{1}\"", user.Name, CurrentTactic.Name);
+			var userName = user.Name;
+			if (user == HomeUser)
+				userName = "You";
+			string message = string.Format("{0} played \"{1}\"", userName, CurrentTactic.Name);
 			SendHomeActionMessage(message, "info");
+			if (user == AwayUser)
+				userName = "You";
+			message = string.Format("{0} played \"{1}\"", userName, CurrentTactic.Name);
 			SendAwayActionMessage(message, "info");
 			CurrentTactic = null;
 
 			// Update score
 			if (tacticResult.Battles.Last().Success) {
-				if (IsHomeTurn)
+				if (IsHomeTurn) {
 					Score.HomeGoal();
-				else {
+					message = string.Format("{0} scored!", "You", CurrentTactic.Name);
+					SendHomeActionMessage(message, "info");
+					message = string.Format("{0} scored!", userName, CurrentTactic.Name);
+					SendAwayActionMessage(message, "info");
+				} else {
 					Score.AwayGoal();
+					message = string.Format("{0} scored!", userName, CurrentTactic.Name);
+					SendHomeActionMessage(message, "info");
+					message = string.Format("{0} scored!", "You", CurrentTactic.Name);
+					SendAwayActionMessage(message, "info");
 				}
 			}
 
@@ -579,7 +596,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 			cards.Add(new TacticCard{
 				Id = 8,
-				Name = "Right on",
+				Name = "Right On",
 				Difficulty = 4,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
@@ -629,7 +646,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 			cards.Add(new TacticCard{
 				Id = 10,
-				Name = "Give 'n go",
+				Name = "Give 'n Go",
 				Difficulty = 6,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 1 && x.Y == 2).First(),
@@ -773,7 +790,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 			cards.Add(new TacticCard{
 				Id = 13,
-				Name = "In the zone",
+				Name = "In the Zone",
 				Difficulty = 6,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 1 && x.Y == 3).First(),
@@ -804,7 +821,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 			cards.Add(new TacticCard{
 				Id = 14,
-				Name = "The n'd",
+				Name = "The N'd",
 				Difficulty = 5,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 0 && x.Y == 2).First(),
@@ -895,7 +912,7 @@ namespace Play_by_Play.Hubs.Models {
 			});
 			cards.Add(new TacticCard{
 				Id = 16,
-				Name = "Side change",
+				Name = "Sidechange",
 				Difficulty = 5,
 				Nodes = new List<Node>() {
 					nodes.Where(x => x.X == 0 && x.Y == 3).First(),
