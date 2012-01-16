@@ -6,7 +6,7 @@
 
 window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Enable debug mode
-	var debug = false;
+	var debug = true;
 
 	// Delay times
 	var delay = 3000;
@@ -692,6 +692,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			$("#soundBG").trigger("pause");
 			$("#horn").trigger("play");
 			var endDiv = $("#end-game");
+			endDiv.empty();
 			// Add result text
 			var span = $("<span>");
 			setTimeout(function () {
@@ -717,7 +718,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				var width = totalWidth * baseWidth / 1280;
 				var height = baseHeight * width / baseWidth;
 
-				// Open battle view
+				// Open end view
 				endDiv.dialog({
 					title: "Game ended",
 					modal: true,
@@ -897,7 +898,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 								var squarePos = $(square).position();
 								var left = 'left';
 								var top = 'top';
-								
+
 								var playerElem = $("#card" + playerCard.getId());
 								var startSquare = playerElem.parent();
 
@@ -943,6 +944,55 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				$(this).css({ opacity: 1 });
 			});
 			layout.tacticCardsEnabled = true;
+		},
+		showTutorial: function () {
+			var tutorialDiv = $("#tutorial");
+			// Reset div
+			tutorialDiv.empty();
+			// Add intro text
+			tutorialDiv.append($("<p>").text("Welcome to the Play-by-Play Web tutorial!"));
+
+			// Assemble data
+			var data = {
+				color: "C00", team: "DET", name: "Datsyuk",
+				attr1: 4, attr2: 4, pos: "C",
+				draggable: "", id: ""
+			};
+			// Construct and add card
+			tutorialDiv.append($('#playerCardTemplate').tmpl(data));
+			// Set card size
+			layout.setCardSizes();
+
+			// Add attributes text
+			tutorialDiv.append($("<p>").text("This is a player card. The important attributes are situated to the right (from the top); 'offense', 'defense' and 'position'. Note that goalies have 'left' and 'right' attributes instead of 'offense' and 'defense'."));
+			tutorialDiv.append($("<br>"));
+			/*var ul = $("<ul>");
+			ul.append($("<li>").text("Offense - "));
+			ul.append($("<li>").text("Defense - "));
+			ul.append($("<li>").text("Position - "));
+			tutorialDiv.append($("<p>").append(ul));*/
+
+			// Add position text
+			tutorialDiv.append($("<p>").text("A player's position can give the player a bonus to one of their attributes if placed correctly on the game board. Wingers (LW and RW) get an offense bonus when placed at the top squares on their respective side. The same goes for defenders (LD and RD) when placed at the lower squares."));
+
+			// Set size on dialog
+			var baseWidth = 400;
+			var baseHeight = 300;
+
+			var totalWidth = $(document).width();
+
+			var width = totalWidth * baseWidth / 1280;
+			var height = baseHeight * width / baseWidth;
+
+			// Open tutorial view
+			tutorialDiv.dialog({
+				title: "Game tutorial",
+				modal: true,
+				draggable: false,
+				resizable: false,
+				width: width,
+				height: height
+			});
 		},
 		addUserPlayers: function (team) {
 			var color = team.Color;
@@ -1748,7 +1798,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			PlayByPlay.lobby.initialize();
 			$("#soundLobby").trigger("play");
 		} else {
-			//play.showBattleView("", "");
+			play.showTutorial();
 		}
 	});
 
