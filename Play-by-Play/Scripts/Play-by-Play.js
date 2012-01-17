@@ -14,6 +14,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Sound
 	var sound = true;
 
+	// Tutorial page
+	var page = 1;
+
 	//#region PlayersAndBonus
 	var iceColor = "#FFF";
 	var borderColor = "#000";
@@ -946,17 +949,59 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			layout.tacticCardsEnabled = true;
 		},
 		showTutorial: function () {
+			// Prepare page contents
+			var contentArray = [];
+			contentArray.push([
+				$("<p>").text("Welcome to the Play-by-Play Web tutorial!"),
+				$("<br>"),
+				$("<p>").text("Please go through some quick steps to learn how to play. Click on the \"Next >\" button when ready.")
+			]);
+			contentArray.push([
+				$("<p>").text("Page 2")
+			]);
+			contentArray.push([
+				$("<p>").text("Page 3")
+			]);
+
+			// Get the div
 			var tutorialDiv = $("#tutorial");
-			// Reset div
-			tutorialDiv.empty();
-			// Add intro text
-			tutorialDiv.append($("<p>").text("Welcome to the Play-by-Play Web tutorial!"));
+			// Reset page number
+			page = 1;
+			// Functions for changing page content
+			var changeContent = function () {
+				// Reset div
+				tutorialDiv.empty();
+				// Add page content
+				for (var i = 0; i < contentArray[page - 1].length; i++) {
+					tutorialDiv.append(contentArray[page - 1][i]);
+				}
+			};
+			var prevPage = function () {
+				page -= 1;
+				changeContent();
+				if (page == 1) {
+					tutorialDiv.dialog("option", "buttons", { "Next >": nextPage });
+				} else if (page == contentArray.length - 1) {
+					tutorialDiv.dialog("option", "buttons", { "< Prev": prevPage, "Next >": nextPage });
+				}
+			};
+			var nextPage = function () {
+				page += 1;
+				changeContent();
+				if (page == 2) {
+					tutorialDiv.dialog("option", "buttons", { "< Prev": prevPage, "Next >": nextPage });
+				} else if (page == contentArray.length) {
+					tutorialDiv.dialog("option", "buttons", { "< Prev": prevPage, "Close": function () { $(this).dialog("close"); } });
+				}
+			};
+			changeContent();
+			/*
 
 			// Assemble data
 			var data = {
-				color: "C00", team: "DET", name: "Datsyuk",
-				attr1: 4, attr2: 4, pos: "C",
-				draggable: "", id: ""
+			color: "C00", team: "DET", name: "Datsyuk",
+			attr1: 4, attr2: 4, pos: "C",
+			draggable: "", id: ""
 			};
 			// Construct and add card
 			tutorialDiv.append($('#playerCardTemplate').tmpl(data));
@@ -973,7 +1018,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			tutorialDiv.append($("<p>").append(ul));*/
 
 			// Add position text
-			tutorialDiv.append($("<p>").text("A player's position can give the player a bonus to one of their attributes if placed correctly on the game board. Wingers (LW and RW) get an offense bonus when placed at the top squares on their respective side. The same goes for defenders (LD and RD) when placed at the lower squares."));
+			//tutorialDiv.append($("<p>").text("A player's position can give the player a bonus to one of their attributes if placed correctly on the game board. Wingers (LW and RW) get an offense bonus when placed at the top squares on their respective side. The same goes for defenders (LD and RD) when placed at the lower squares."));
 
 			// Set size on dialog
 			var baseWidth = 400;
@@ -991,7 +1036,8 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				draggable: false,
 				resizable: false,
 				width: width,
-				height: height
+				height: height,
+				buttons: { "Next >": nextPage }
 			});
 		},
 		addUserPlayers: function (team) {
@@ -1798,8 +1844,18 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			PlayByPlay.lobby.initialize();
 			$("#soundLobby").trigger("play");
 		} else {
-			play.showTutorial();
+			//play.showTutorial();
 		}
+
+		// Add tutorial link to action log
+		var div = $("<div>");
+		div.append($("<span>").text("New to the game? Please take the "));
+		var a = $("<a>");
+		a.text("tutorial");
+		a.attr("href", "#");
+		a.click(play.showTutorial);
+		div.append(a);
+		div.appendTo('#actions > .content');
 	});
 
 	$('#chatMessage').submit(function (evt) {
