@@ -307,6 +307,8 @@ namespace Play_by_Play.Hubs.Models {
 			SendHomeActionMessage(message, "info");
 			if (user == AwayUser)
 				userName = "You";
+			else
+				userName = user.Name;
 			message = string.Format("{0} played \"{1}\"", userName, CurrentTactic.Name);
 			SendAwayActionMessage(message, "info");
 			CurrentTactic = null;
@@ -388,6 +390,9 @@ namespace Play_by_Play.Hubs.Models {
 				Hub.GetClients<GameConnection>()[AwayUser.ClientId].nextTurn();
 			}
 
+			// Send messages about line choices
+			SendHomeActionMessage("Awaiting line choices...", "temp");
+			SendAwayActionMessage("Awaiting line choices...", "temp");
 		}
 
 		private List<TacticCard> GenerateTacticCards() {

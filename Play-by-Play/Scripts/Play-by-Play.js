@@ -6,7 +6,7 @@
 
 window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 	// Enable debug mode
-	var debug = true;
+	var debug = false;
 
 	// Delay times
 	var delay = 3000;
@@ -813,7 +813,7 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			var oppScore = false;
 			var skippedDelays = 0;
 
-			console.log(result);
+			//console.log(result);
 
 			var firstBattle = result.Battles[0];
 			var isUserAttacking = result.IsHomeAttacking && firstBattle.IsHomePlayer || !result.IsHomeAttacking && !firstBattle.IsHomePlayer;
@@ -954,13 +954,87 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			contentArray.push([
 				$("<p>").text("Welcome to the Play-by-Play Web tutorial!"),
 				$("<br>"),
-				$("<p>").text("Please go through some quick steps to learn how to play. Click on the \"Next >\" button when ready.")
+				$("<p>").text("Please go through some quick steps to learn how to play."),
+				$("<br>"),
+				$("<p>").text("Click on the \"Next >\" button when ready.")
 			]);
 			contentArray.push([
-				$("<p>").text("Page 2")
+				$("<img>").attr("src", "/Public/images/tutorial/screen01.png"),
+				$("<p>").text("This is a player card."),
+				$("<br>"),
+				$("<p>").text("The attributes on the right side are (from the top) \"offense\", \"defense\" and \"position\".")
 			]);
 			contentArray.push([
-				$("<p>").text("Page 3")
+				$("<img>").attr("src", "/Public/images/tutorial/screen02.png"),
+				$("<p>").text("Goalies have \"left\" and \"right\" attributes instead of \"offense\" and \"defense\".")
+			]);
+			contentArray.push([
+				$("<img>").attr("src", "/Public/images/tutorial/screen03.png"),
+				$("<p>").text("The position determines at which area the player achieves a so called area bonus."),
+				$("<br>"),
+				$("<p>").text("Wingers (LW and RW) get a +1 offense bonus when placed at the top squares on their respective side.")
+			]);
+			contentArray.push([
+				$("<img>").attr("src", "/Public/images/tutorial/screen04.png"),
+				$("<p>").text("In the same way, defenders (LD and RD) get a +1 defense bonus when placed at the lower squares."),
+				$("<br>"),
+				$("<p>").text("Centers (C) and goalies (G) does not get area bonuses.")
+			]);
+			contentArray.push([
+				$("<img>").attr("src", "/Public/images/tutorial/screen05.png"),
+				$("<p>").text("This is a tactical card."),
+				$("<br>"),
+				$("<p>").append(
+					$("<span>").text("It displays a tactic that can be played during an attack."),
+					$("<br>"),
+					$("<span>").text("A tactic consists of dots, lines and arrows.")
+				)
+			]);
+			contentArray.push([
+				$("<img>").attr("src", "/Public/images/tutorial/screen10.png"),
+				$("<img>").attr("src", "/Public/images/tutorial/screen11.png"),
+				$("<p>").text("The dots represent where the players should be during the attack."),
+				$("<br>"),
+				$("<p>").text("Players should be placed at all black dots at the start of the attack. A white dot shows that a player will move here during the attack.")
+			]);
+			contentArray.push([
+				$("<img>").attr("src", "/Public/images/tutorial/screen06.png"),
+				$("<p>").text("The lines show where the puck is going."),
+				$("<br>"),
+				$("<p>").text("A solid line represents a pass between two players. A dashed line means that a player will move along it; either with the puck, or after passing it.")
+			]);
+			contentArray.push([
+				$("<img>").attr("src", "/Public/images/tutorial/screen09.png"),
+				$("<img>").attr("src", "/Public/images/tutorial/screen08.png"),
+				$("<p>").text("A tactic always ends with a shot, displayed as an arrow."),
+				$("<br>"),
+				$("<p>").text("The dot where the tactic starts, is marked with a ring around it.")
+			]);
+			contentArray.push([
+				$("<p>").text("At every dot during an attack, there will be a battle between the player cards from each team."),
+				$("<br>"),
+				$("<p>").text("If the attacker wins all battles, including the shot, a goal is scored.")
+			]);
+			contentArray.push([
+				$("<img>").attr("src", "/Public/images/tutorial/screen12.png"),
+				$("<p>").text("The battles are determined through player attributes and dice rolls."),
+				$("<br>"),
+				$("<p>").text("The dice rolls are displayed in orange. Rolling a 1 means automatic failure.")
+			]);
+			contentArray.push([
+				$("<p>").text("Each user will attack twice per period, once in every shift."),
+				$("<br>"),
+				$("<p>").text("Both users have two different player card formations called lines, which will play one shift each per period.")
+			]);
+			contentArray.push([
+				$("<p>").text("You choose which line will play the first shift by dragging the center from one line into the face-off square marked with a \"C\" at the start of each period."),
+				$("<br>"),
+				$("<p>").text("You also choose a goalie by dragging it out into the goalie square marked with a \"G\".")
+			]);
+			contentArray.push([
+				$("<p>").text("Now you're ready to play the game!"),
+				$("<br>"),
+				$("<p>").text("Please refer to the wiki page at GitHub for more detailed information. Good luck!")
 			]);
 
 			// Get the div
@@ -995,9 +1069,9 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 				}
 			};
 			changeContent();
-			/*
 
-			// Assemble data
+
+			/*// Assemble data
 			var data = {
 			color: "C00", team: "DET", name: "Datsyuk",
 			attr1: 4, attr2: 4, pos: "C",
@@ -1212,6 +1286,20 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 					ui.draggable.draggable("destroy");
 				}
 			});
+		},
+		handleSound: function () {
+			isSoundOn = $("#toggleSound").is(':checked');
+			// Handle sound
+			if (isSoundOn)
+				$("audio").each(function () { this.muted = false; });
+			else
+				$("audio").each(function () { this.muted = true; });
+			/*if (sound)
+			$("#soundBG").trigger("play");
+			else {
+			$("audio").trigger("pause");
+			$("audio").currentTime = 0;
+			}*/
 		},
 		players: players,
 		Bonus: Bonus,
@@ -1804,35 +1892,6 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 		$('#actions').nanoScroller();
 		$('#chatMessages').nanoScroller();
 
-		// Settings panel
-		var settingsDiv = $("#settings");
-		var span = $("<span>");
-		span.text("Sound: ");
-		span.appendTo(settingsDiv);
-		var input = $("<input>");
-		input.attr({
-			id: "toggleSound",
-			type: "checkbox"
-		});
-		input.click(function () {
-			sound = $(this).is(':checked');
-			// Handle sound
-			if (sound)
-				$("audio").each(function () { this.muted = false; });
-			else
-				$("audio").each(function () { this.muted = true; });
-			/*if (sound)
-			$("#soundBG").trigger("play");
-			else {
-			$("audio").trigger("pause");
-			$("audio").currentTime = 0;
-			}*/
-		});
-		if (sound) {
-			input.attr('checked', true);
-		}
-		input.appendTo(settingsDiv);
-
 		play.disableTacticCards();
 		layout.init();
 		layout.drawMainGameboard();
@@ -1844,11 +1903,28 @@ window.PlayByPlay = window.PlayByPlay || (function ($, _) {
 			PlayByPlay.lobby.initialize();
 			$("#soundLobby").trigger("play");
 		} else {
-			//play.showTutorial();
+			sound = false;
+			play.showTutorial();
 		}
+
+		// Settings panel
+		var settingsDiv = $("#settings");
+		var span = $("<span>");
+		span.text("Sound: ");
+		span.appendTo(settingsDiv);
+		var input = $("<input>");
+		input.attr({
+			id: "toggleSound",
+			type: "checkbox",
+			checked: sound
+		});
+		input.click(play.handleSound);
+		input.appendTo(settingsDiv);
+		play.handleSound();
 
 		// Add tutorial link to action log
 		var div = $("<div>");
+		div.addClass("action");
 		div.append($("<span>").text("New to the game? Please take the "));
 		var a = $("<a>");
 		a.text("tutorial");

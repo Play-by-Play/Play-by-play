@@ -119,7 +119,7 @@
 	};
 
 	connection.tacticResult = function (result) {
-		console.log(result);
+		//console.log(result);
 
 		window.PlayByPlay.playTactic(result);
 	};
